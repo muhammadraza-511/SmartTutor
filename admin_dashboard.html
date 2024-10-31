@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, Admin!</h1>
+    <div id="userDetails"></div>
+    <script>
+        fetch('/dashboard')
+            .then(response => response.json())
+            .then(data => {
+                const user = data.user;
+                document.getElementById('userDetails').innerHTML = `
+                    <p>Name: ${user.Admin_name}</p>
+                    <p>Roll Number: ${user.Admin_Roll_number}</p>
+                    <p>Admin id: ${user.Admin_ID}</p>
+
+                    
+                `;
+            })
+            .catch(error => console.error('Error fetching user details:', error));
+    </script>
+</body>
+</html>
