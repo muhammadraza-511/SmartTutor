@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 28, 2024 at 10:42 PM
+-- Generation Time: Nov 09, 2024 at 03:02 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -91,6 +91,25 @@ INSERT INTO `student_table` (`Student_ID`, `Student_Name`, `Student_roll_No`, `S
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tutor_profile_status_table`
+--
+
+CREATE TABLE `tutor_profile_status_table` (
+  `Tutor_ID` int(11) DEFAULT NULL,
+  `profile_status` varchar(50) DEFAULT NULL,
+  `profile_status_ID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tutor_profile_status_table`
+--
+
+INSERT INTO `tutor_profile_status_table` (`Tutor_ID`, `profile_status`, `profile_status_ID`) VALUES
+(25, 'Not created', 4);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tutor_table`
 --
 
@@ -109,8 +128,7 @@ CREATE TABLE `tutor_table` (
 --
 
 INSERT INTO `tutor_table` (`Tutor_ID`, `Tutor_Name`, `Tutor_Roll_No`, `Tutor_Email`, `Tutor_Number`, `Tutor_password`, `Tutor_UserName`) VALUES
-(18, 'Munam Mustafa', '24T-5230', 'munammustafa253@gmail.com', '03435231909', '$2b$10$kJ/.vIEJlhW8DwSjtts2Ze3aIK7EDvpgBxu59uIeGf.XKPrzPSth6', 'Munam253'),
-(19, 'Munam Mustafa', '24T-8933', 'munammustafa953@gmail.com', '03435231909', '$2b$10$mK2yUdrxCTIlSj2DT1WnAOAAjSV2f3lmybrmyTuByEJNckATHgaia', 'Munam1');
+(25, 'Ammar Arshad', '24T-9604', 'i210460@nu.edu.pk', '03435231909', '$2b$10$HBsc9TJueL2axl6QYhRje.25JUOjlFyOraEBYJVjtlK9/4Zqtz0te', 'Ammar');
 
 --
 -- Indexes for dumped tables
@@ -135,6 +153,13 @@ ALTER TABLE `parent_table`
 --
 ALTER TABLE `student_table`
   ADD PRIMARY KEY (`Student_ID`);
+
+--
+-- Indexes for table `tutor_profile_status_table`
+--
+ALTER TABLE `tutor_profile_status_table`
+  ADD PRIMARY KEY (`profile_status_ID`),
+  ADD KEY `Tutor_ID` (`Tutor_ID`);
 
 --
 -- Indexes for table `tutor_table`
@@ -165,10 +190,16 @@ ALTER TABLE `student_table`
   MODIFY `Student_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
+-- AUTO_INCREMENT for table `tutor_profile_status_table`
+--
+ALTER TABLE `tutor_profile_status_table`
+  MODIFY `profile_status_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `tutor_table`
 --
 ALTER TABLE `tutor_table`
-  MODIFY `Tutor_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `Tutor_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- Constraints for dumped tables
@@ -179,6 +210,12 @@ ALTER TABLE `tutor_table`
 --
 ALTER TABLE `parent_table`
   ADD CONSTRAINT `parent_table_ibfk_1` FOREIGN KEY (`Student_ID`) REFERENCES `student_table` (`Student_ID`);
+
+--
+-- Constraints for table `tutor_profile_status_table`
+--
+ALTER TABLE `tutor_profile_status_table`
+  ADD CONSTRAINT `tutor_profile_status_table_ibfk_1` FOREIGN KEY (`Tutor_ID`) REFERENCES `tutor_table` (`Tutor_ID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

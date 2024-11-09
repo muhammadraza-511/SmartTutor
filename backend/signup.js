@@ -184,14 +184,13 @@ module.exports = (app, db) => {
                 }
     
                 let tutorRollNumber = generateTutorRollNo();
-                // Check if Tutor Roll Number exists
+                
                 checkTutorRollNoExistence(tutorRollNumber, (err, exists) => {
                     if (err) {
                         console.error('Error checking roll number existence:', err);
                         return res.status(500).json({ message: 'Error checking roll number existence' });
                     }
-    
-                    // Generate a new roll number if it exists
+
                     while (exists) {
                         tutorRollNumber = generateTutorRollNo();
                         checkTutorRollNoExistence(tutorRollNumber, (err, result) => {
@@ -203,37 +202,55 @@ module.exports = (app, db) => {
                         });
                     }
     
-                    // Hash the password before inserting
                     bcrypt.hash(password, 10, (err, hashedPassword) => {
                         if (err) {
                             console.error('Error hashing password:', err);
                             return res.status(500).json({ message: 'Error registering tutor' });
                         }
     
-                        // Insert tutor data into the database
                         const insertTutorQuery = `INSERT INTO tutor_table (Tutor_Name, Tutor_Roll_No, Tutor_UserName, Tutor_Email, Tutor_number, Tutor_Password) VALUES (?, ?, ?, ?, ?, ?)`;
                         const tutorValues = [fullname, tutorRollNumber, username, email, contact, hashedPassword];
     
-                        db.query(insertTutorQuery, tutorValues, (err) => {
+                        db.query(insertTutorQuery, tutorValues, (err, result) => {
                             if (err) {
                                 console.error('Error inserting tutor data:', err);
                                 return res.status(500).json({ message: 'Error registering tutor' });
                             }
-                            console.log('Tutor registered.');
-                            // Send confirmation email to the tutor
-                            const mailOptions = {
-                                from: 'smarttutor253@gmail.com',
-                                to: email,
-                                subject: 'Tutor Registration Confirmation!',
-                                text: `Dear ${fullname},\n\nThank you for signing up as a Tutor!\n\nHere are your important details:\n- Tutor Roll No: ${tutorRollNumber}\n\nWe are excited to have you on our team!\n\nBest Regards,\nSmart Tutor Team`
-                            };
-    
-                            transporter.sendMail(mailOptions, (error) => {
-                                if (error) {
-                                    console.error('Error sending email to tutor:', error);
-                                    return res.status(500).json({ message: 'Error sending confirmation email to tutor' });
+                            const tutorID = result.insertId;
+                            console.log('Tutor registered with ID:', tutorID);
+
+                            // Insert into tutor_profile_status_table
+                            const insertProfileStatusQuery = `INSERT INTO tutor_profile_status_table (Tutor_ID, profile_status) VALUES (?, 'Not created')`;
+                            db.query(insertProfileStatusQuery, [tutorID], (err) => {
+                                if (err) {
+                                    console.error('Error inserting profile status:', err);
+                                    return res.status(500).json({ message: 'Error setting profile status' });
                                 }
-                                res.json({ message: 'Tutor registered successfully!', redirect: '/index.html' });
+                                
+                                // Send confirmation email
+                                const mailOptions = {
+                                    from: 'smarttutor253@gmail.com',
+                                    to: email,
+                                    subject: 'Tutor Registration Confirmation!',
+                                    text: `Dear ${fullname},\n\nThank you for signing up as a Tutor!\n\nHere are your important details:\n- Tutor Roll No: ${tutorRollNumber}\n\nWe are excited to have you on our team!\n\nBest Regards,\nSmart Tutor Team`
+                                };
+    
+                                transporter.sendMail(mailOptions, (error) => {
+                                    if (error) {
+                                        console.error('Error sending email to tutor:', error);
+                                        return res.status(500).json({ message: 'Error sending confirmation email to tutor' });
+                                    }
+                                    
+                                    res.json({ message: 'Student and Parent registered successfully!', redirect: '/tutor_profile_creation.html' });
+
+                                    // Send response with alert and redirect
+                                    // res.send(`
+                                    //     <script>
+                                    //         alert("Registration successful. Please complete your profile now");
+                                    //         window.location.href = "/tutor_profile_creation.html";
+                                    //     </script>
+                                    // `);
+                                });
                             });
                         });
                     });

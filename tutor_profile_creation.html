@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Tutor Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+            display: none; /* Hide all sections initially */
+        }
+        .section.active {
+            display: block; /* Show the active section */
+        }
+        .section h2 {
+            color: #2c3e50;
+        }
+        .section textarea, .section input, .section select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        #continueBtn, #goBackBtn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        #continueBtn:disabled, #goBackBtn:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .checkbox-group label {
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Create Your Profile</h1>
+    <div id="userDetails"></div>
+
+    <!-- Section 1: About -->
+    <div class="section active" id="aboutSection">
+        <h2>1. About</h2>
+        
+        <!-- Country of Birth -->
+        <label for="countryOfBirth">Country of Birth:</label>
+        <input type="text" id="countryOfBirth" placeholder="Your country of birth">
+
+        <!-- City of Birth -->
+        <label for="cityOfBirth">City of Birth:</label>
+        <input type="text" id="cityOfBirth" placeholder="Your city of birth">
+
+        <!-- Subject You Teach -->
+        <label for="subject">Subject You Teach:</label>
+        <select id="subject">
+            <option value="">Select Subject</option>
+            <option value="Math">Math</option>
+            <option value="Science">Science</option>
+            <option value="English">English</option>
+            <option value="History">History</option>
+            <option value="Other">Other</option>
+        </select>
+        <input type="text" id="subjectOther" placeholder="Specify subject" style="display:none;">
+
+        <!-- Grade of Students You Prefer to Teach -->
+        <label for="grade">Grade of Students You Prefer to Teach:</label>
+        <select id="grade">
+            <option value="">Select Grade</option>
+            <option value="Elementary">Elementary</option>
+            <option value="Middle">Middle</option>
+            <option value="High">High</option>
+            <option value="Other">Other</option>
+        </select>
+        <input type="text" id="gradeOther" placeholder="Specify grade" style="display:none;">
+
+        <!-- Languages You Speak -->
+        <label for="language">Languages You Speak:</label>
+        <div class="checkbox-group">
+            <label><input type="checkbox" class="language" value="English"> English</label>
+            <label><input type="checkbox" class="language" value="Spanish"> Spanish</label>
+            <label><input type="checkbox" class="language" value="French"> French</label>
+            <label><input type="checkbox" class="language" value="Other"> Other</label>
+        </div>
+        <input type="text" id="languageOther" placeholder="Specify other languages" style="display:none;">
+
+        <!-- Photo Input -->
+        <label for="photo">Upload Your Photo:</label>
+        <input type="file" id="photo" accept="image/*">
+
+    </div>
+
+    <!-- Section 2: Education -->
+    <div class="section" id="educationSection">
+        <h2>2. Education</h2>
+        <textarea id="education" rows="4" placeholder="Your educational background..."></textarea>
+        <button id="goBackBtn" disabled>Go Back</button>
+    </div>
+
+    <!-- Section 3: Description -->
+    <div class="section" id="descriptionSection">
+        <h2>3. Description</h2>
+        <textarea id="description" rows="4" placeholder="Describe your teaching style, experience, etc..."></textarea>
+        <button id="goBackBtn" disabled>Go Back</button>
+    </div>
+
+    <!-- Section 4: Availability & Pricing -->
+    <div class="section" id="availabilityPricingSection">
+        <h2>4. Availability & Pricing</h2>
+        <textarea id="availabilityPricing" rows="4" placeholder="Your availability schedule and pricing details..."></textarea>
+        <button id="goBackBtn" disabled>Go Back</button>
+    </div>
+
+    <!-- Section 5: Video -->
+    <div class="section" id="videoSection">
+        <h2>5. Video</h2>
+        <input type="file" id="videoFile" accept="video/*">
+    </div>
+
+    <button id="continueBtn" disabled>Continue</button>
+
+    <script>
+        window.onload = function() {
+            alert("You haven't created your profile yet. Please build your profile.");
+        };
+
+        let currentSectionIndex = 0;
+        const sections = document.querySelectorAll('.section');
+        const continueBtn = document.getElementById('continueBtn');
+        const goBackBtns = document.querySelectorAll('#goBackBtn');
+
+        // Function to show the next section
+        function showNextSection() {
+            // Hide the current section
+            sections[currentSectionIndex].classList.remove('active');
+            
+            // Move to the next section
+            currentSectionIndex++;
+            
+            // Show the next section
+            sections[currentSectionIndex].classList.add('active');
+            
+            // Disable the continue button if it's the last section
+            if (currentSectionIndex === sections.length - 1) {
+                continueBtn.textContent = 'Submit Profile'; // Change button text to 'Submit'
+            }
+            
+            // Disable the continue button after progressing
+            continueBtn.disabled = true;
+        }
+
+        // Function to go back to the previous section
+        function goBack() {
+            // Hide the current section
+            sections[currentSectionIndex].classList.remove('active');
+            
+            // Move to the previous section
+            currentSectionIndex--;
+            
+            // Show the previous section
+            sections[currentSectionIndex].classList.add('active');
+            
+            // Enable the continue button when going back
+            continueBtn.disabled = false;
+        }
+
+        // Enable the continue button when the user fills the current section
+        function checkInput() {
+            const currentSection = sections[currentSectionIndex];
+            const textarea = currentSection.querySelector('textarea');
+            const fileInput = currentSection.querySelector('input[type="file"]');
+            const textInputs = currentSection.querySelectorAll('input[type="text"]');
+            const selectInputs = currentSection.querySelectorAll('select');
+            const languageCheckboxes = currentSection.querySelectorAll('.language');
+            const photoInput = document.getElementById('photo');
+            
+            let isValid = false;
+
+            // Check if the About section has all required fields filled
+            if (currentSection.id === 'aboutSection') {
+                const country = document.getElementById('countryOfBirth').value.trim();
+                const city = document.getElementById('cityOfBirth').value.trim();
+                const subject = document.getElementById('subject').value.trim();
+                const grade = document.getElementById('grade').value.trim();
+                const languages = [...languageCheckboxes].filter(checkbox => checkbox.checked).map(checkbox => checkbox.value).length;
+                const photo = photoInput.files.length > 0;
+
+                isValid = country !== '' && city !== '' && subject !== '' && grade !== '' && languages > 0 && photo;
+            }
+
+            // Check if the other sections have text or file inputs filled
+            if (!isValid && (textarea && textarea.value.trim() !== "") || (fileInput && fileInput.files.length > 0) || [...textInputs].some(input => input.value.trim() !== "")) {
+                isValid = true;
+            }
+
+            continueBtn.disabled = !isValid;
+        }
+
+        // Listen for changes in the input fields
+        document.querySelectorAll('textarea, input[type="file"], input[type="text"], select').forEach(input => {
+            input.addEventListener('input', checkInput);
+        });
+
+        // Listen for language checkbox changes
+        document.querySelectorAll('.language').forEach(checkbox => {
+            checkbox.addEventListener('change', checkInput);
+        });
+
+        // Listen for changes in "Other" fields
+        document.getElementById('subject').addEventListener('change', function() {
+            if (this.value === 'Other') {
+                document.getElementById('subjectOther').style.display = 'block';
+            } else {
+                document.getElementById('subjectOther').style.display = 'none';
+            }
+        });
+
+        document.getElementById('grade').addEventListener('change', function() {
+            if (this.value === 'Other') {
+                document.getElementById('gradeOther').style.display = 'block';
+            } else {
+                document.getElementById('gradeOther').style.display = 'none';
+            }
+        });
+
+        document.querySelector('.checkbox-group input[value="Other"]').addEventListener('change', function() {
+            document.getElementById('languageOther').style.display = this.checked ? 'block' : 'none';
+        });
+
+        // Go Back button functionality
+        goBackBtns.forEach(btn => {
+            btn.addEventListener('click', goBack);
+        });
+
+        // Continue button click handler
+        continueBtn.addEventListener('click', function() {
+            showNextSection();
+        });
+
+        // Fetch user details and display them
+        fetch('/dashboard')
+            .then(response => response.json())
+            .then(data => {
+                const user = data.user;
+                document.getElementById('userDetails').innerHTML = `
+                    <p>Name: ${user.Tutor_Name}</p>
+                    <p>Roll Number: ${user.Tutor_Roll_No}</p>
+                    <p>Tutor ID: ${user.Tutor_ID}</p>
+                    <p>Email: ${user.Tutor_Email}</p>
+                    <p>Contact Number: ${user.Tutor_Number}</p>
+                `;
+            })
+            .catch(error => console.error('Error fetching user details:', error));
+    </script>
+</body>
+</html>

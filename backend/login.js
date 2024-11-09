@@ -56,18 +56,32 @@ module.exports = (app, db) => {
                 }
 
                 if (isPasswordValid) {
-                    req.session.user_details = user; // Store user details in session
+                    // Check profile status for tutors
+                    if (table === 'tutor_table') {
+                        const profileStatusQuery = 'SELECT profile_status FROM tutor_profile_status_table WHERE Tutor_ID = ?';
+                        db.query(profileStatusQuery, [user.Tutor_ID], (err, statusResults) => {
+                            if (err) return res.status(500).send('Error checking tutor profile status.');
 
-                    // Redirect based on user type with their details
-                    switch (table) {
-                        case 'admin_table':
-                            return res.redirect('/admin_dashboard.html');
-                        case 'student_table':
-                            return res.redirect('/student_dashboard.html');
-                        case 'tutor_table':
-                            return res.redirect('/tutor_dashboard.html');
-                        case 'parent_table':
-                            return res.redirect('/parent_dashboard.html');
+                            if (statusResults.length > 0 && statusResults[0].profile_status === 'Not created') {
+                                return res.redirect('/tutor_profile_creation.html');
+                                //return res.status(400).json({ message: 'You have to create your profile first.', redirect: '/tutor_profile_creation.html' });
+                            } else {
+                                req.session.user_details = user;
+                                return res.redirect('/tutor_dashboard.html');
+                            }
+                        });
+                    } else {
+                        // For other roles, redirect directly
+                        req.session.user_details = user;
+
+                        switch (table) {
+                            case 'admin_table':
+                                return res.redirect('/admin_dashboard.html');
+                            case 'student_table':
+                                return res.redirect('/student_dashboard.html');
+                            case 'parent_table':
+                                return res.redirect('/parent_dashboard.html');
+                        }
                     }
                 } else {
                     return res.status(400).send('Invalid roll number or password.');

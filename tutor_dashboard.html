@@ -6,9 +6,18 @@
     <title>Tutor Dashboard</title>
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li><a href="tutor_profile_creation.html">Create Profile</a></li>
+        </ul>
+    </nav>
+
     <h1>Welcome, Tutor!</h1>
     <div id="userDetails"></div>
+    
     <script>
+        // Fetch user details and display them
         fetch('/dashboard')
             .then(response => response.json())
             .then(data => {
@@ -16,7 +25,7 @@
                 document.getElementById('userDetails').innerHTML = `
                     <p>Name: ${user.Tutor_Name}</p>
                     <p>Roll Number: ${user.Tutor_Roll_No}</p>
-                    <p>Tutor id: ${user.Tutor_ID}</p>
+                    <p>Tutor ID: ${user.Tutor_ID}</p>
                     <p>Email: ${user.Tutor_Email}</p>
                     <p>Contact Number: ${user.Tutor_Number}</p>
                 `;
