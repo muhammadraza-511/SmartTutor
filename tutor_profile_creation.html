@@ -3,263 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Tutor Profile</title>
+    <title>Tutor Dashboard</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* Basic styles for the navigation menu */
+        nav {
+            background-color: #333;
+            overflow: hidden;
+        }
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        /* Styles for the form */
+        form {
             margin: 20px;
         }
-        .section {
-            margin-bottom: 30px;
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-section {
+            margin-bottom: 40px;
             display: none; /* Hide all sections initially */
         }
-        .section.active {
-            display: block; /* Show the active section */
-        }
-        .section h2 {
-            color: #2c3e50;
-        }
-        .section textarea, .section input, .section select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            font-size: 16px;
-        }
-        #continueBtn, #goBackBtn {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        #continueBtn:disabled, #goBackBtn:disabled {
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .checkbox-group label {
-            margin-right: 15px;
+        .alert-message {
+            color: red;
         }
     </style>
 </head>
 <body>
-    <h1>Create Your Profile</h1>
-    <div id="userDetails"></div>
 
-    <!-- Section 1: About -->
-    <div class="section active" id="aboutSection">
-        <h2>1. About</h2>
-        
-        <!-- Country of Birth -->
-        <label for="countryOfBirth">Country of Birth:</label>
-        <input type="text" id="countryOfBirth" placeholder="Your country of birth">
+    <!-- Header Section -->
+    <header>
+        <h1>Welcome, Tutor!</h1>
 
-        <!-- City of Birth -->
-        <label for="cityOfBirth">City of Birth:</label>
-        <input type="text" id="cityOfBirth" placeholder="Your city of birth">
+        <!-- Navigation Menu -->
+        <nav>
+            <a href="#about">About</a>
+            <a href="#education">Education</a>
+            <a href="#description">Description</a>
+            <a href="#availability-pricing">Availability & Pricing</a>
+        </nav>
+    </header>
 
-        <!-- Subject You Teach -->
-        <label for="subject">Subject You Teach:</label>
-        <select id="subject">
-            <option value="">Select Subject</option>
-            <option value="Math">Math</option>
-            <option value="Science">Science</option>
-            <option value="English">English</option>
-            <option value="History">History</option>
-            <option value="Other">Other</option>
-        </select>
-        <input type="text" id="subjectOther" placeholder="Specify subject" style="display:none;">
+    <!-- About Section -->
+    <section id="about" class="form-section" style="display: block;">
+        <h2>About You</h2>
+        <form id="about-form">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
 
-        <!-- Grade of Students You Prefer to Teach -->
-        <label for="grade">Grade of Students You Prefer to Teach:</label>
-        <select id="grade">
-            <option value="">Select Grade</option>
-            <option value="Elementary">Elementary</option>
-            <option value="Middle">Middle</option>
-            <option value="High">High</option>
-            <option value="Other">Other</option>
-        </select>
-        <input type="text" id="gradeOther" placeholder="Specify grade" style="display:none;">
+            <label for="roll-number">Registered Roll Number</label>
+            <input type="text" id="roll-number" name="roll_number" required>
 
-        <!-- Languages You Speak -->
-        <label for="language">Languages You Speak:</label>
-        <div class="checkbox-group">
-            <label><input type="checkbox" class="language" value="English"> English</label>
-            <label><input type="checkbox" class="language" value="Spanish"> Spanish</label>
-            <label><input type="checkbox" class="language" value="French"> French</label>
-            <label><input type="checkbox" class="language" value="Other"> Other</label>
-        </div>
-        <input type="text" id="languageOther" placeholder="Specify other languages" style="display:none;">
+            <label for="country">Country</label>
+            <input type="text" id="country" name="country" required>
 
-        <!-- Photo Input -->
-        <label for="photo">Upload Your Photo:</label>
-        <input type="file" id="photo" accept="image/*">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" required>
 
-    </div>
+            <label for="languages">Languages (Enter multiple, separated by commas)</label>
+            <input type="text" id="languages" name="languages" placeholder="e.g., English, Spanish, French" required>
 
-    <!-- Section 2: Education -->
-    <div class="section" id="educationSection">
-        <h2>2. Education</h2>
-        <textarea id="education" rows="4" placeholder="Your educational background..."></textarea>
-        <button id="goBackBtn" disabled>Go Back</button>
-    </div>
+            <button type="button" onclick="nextSection('about', 'education')">Next</button>
+        </form>
+    </section>
 
-    <!-- Section 3: Description -->
-    <div class="section" id="descriptionSection">
-        <h2>3. Description</h2>
-        <textarea id="description" rows="4" placeholder="Describe your teaching style, experience, etc..."></textarea>
-        <button id="goBackBtn" disabled>Go Back</button>
-    </div>
+    <!-- Education Section -->
+    <section id="education" class="form-section">
+        <h2>Education</h2>
+        <form id="education-form">
+            <label for="university">University/College</label>
+            <input type="text" id="university" name="university" required>
 
-    <!-- Section 4: Availability & Pricing -->
-    <div class="section" id="availabilityPricingSection">
-        <h2>4. Availability & Pricing</h2>
-        <textarea id="availabilityPricing" rows="4" placeholder="Your availability schedule and pricing details..."></textarea>
-        <button id="goBackBtn" disabled>Go Back</button>
-    </div>
+            <label for="degree-name">Degree Name</label>
+            <input type="text" id="degree-name" name="degree_name" required>
 
-    <!-- Section 5: Video -->
-    <div class="section" id="videoSection">
-        <h2>5. Video</h2>
-        <input type="file" id="videoFile" accept="video/*">
-    </div>
+            <label for="degree-type">Degree Type</label>
+            <input type="text" id="degree-type" name="degree_type" required>
 
-    <button id="continueBtn" disabled>Continue</button>
+            <label for="specialization">Specialization</label>
+            <input type="text" id="specialization" name="specialization" required>
+
+            <!-- Start Year Dropdown -->
+            <label for="start-year">Starting Year</label>
+            <select id="start-year" name="start_year" required>
+                <option value="" disabled selected>Select Year</option>
+                <script>
+                    const startYearSelect = document.getElementById('start-year');
+                    const currentYear = new Date().getFullYear();
+                    for (let i = currentYear; i >= 1900; i--) {
+                        const option = document.createElement('option');
+                        option.value = i;
+                        option.text = i;
+                        startYearSelect.appendChild(option);
+                    }
+                </script>
+            </select>
+
+            <!-- End Year Dropdown -->
+            <label for="end-year">Ending Year</label>
+            <select id="end-year" name="end_year" required>
+                <option value="" disabled selected>Select Year</option>
+                <script>
+                    const endYearSelect = document.getElementById('end-year');
+                    for (let i = currentYear; i >= 1900; i--) {
+                        const option = document.createElement('option');
+                        option.value = i;
+                        option.text = i;
+                        endYearSelect.appendChild(option);
+                    }
+                </script>
+            </select>
+
+            <label for="degree-upload">Upload Degree</label>
+            <input type="file" id="degree-upload" name="degree_upload" accept=".pdf, .jpg, .jpeg, .png" required>
+
+            <button type="button" onclick="nextSection('education', 'description')">Next</button>
+            <button type="button" onclick="previousSection('education', 'about')">Previous</button>
+        </form>
+    </section>
+
+    <!-- Description Section -->
+    <section id="description" class="form-section">
+        <h2>Description</h2>
+        <form id="description-form">
+            <label for="subject">Subject You Teach</label>
+            <input type="text" id="subject" name="subject" required>
+
+            <label for="grade">Grade of Students You Teach</label>
+            <input type="text" id="grade" name="grade" required>
+
+
+            <label for="session-type">Session type</label>
+            <select id="session-type" name="session_type" required>
+                <option value="" disabled selected>Select Prefered Type of Session</option>
+                <option value="One to one Session">One on One Session</option>
+                <option value="Group Session">Group Session</option>
+            </select>
+
+            <label for="self-introduction">Self Introduction (250 words)</label>
+            <textarea id="self-introduction" name="self_introduction" maxlength="1000" placeholder="Tell us about yourself in 250 words" required></textarea>
+            <div class="alert-message">
+                <small>Max 250 words</small>
+            </div>
+
+            <label for="teaching-experience">Teaching Experience (250 words)</label>
+            <textarea id="teaching-experience" name="teaching_experience" maxlength="1000" placeholder="Describe your teaching experience in 250 words" required></textarea>
+            <div class="alert-message">
+                <small>Max 250 words</small>
+            </div>
+
+            <button type="button" onclick="nextSection('description', 'availability-pricing')">Next</button>
+            <button type="button" onclick="previousSection('description', 'education')">Previous</button>
+        </form>
+    </section>
+
+    <!-- Availability & Pricing Section -->
+    <section id="availability-pricing" class="form-section">
+        <h2>Availability & Pricing</h2>
+        <form id="availability-pricing-form">
+            <label for="teaching-fee">Expected Teaching Fee (per hour)</label>
+            <input type="number" id="teaching-fee" name="teaching_fee" step="0.01" required>
+
+            <label for="availability-days">Availability Days (Comma separated)</label>
+            <input type="text" id="availability-days" name="availability_days" placeholder="e.g., Monday, Wednesday, Friday" required>
+
+            <label for="availability-time">Availability Time</label>
+            <select id="availability-time" name="availability_time" required>
+                <option value="" disabled selected>Select Time</option>
+                <option value="morning">Morning</option>
+                <option value="afternoon">Afternoon</option>
+                <option value="evening">Evening</option>
+                <option value="midnight">Midnight</option>
+                <option value="anytime">Anytime</option>
+            </select>
+
+            <button type="button" onclick="submitForm(event)">Submit</button>
+            <button type="button" onclick="previousSection('availability-pricing', 'description')">Previous</button>
+        </form>
+    </section>
 
     <script>
-        window.onload = function() {
-            alert("You haven't created your profile yet. Please build your profile.");
-        };
 
-        let currentSectionIndex = 0;
-        const sections = document.querySelectorAll('.section');
-        const continueBtn = document.getElementById('continueBtn');
-        const goBackBtns = document.querySelectorAll('#goBackBtn');
+        alert("You haven't created your profile yet. Please build your profile");
+        let degreeUploadName = '';
 
-        // Function to show the next section
-        function showNextSection() {
-            // Hide the current section
-            sections[currentSectionIndex].classList.remove('active');
-            
-            // Move to the next section
-            currentSectionIndex++;
-            
-            // Show the next section
-            sections[currentSectionIndex].classList.add('active');
-            
-            // Disable the continue button if it's the last section
-            if (currentSectionIndex === sections.length - 1) {
-                continueBtn.textContent = 'Submit Profile'; // Change button text to 'Submit'
-            }
-            
-            // Disable the continue button after progressing
-            continueBtn.disabled = true;
-        }
-
-        // Function to go back to the previous section
-        function goBack() {
-            // Hide the current section
-            sections[currentSectionIndex].classList.remove('active');
-            
-            // Move to the previous section
-            currentSectionIndex--;
-            
-            // Show the previous section
-            sections[currentSectionIndex].classList.add('active');
-            
-            // Enable the continue button when going back
-            continueBtn.disabled = false;
-        }
-
-        // Enable the continue button when the user fills the current section
-        function checkInput() {
-            const currentSection = sections[currentSectionIndex];
-            const textarea = currentSection.querySelector('textarea');
-            const fileInput = currentSection.querySelector('input[type="file"]');
-            const textInputs = currentSection.querySelectorAll('input[type="text"]');
-            const selectInputs = currentSection.querySelectorAll('select');
-            const languageCheckboxes = currentSection.querySelectorAll('.language');
-            const photoInput = document.getElementById('photo');
-            
-            let isValid = false;
-
-            // Check if the About section has all required fields filled
-            if (currentSection.id === 'aboutSection') {
-                const country = document.getElementById('countryOfBirth').value.trim();
-                const city = document.getElementById('cityOfBirth').value.trim();
-                const subject = document.getElementById('subject').value.trim();
-                const grade = document.getElementById('grade').value.trim();
-                const languages = [...languageCheckboxes].filter(checkbox => checkbox.checked).map(checkbox => checkbox.value).length;
-                const photo = photoInput.files.length > 0;
-
-                isValid = country !== '' && city !== '' && subject !== '' && grade !== '' && languages > 0 && photo;
-            }
-
-            // Check if the other sections have text or file inputs filled
-            if (!isValid && (textarea && textarea.value.trim() !== "") || (fileInput && fileInput.files.length > 0) || [...textInputs].some(input => input.value.trim() !== "")) {
-                isValid = true;
-            }
-
-            continueBtn.disabled = !isValid;
-        }
-
-        // Listen for changes in the input fields
-        document.querySelectorAll('textarea, input[type="file"], input[type="text"], select').forEach(input => {
-            input.addEventListener('input', checkInput);
-        });
-
-        // Listen for language checkbox changes
-        document.querySelectorAll('.language').forEach(checkbox => {
-            checkbox.addEventListener('change', checkInput);
-        });
-
-        // Listen for changes in "Other" fields
-        document.getElementById('subject').addEventListener('change', function() {
-            if (this.value === 'Other') {
-                document.getElementById('subjectOther').style.display = 'block';
-            } else {
-                document.getElementById('subjectOther').style.display = 'none';
+        document.getElementById('degree-upload').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                degreeUploadName = file.name;
             }
         });
 
-        document.getElementById('grade').addEventListener('change', function() {
-            if (this.value === 'Other') {
-                document.getElementById('gradeOther').style.display = 'block';
-            } else {
-                document.getElementById('gradeOther').style.display = 'none';
+        function submitForm(event) {
+            event.preventDefault();
+    
+            const formData = new FormData();
+            formData.append('email', document.getElementById('email').value);
+            formData.append('roll_number', document.getElementById('roll-number').value);
+            formData.append('country', document.getElementById('country').value);
+            formData.append('city', document.getElementById('city').value);
+            formData.append('languages', document.getElementById('languages').value);
+            formData.append('university', document.getElementById('university').value);
+            formData.append('degree_name', document.getElementById('degree-name').value);
+            formData.append('degree_type', document.getElementById('degree-type').value);
+            formData.append('specialization', document.getElementById('specialization').value);
+            formData.append('start_year', document.getElementById('start-year').value);
+            formData.append('end_year', document.getElementById('end-year').value);
+            formData.append('subject', document.getElementById('subject').value);
+            formData.append('grade', document.getElementById('grade').value);
+            formData.append('session_type', document.getElementById('session-type').value);
+            formData.append('self_introduction', document.getElementById('self-introduction').value);
+            formData.append('teaching_experience', document.getElementById('teaching-experience').value);
+            formData.append('teaching_fee', document.getElementById('teaching-fee').value);
+            formData.append('availability_days', document.getElementById('availability-days').value);
+            formData.append('availability_time', document.getElementById('availability-time').value);
+    
+            // Append the file
+            const degreeFile = document.getElementById('degree-upload').files[0];
+            if (degreeFile) {
+                formData.append('degree_upload', degreeFile);
             }
-        });
-
-        document.querySelector('.checkbox-group input[value="Other"]').addEventListener('change', function() {
-            document.getElementById('languageOther').style.display = this.checked ? 'block' : 'none';
-        });
-
-        // Go Back button functionality
-        goBackBtns.forEach(btn => {
-            btn.addEventListener('click', goBack);
-        });
-
-        // Continue button click handler
-        continueBtn.addEventListener('click', function() {
-            showNextSection();
-        });
-
-        // Fetch user details and display them
-        fetch('/dashboard')
+    
+            fetch('/api/tutor_profile_creation', {
+                method: 'POST',
+                body: formData // Send as FormData
+            })
             .then(response => response.json())
             .then(data => {
-                const user = data.user;
-                document.getElementById('userDetails').innerHTML = `
-                    <p>Name: ${user.Tutor_Name}</p>
-                    <p>Roll Number: ${user.Tutor_Roll_No}</p>
-                    <p>Tutor ID: ${user.Tutor_ID}</p>
-                    <p>Email: ${user.Tutor_Email}</p>
-                    <p>Contact Number: ${user.Tutor_Number}</p>
-                `;
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    alert(data.message);
+                }
             })
-            .catch(error => console.error('Error fetching user details:', error));
+            .catch(error => console.error('Error:', error));
+        }
+    
+        function nextSection(currentSectionId, nextSectionId) {
+            document.getElementById(currentSectionId).style.display = "none";
+            document.getElementById(nextSectionId).style.display = "block";
+        }
+
+        function previousSection(currentSectionId, previousSectionId) {
+            document.getElementById(currentSectionId).style.display = "none";
+            document.getElementById(previousSectionId).style.display = "block";
+        }
     </script>
+
 </body>
 </html>

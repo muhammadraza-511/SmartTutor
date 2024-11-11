@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 09, 2024 at 03:02 PM
+-- Generation Time: Nov 11, 2024 at 09:39 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -91,6 +91,44 @@ INSERT INTO `student_table` (`Student_ID`, `Student_Name`, `Student_roll_No`, `S
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tutor_profile_data_table`
+--
+
+CREATE TABLE `tutor_profile_data_table` (
+  `tutor_profile_ID` int(11) NOT NULL,
+  `Tutor_ID` int(11) DEFAULT NULL,
+  `tutor_email` varchar(100) DEFAULT NULL,
+  `tutor_rollno` varchar(50) DEFAULT NULL,
+  `tutor_country` varchar(100) DEFAULT NULL,
+  `tutor_city` varchar(100) DEFAULT NULL,
+  `tutor_language` varchar(100) DEFAULT NULL,
+  `tutor_university` varchar(150) DEFAULT NULL,
+  `tutor_degree_name` varchar(100) DEFAULT NULL,
+  `tutor_degree_type` varchar(50) DEFAULT NULL,
+  `tutor_specialization` varchar(100) DEFAULT NULL,
+  `tutor_starting_year` year(4) DEFAULT NULL,
+  `tutor_ending_year` year(4) DEFAULT NULL,
+  `tutor_degree_link` varchar(255) DEFAULT NULL,
+  `tutor_teaches_subject` varchar(100) DEFAULT NULL,
+  `tutor_teaches_to_grade` varchar(50) DEFAULT NULL,
+  `tutor_preferable_session` varchar(100) DEFAULT NULL,
+  `tutor_introduction` text DEFAULT NULL,
+  `tutor_experience` text DEFAULT NULL,
+  `tutor_teaching_fee` decimal(10,2) DEFAULT NULL,
+  `tutor_availability_days` varchar(100) DEFAULT NULL,
+  `tutor_availability_time` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tutor_profile_data_table`
+--
+
+INSERT INTO `tutor_profile_data_table` (`tutor_profile_ID`, `Tutor_ID`, `tutor_email`, `tutor_rollno`, `tutor_country`, `tutor_city`, `tutor_language`, `tutor_university`, `tutor_degree_name`, `tutor_degree_type`, `tutor_specialization`, `tutor_starting_year`, `tutor_ending_year`, `tutor_degree_link`, `tutor_teaches_subject`, `tutor_teaches_to_grade`, `tutor_preferable_session`, `tutor_introduction`, `tutor_experience`, `tutor_teaching_fee`, `tutor_availability_days`, `tutor_availability_time`) VALUES
+(1, 26, 'munammustafa253@gmail.com', '24T-8035', 'Pakistan', 'Islamabad', 'dsa', 'sas', 'sa', 'a', 'a', '2011', '2014', '26.pdf', 'a', 'a', 'Group Session', 'a', 'aa', 55.00, 'a', 'evening');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tutor_profile_status_table`
 --
 
@@ -105,7 +143,8 @@ CREATE TABLE `tutor_profile_status_table` (
 --
 
 INSERT INTO `tutor_profile_status_table` (`Tutor_ID`, `profile_status`, `profile_status_ID`) VALUES
-(25, 'Not created', 4);
+(25, 'Not created', 4),
+(26, 'pending', 5);
 
 -- --------------------------------------------------------
 
@@ -128,7 +167,8 @@ CREATE TABLE `tutor_table` (
 --
 
 INSERT INTO `tutor_table` (`Tutor_ID`, `Tutor_Name`, `Tutor_Roll_No`, `Tutor_Email`, `Tutor_Number`, `Tutor_password`, `Tutor_UserName`) VALUES
-(25, 'Ammar Arshad', '24T-9604', 'i210460@nu.edu.pk', '03435231909', '$2b$10$HBsc9TJueL2axl6QYhRje.25JUOjlFyOraEBYJVjtlK9/4Zqtz0te', 'Ammar');
+(25, 'Ammar Arshad', '24T-9604', 'i210460@nu.edu.pk', '03435231909', '$2b$10$HBsc9TJueL2axl6QYhRje.25JUOjlFyOraEBYJVjtlK9/4Zqtz0te', 'Ammar'),
+(26, 'Munam Mustafa', '24T-8035', 'munammustafa253@gmail.com', '03435231909', '$2b$10$OivNrHrbJR3wrG0MWuZMguCXirQnqJnzHKQdTx7WWaSHEJlRQKVzC', 'Munam253');
 
 --
 -- Indexes for dumped tables
@@ -153,6 +193,13 @@ ALTER TABLE `parent_table`
 --
 ALTER TABLE `student_table`
   ADD PRIMARY KEY (`Student_ID`);
+
+--
+-- Indexes for table `tutor_profile_data_table`
+--
+ALTER TABLE `tutor_profile_data_table`
+  ADD PRIMARY KEY (`tutor_profile_ID`),
+  ADD KEY `Tutor_ID` (`Tutor_ID`);
 
 --
 -- Indexes for table `tutor_profile_status_table`
@@ -190,16 +237,22 @@ ALTER TABLE `student_table`
   MODIFY `Student_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
+-- AUTO_INCREMENT for table `tutor_profile_data_table`
+--
+ALTER TABLE `tutor_profile_data_table`
+  MODIFY `tutor_profile_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `tutor_profile_status_table`
 --
 ALTER TABLE `tutor_profile_status_table`
-  MODIFY `profile_status_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `profile_status_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tutor_table`
 --
 ALTER TABLE `tutor_table`
-  MODIFY `Tutor_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `Tutor_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- Constraints for dumped tables
@@ -210,6 +263,12 @@ ALTER TABLE `tutor_table`
 --
 ALTER TABLE `parent_table`
   ADD CONSTRAINT `parent_table_ibfk_1` FOREIGN KEY (`Student_ID`) REFERENCES `student_table` (`Student_ID`);
+
+--
+-- Constraints for table `tutor_profile_data_table`
+--
+ALTER TABLE `tutor_profile_data_table`
+  ADD CONSTRAINT `tutor_profile_data_table_ibfk_1` FOREIGN KEY (`Tutor_ID`) REFERENCES `tutor_table` (`Tutor_ID`);
 
 --
 -- Constraints for table `tutor_profile_status_table`
