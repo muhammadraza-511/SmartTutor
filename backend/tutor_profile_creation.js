@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs'); // To rename the file if needed
+const fs = require('fs');
 
 const app = express();
 const PORT = 3000;
@@ -9,10 +9,12 @@ const PORT = 3000;
 app.use(express.json());
 
 module.exports = (app, db) => {
-    // Set up storage for file uploads
+    // Set up storage for degree and profile picture file uploads
     const storage = multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, 'tutor_degree'); // Folder for storing uploaded files
+            const isDegreeFile = file.fieldname === 'degree_upload';
+            const folderPath = isDegreeFile ? 'tutor_degree' : 'tutor_pic';
+            cb(null, folderPath);
         },
         filename: function (req, file, cb) {
             cb(null, `${Date.now()}-${file.originalname}`); // Temporary filename
@@ -21,8 +23,8 @@ module.exports = (app, db) => {
 
     const upload = multer({ storage: storage });
 
-    // Route to handle profile creation data and file upload
-    app.post('/api/tutor_profile_creation', upload.single('degree_upload'), (req, res) => {
+    // Route to handle profile creation data and file uploads
+    app.post('/api/tutor_profile_creation', upload.fields([{ name: 'degree_upload' }, { name: 'profile_picture' }]), (req, res) => {
         const profileData = req.body;
         const { email, roll_number, country, city, languages, university, degree_name, degree_type, specialization, start_year, end_year, subject, grade, session_type, self_introduction, teaching_experience, teaching_fee, availability_days, availability_time } = profileData;
 
@@ -36,7 +38,6 @@ module.exports = (app, db) => {
                     return res.status(500).json({ message: 'Server error. Please try again later.' });
                 }
 
-                // Check if a matching record is found
                 if (results.length === 0) {
                     return res.json({
                         message: 'Please enter a valid email and roll number.',
@@ -44,80 +45,102 @@ module.exports = (app, db) => {
                     });
                 }
 
-                // If match is found, get Tutor_ID and proceed
                 const tutorId = results[0].Tutor_ID;
-                const uploadedFile = req.file;
+                const uploadedDegreeFile = req.files['degree_upload'] ? req.files['degree_upload'][0] : null;
+                const uploadedProfilePic = req.files['profile_picture'] ? req.files['profile_picture'][0] : null;
 
-                // Define the file name and link
+                // Define file names and links, initially set to null
                 let degreeLink = null;
+                let profilePicLink = null;
 
-                if (uploadedFile) {
-                    // New file name with Tutor_ID
-                    const newFileName = `${tutorId}${path.extname(uploadedFile.originalname)}`;
-                    const newFilePath = path.join(uploadedFile.destination, newFileName);
+                const renameAndInsertData = () => {
+                    // Insert data after renaming files
+                    insertProfileData(tutorId, profileData, degreeLink, profilePicLink, res);
+                };
 
-                    // Rename the file asynchronously
-                    fs.rename(uploadedFile.path, newFilePath, (err) => {
+                // Rename degree file if it exists
+                if (uploadedDegreeFile) {
+                    const newDegreeFileName = `${tutorId}${path.extname(uploadedDegreeFile.originalname)}`;
+                    const newDegreeFilePath = path.join(uploadedDegreeFile.destination, newDegreeFileName);
+
+                    fs.rename(uploadedDegreeFile.path, newDegreeFilePath, (err) => {
                         if (err) {
-                            console.error('File rename error:', err);
-                            return res.status(500).json({ message: 'Error saving file.' });
+                            console.error('File rename error for degree:', err);
+                            return res.status(500).json({ message: 'Error saving degree file.' });
                         }
-
-                        // Store the new file name (not the full path) in the database
-                        degreeLink = newFileName;
-                        console.log("File uploaded and renamed to:", newFileName);
-
-                        // After renaming the file, continue with the insertion or update process
-                        insertOrUpdateProfileData(tutorId, profileData, degreeLink, res);
+                        degreeLink = newDegreeFileName;
+                        console.log("Degree file uploaded and renamed to:", newDegreeFileName);
+                        
+                        // Check if both files are renamed before inserting data
+                        if (!uploadedProfilePic || profilePicLink) {
+                            renameAndInsertData();
+                        }
                     });
                 } else {
-                    // If no file is uploaded, just insert or update profile data without the file link
-                    insertOrUpdateProfileData(tutorId, profileData, degreeLink, res);
+                    degreeLink = null;
+                }
+
+                // Rename profile picture file if it exists
+                if (uploadedProfilePic) {
+                    const newProfilePicFileName = `${tutorId}${path.extname(uploadedProfilePic.originalname)}`;
+                    const newProfilePicFilePath = path.join(uploadedProfilePic.destination, newProfilePicFileName);
+
+                    fs.rename(uploadedProfilePic.path, newProfilePicFilePath, (err) => {
+                        if (err) {
+                            console.error('File rename error for profile picture:', err);
+                            return res.status(500).json({ message: 'Error saving profile picture file.' });
+                        }
+                        profilePicLink = newProfilePicFileName;
+                        console.log("Profile picture uploaded and renamed to:", newProfilePicFileName);
+                        
+                        // Check if both files are renamed before inserting data
+                        if (!uploadedDegreeFile || degreeLink) {
+                            renameAndInsertData();
+                        }
+                    });
+                } else {
+                    profilePicLink = null;
+                }
+
+                // If no files were uploaded, proceed with insertion
+                if (!uploadedDegreeFile && !uploadedProfilePic) {
+                    renameAndInsertData();
                 }
             }
         );
     });
 
-    function insertOrUpdateProfileData(tutorId, profileData, degreeLink, res) {
+    function insertProfileData(tutorId, profileData, degreeLink, profilePicLink, res) {
         const { email, roll_number, country, city, languages, university, degree_name, degree_type, specialization, start_year, end_year, subject, grade, session_type, self_introduction, teaching_experience, teaching_fee, availability_days, availability_time } = profileData;
 
-        // Check if data for the Tutor_ID already exists in tutor_profile_data_table
-        const checkQuery = 'SELECT * FROM tutor_profile_data_table WHERE Tutor_ID = ?';
-        db.query(checkQuery, [tutorId], (err, existingData) => {
-            if (err) {
-                console.error('Database check error:', err);
-                return res.status(500).json({ message: 'Error checking existing data.' });
+        const deleteQuery = 'DELETE FROM tutor_profile_data_table WHERE Tutor_ID = ?';
+        db.query(deleteQuery, [tutorId], (deleteErr, deleteResult) => {
+            if (deleteErr) {
+                console.error('Database deletion error:', deleteErr);
+                return res.status(500).json({ message: 'Error deleting existing profile data.' });
             }
 
-            // If data exists, perform UPDATE, otherwise INSERT
-            const query = existingData.length > 0
-                ? `UPDATE tutor_profile_data_table SET 
-                        tutor_email = ?, tutor_rollno = ?, tutor_country = ?, tutor_city = ?, tutor_language = ?, 
-                        tutor_university = ?, tutor_degree_name = ?, tutor_degree_type = ?, tutor_specialization = ?, 
-                        tutor_starting_year = ?, tutor_ending_year = ?, tutor_degree_link = ?, tutor_teaches_subject = ?, 
-                        tutor_teaches_to_grade = ?, tutor_preferable_session = ?, tutor_introduction = ?, 
-                        tutor_experience = ?, tutor_teaching_fee = ?, tutor_availability_days = ?, tutor_availability_time = ?
-                    WHERE Tutor_ID = ?`
-                : `INSERT INTO tutor_profile_data_table (
-                        Tutor_ID, tutor_email, tutor_rollno, tutor_country, tutor_city, tutor_language, tutor_university, 
-                        tutor_degree_name, tutor_degree_type, tutor_specialization, tutor_starting_year, tutor_ending_year, 
-                        tutor_degree_link, tutor_teaches_subject, tutor_teaches_to_grade, tutor_preferable_session, 
-                        tutor_introduction, tutor_experience, tutor_teaching_fee, tutor_availability_days, tutor_availability_time
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            const insertQuery = `
+                INSERT INTO tutor_profile_data_table (
+                    Tutor_ID, tutor_email, tutor_rollno, tutor_country, tutor_city, tutor_language, tutor_university, 
+                    tutor_degree_name, tutor_degree_type, tutor_specialization, tutor_starting_year, tutor_ending_year, 
+                    tutor_degree_link, tutor_teaches_subject, tutor_teaches_to_grade, tutor_preferable_session, 
+                    tutor_introduction, tutor_experience, tutor_teaching_fee, tutor_availability_days, 
+                    tutor_availability_time, tutor_profile_pic
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
             const values = [
-                email, roll_number, country, city, languages, university, degree_name, degree_type, specialization,
+                tutorId, email, roll_number, country, city, languages, university, degree_name, degree_type, specialization,
                 start_year, end_year, degreeLink, subject, grade, session_type,
-                self_introduction, teaching_experience, teaching_fee, availability_days, availability_time, tutorId
+                self_introduction, teaching_experience, teaching_fee, availability_days, availability_time, profilePicLink
             ];
 
-            db.query(query, values, (err, result) => {
+            db.query(insertQuery, values, (err, result) => {
                 if (err) {
-                    console.error('Database insertion/update error:', err);
+                    console.error('Database insertion error:', err);
                     return res.status(500).json({ message: 'Error saving profile data.' });
                 }
 
-                // After profile data is inserted/updated, update the status in tutor_profile_status_table
                 const updateStatusQuery = 'UPDATE tutor_profile_status_table SET profile_status = ? WHERE Tutor_ID = ?';
                 db.query(updateStatusQuery, ['pending', tutorId], (err, statusResult) => {
                     if (err) {
@@ -125,9 +148,8 @@ module.exports = (app, db) => {
                         return res.status(500).json({ message: 'Error updating profile status.' });
                     }
 
-                    // Redirect to login page after successful operation
                     res.json({
-                        message: 'Profile updated successfully, status set to pending. Redirecting to login page...',
+                        message: 'Profile created successfully, status set to pending. Redirecting to login page...',
                         redirect: '/loginpage.html'
                     });
                 });

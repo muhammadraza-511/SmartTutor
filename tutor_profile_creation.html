@@ -80,6 +80,10 @@
             <label for="languages">Languages (Enter multiple, separated by commas)</label>
             <input type="text" id="languages" name="languages" placeholder="e.g., English, Spanish, French" required>
 
+            <label for="profile-picture">Upload Degree</label>
+            <input type="file" id="profile-picture" name="profile_picture" accept=".jpg, .jpeg, .png" required>
+
+
             <button type="button" onclick="nextSection('about', 'education')">Next</button>
         </form>
     </section>
@@ -239,6 +243,12 @@
             const degreeFile = document.getElementById('degree-upload').files[0];
             if (degreeFile) {
                 formData.append('degree_upload', degreeFile);
+            }
+
+                        // Append the file
+            const profilePic = document.getElementById('profile-picture').files[0];
+            if (profilePic) {
+                formData.append('profile_picture', profilePic);
             }
     
             fetch('/api/tutor_profile_creation', {
