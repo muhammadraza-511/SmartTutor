@@ -7,6 +7,8 @@
 </head>
 <body>
     <h1>Welcome, Admin!</h1>
+    <p>Click <a href="admin_handle_tutor_profile_status.html">here</a> to Handle Tutor Profile.</p>
+
     <div id="userDetails"></div>
     <script>
         fetch('/dashboard')
@@ -20,6 +22,10 @@
 
                     
                 `;
+
+                // Store admin details in localStorage
+                localStorage.setItem('adminDetails', JSON.stringify(user));
+
             })
             .catch(error => console.error('Error fetching user details:', error));
     </script>

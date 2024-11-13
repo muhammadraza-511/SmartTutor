@@ -27,6 +27,12 @@ db.connect((err) => {
 // Serve the static files
 app.use(express.static(path.join(__dirname, '..')));
 
+
+// Serve static files from tutor_pic and tutor_degree folders
+app.use('/tutor_pic', express.static(path.join(__dirname, 'tutor_pic')));
+app.use('/tutor_degree', express.static(path.join(__dirname, 'tutor_degree')));
+
+
 // Set up session middleware
 app.use(session({
     secret: 'your-secret-key',
@@ -40,6 +46,11 @@ require('./login')(app, db);
 require('./signup')(app, db);
 // Import and use the tutorProfileCreation module
 require('./tutor_profile_creation')(app, db);
+
+// Import and use the adminHandleTutorProfileStatus module
+require('./admin_handle_tutor_profile_status')(app, db);
+
+
 
 
 // Start the server
