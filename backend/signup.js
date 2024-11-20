@@ -9,6 +9,26 @@ module.exports = (app, db) => {
         return `${year}S-${randomDigits}`;
     }
 
+    // Function to check if email exists in otp_table
+    function checkOtpEmailExistence(email, callback) {
+        const query = 'SELECT * FROM otp_table WHERE email = ?';
+        db.query(query, [email], (err, results) => {
+            if (err) return callback(err);
+            callback(null, results.length > 0); // Returns true if email exists
+        });
+    }
+
+    function checkOtpStatus(email, callback) {
+        const query = 'SELECT * FROM otp_table WHERE email = ? AND status = "authorized"';
+        db.query(query, [email], (err, results) => {
+            if (err) return callback(err);
+            // Check if OTP status is authorized
+            callback(null, results.length > 0);
+        });
+    }
+
+
+
     // Generate a unique Tutor Roll Number
     function generateTutorRollNo() {
         const year = new Date().getFullYear().toString().slice(-2);
@@ -71,6 +91,35 @@ module.exports = (app, db) => {
         if (password !== confirm_password) {
             return res.status(400).send('Passwords do not match.');
         }
+
+        // Check if the email exists in otp_table
+        checkOtpEmailExistence(email, (err, exists) => {
+        if (err) {
+            console.error('Error checking OTP email existence:', err);
+            return res.status(500).json({ message: 'Error checking OTP email existence' });
+        }
+
+        if (!exists) {
+            // Respond with the redirect URL containing the email as a query parameter
+            const redirectUrl = `/otp_verification.html?email=${encodeURIComponent(email)}`;
+            return res.json({ action: 'open_otp_page', redirectUrl });
+        }
+
+
+        // Check if the OTP status is authorized for the provided email
+        checkOtpStatus(email, (err, isAuthorized) => {
+            if (err) {
+                console.error('Error checking OTP status:', err);
+                return res.status(500).json({ message: 'Error checking OTP status' });
+            }
+
+            if (!isAuthorized) {
+                // If OTP is not authorized, respond with a redirect to the OTP page
+                const redirectUrl = `/otp_verification.html?email=${encodeURIComponent(email)}`;
+                return res.json({ action: 'open_otp_page', redirectUrl });
+            }
+
+
     
         // Configure Nodemailer
         const transporter = nodemailer.createTransport({
@@ -260,4 +309,7 @@ module.exports = (app, db) => {
             res.status(400).send('Invalid role.');
         }
     });
+});
+});
+
 };

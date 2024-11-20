@@ -44,6 +44,9 @@ app.use(session({
 // Import and use the login and signup modules
 require('./login')(app, db);
 require('./signup')(app, db);
+require('./send_otp')(app, db);
+require('./verify_otp')(app, db);
+
 // Import and use the tutorProfileCreation module
 require('./tutor_profile_creation')(app, db);
 

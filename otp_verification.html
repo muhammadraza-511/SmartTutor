@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .email-display {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .secondary {
+            background-color: #6c757d;
+        }
+        .secondary:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OTP Verification</h1>
+        <p class="email-display">Verifying email: <span id="email-display"></span></p>
+        <input type="text" id="otp-input" placeholder="Enter OTP" maxlength="6">
+        <button id="send_otp">Send OTP</button>
+        <button id="verify-btn" class="secondary">Verify OTP</button>
+    </div>
+
+    <script>
+        // Extract the email from the URL query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+
+        // Display the email
+        const emailDisplay = document.getElementById('email-display');
+        if (email) {
+            emailDisplay.textContent = email;
+        } else {
+            emailDisplay.textContent = 'Email not provided';
+        }
+
+        // Button click handlers
+        document.getElementById('send_otp').addEventListener('click', () => {
+            // Send OTP to the backend
+            fetch('/api/send_otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message || 'OTP sent successfully!');
+                })
+                .catch(err => console.error('Error sending OTP:', err));
+        });
+
+        document.getElementById('verify-btn').addEventListener('click', () => {
+            const otp = document.getElementById('otp-input').value.trim();
+            if (!otp) {
+                alert('Please enter the OTP.');
+                return;
+            }
+
+            // Verify OTP with the backend
+            fetch('/api/verify_otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, otp })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === 'Verification successful!') {
+                        alert('Verification successful!');
+                        window.close(); // Close the tab
+                    } else {
+                        alert(data.message); // Display error message
+                    }
+                })
+                .catch(err => console.error('Error verifying OTP:', err));
+        });
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 11, 2024 at 09:39 PM
+-- Generation Time: Nov 20, 2024 at 09:34 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -44,6 +44,30 @@ INSERT INTO `admin_table` (`Admin_ID`, `Admin_name`, `Admin_Roll_number`, `Admin
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `otp_table`
+--
+
+CREATE TABLE `otp_table` (
+  `otpid` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `otp` int(11) NOT NULL,
+  `timestamp` datetime NOT NULL,
+  `status` varchar(50) DEFAULT 'unauthenticated'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `otp_table`
+--
+
+INSERT INTO `otp_table` (`otpid`, `email`, `otp`, `timestamp`, `status`) VALUES
+(18, 'munammustafa253@gmail.com', 460199, '2024-11-21 00:32:13', 'authorized'),
+(19, 'i210460@nu.edu.pk', 479929, '2024-11-21 00:45:01', 'authorized'),
+(20, 'i210511@nu.edu.pk', 629464, '2024-11-21 01:02:15', 'authorized'),
+(21, 'i210730@nu.edu.pk', 503410, '2024-11-21 01:25:47', 'authorized');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `parent_table`
 --
 
@@ -61,8 +85,7 @@ CREATE TABLE `parent_table` (
 --
 
 INSERT INTO `parent_table` (`Parent_ID`, `Student_ID`, `Parent_Roll_No`, `Parent_Email`, `Parent_number`, `Parent_Password`) VALUES
-(12, 12, '24P-5434', 'munammustafa953@gmail.com', '03435231900', '$2b$10$RCd.1fsAJdh295X3hr5rnuO77z7mDzJZd8ma34Cjtx/I2afXsWYv6'),
-(13, 13, '24P-8570', 'munammustafa253@gmail.com', '03435231900', '$2b$10$r3YR6UCX8QVeXqBvKco4neGCCPlNgeMov8ll13Zapq4iVjREyx6Am');
+(23, 23, '24P-3713', 'munammustafa953@gmail.com', '03125027950', '$2b$10$onwYOscdBzIm6HC89WtKOO87eLRL6G3rBbxss8NevER4u1he9.Ede');
 
 -- --------------------------------------------------------
 
@@ -85,8 +108,7 @@ CREATE TABLE `student_table` (
 --
 
 INSERT INTO `student_table` (`Student_ID`, `Student_Name`, `Student_roll_No`, `Student_UserName`, `Student_Email`, `Student_number`, `Password`) VALUES
-(12, 'Munam Mustafa', '24S-5434', 'Munam253', 'munammustafa253@gmail.com', '03435231909', '$2b$10$uKDzde2K1mYE5m3ekt523uBtx3S7YibzgxQiqE.JPnK4/R.VnCnle'),
-(13, 'Munam Mustafa', '24S-8570', 'Munam25', 'munammustafa953@gmail.com', '03435231909', '$2b$10$fV2YAjNMqd4ykpEgJyouduzS8pdyR3osUpdhIi.P9G7czTzwvSN6C');
+(23, 'Munam Mustafa', '24S-3713', 'Munam253', 'munammustafa253@gmail.com', '03435231909', '$2b$10$DU8qzH9FVE5t/.mV0ImGGeGGbwv/3xinJTPnPdqnWU9xTAG1cE93a');
 
 -- --------------------------------------------------------
 
@@ -116,15 +138,18 @@ CREATE TABLE `tutor_profile_data_table` (
   `tutor_experience` text DEFAULT NULL,
   `tutor_teaching_fee` decimal(10,2) DEFAULT NULL,
   `tutor_availability_days` varchar(100) DEFAULT NULL,
-  `tutor_availability_time` varchar(100) DEFAULT NULL
+  `tutor_availability_time` varchar(100) DEFAULT NULL,
+  `tutor_profile_pic` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tutor_profile_data_table`
 --
 
-INSERT INTO `tutor_profile_data_table` (`tutor_profile_ID`, `Tutor_ID`, `tutor_email`, `tutor_rollno`, `tutor_country`, `tutor_city`, `tutor_language`, `tutor_university`, `tutor_degree_name`, `tutor_degree_type`, `tutor_specialization`, `tutor_starting_year`, `tutor_ending_year`, `tutor_degree_link`, `tutor_teaches_subject`, `tutor_teaches_to_grade`, `tutor_preferable_session`, `tutor_introduction`, `tutor_experience`, `tutor_teaching_fee`, `tutor_availability_days`, `tutor_availability_time`) VALUES
-(1, 26, 'munammustafa253@gmail.com', '24T-8035', 'Pakistan', 'Islamabad', 'dsa', 'sas', 'sa', 'a', 'a', '2011', '2014', '26.pdf', 'a', 'a', 'Group Session', 'a', 'aa', 55.00, 'a', 'evening');
+INSERT INTO `tutor_profile_data_table` (`tutor_profile_ID`, `Tutor_ID`, `tutor_email`, `tutor_rollno`, `tutor_country`, `tutor_city`, `tutor_language`, `tutor_university`, `tutor_degree_name`, `tutor_degree_type`, `tutor_specialization`, `tutor_starting_year`, `tutor_ending_year`, `tutor_degree_link`, `tutor_teaches_subject`, `tutor_teaches_to_grade`, `tutor_preferable_session`, `tutor_introduction`, `tutor_experience`, `tutor_teaching_fee`, `tutor_availability_days`, `tutor_availability_time`, `tutor_profile_pic`) VALUES
+(21, 37, 'i210460@nu.edu.pk', '24T-2914', 'Pakistan', 'Islamabad', 'English, Urdu', 'FAST NUCES', 'Computer Science', 'Bachelor', 'CS', '2010', '2014', '37.pdf', 'English, Urdu, Maths', '8, 9', 'One to one Session', 'I am munam mustafa', 'I have good experience', 500.00, 'Monday, Tuesday, Wednesday, Thursday', 'anytime', '37.jpg'),
+(22, 38, 'i210511@nu.edu.pk', '24T-6998', 'Pakistan', 'Islamabad', 'English, Pashto', 'FAST ', 'BS(CS)', 'Bachelor', 'CS', '2011', '2016', '38.pdf', 'English, Maths', '9, 10', 'Both', 'I am raza', 'I have experience', 200.00, 'Monday, Tuesday', 'midnight', '38.jpeg'),
+(23, 39, 'i210730@nu.edu.pk', '24T-1435', 'Pakistan', 'Islamabad', 'English, Urdu', 'Fast', 'CS', 'BS', 'CS', '2006', '2010', '39.pdf', 'English, Urdu', '7, 9', 'Group Session', 'i AM ALIAN', 'I HAVE EXPERIENCE', 100.00, 'Monday, Tuesday, Wednesday', 'anytime', '39.jpeg');
 
 -- --------------------------------------------------------
 
@@ -143,8 +168,9 @@ CREATE TABLE `tutor_profile_status_table` (
 --
 
 INSERT INTO `tutor_profile_status_table` (`Tutor_ID`, `profile_status`, `profile_status_ID`) VALUES
-(25, 'Not created', 4),
-(26, 'pending', 5);
+(37, 'pending', 16),
+(38, 'pending', 17),
+(39, 'rejected', 18);
 
 -- --------------------------------------------------------
 
@@ -167,8 +193,9 @@ CREATE TABLE `tutor_table` (
 --
 
 INSERT INTO `tutor_table` (`Tutor_ID`, `Tutor_Name`, `Tutor_Roll_No`, `Tutor_Email`, `Tutor_Number`, `Tutor_password`, `Tutor_UserName`) VALUES
-(25, 'Ammar Arshad', '24T-9604', 'i210460@nu.edu.pk', '03435231909', '$2b$10$HBsc9TJueL2axl6QYhRje.25JUOjlFyOraEBYJVjtlK9/4Zqtz0te', 'Ammar'),
-(26, 'Munam Mustafa', '24T-8035', 'munammustafa253@gmail.com', '03435231909', '$2b$10$OivNrHrbJR3wrG0MWuZMguCXirQnqJnzHKQdTx7WWaSHEJlRQKVzC', 'Munam253');
+(37, 'Munam Mustafa', '24T-2914', 'i210460@nu.edu.pk', '03435231909', '$2b$10$q84qsfdl7W/ncmDMNYg7deTyrnUeNYownevyU6IDOLNJ3zZY/WOwu', 'Munam253'),
+(38, 'Muhammad Raza', '24T-6998', 'i210511@nu.edu.pk', '03435231909', '$2b$10$DAw.rgqBOw4JBKValECG..dDT9.1BMhqE87yl2NFgCItlJTx5gevO', 'Raza253'),
+(39, 'Alian Anwar', '24T-1435', 'i210730@nu.edu.pk', '03435231909', '$2b$10$.RAJEddGdijvTp4oURZAEOvGiwLrSRyoSn0X6ijuPu7Wbi3iOEoHy', 'Alian253');
 
 --
 -- Indexes for dumped tables
@@ -180,6 +207,12 @@ INSERT INTO `tutor_table` (`Tutor_ID`, `Tutor_Name`, `Tutor_Roll_No`, `Tutor_Ema
 ALTER TABLE `admin_table`
   ADD PRIMARY KEY (`Admin_ID`),
   ADD UNIQUE KEY `Admin_ID` (`Admin_ID`);
+
+--
+-- Indexes for table `otp_table`
+--
+ALTER TABLE `otp_table`
+  ADD PRIMARY KEY (`otpid`);
 
 --
 -- Indexes for table `parent_table`
@@ -225,34 +258,40 @@ ALTER TABLE `admin_table`
   MODIFY `Admin_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `otp_table`
+--
+ALTER TABLE `otp_table`
+  MODIFY `otpid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
 -- AUTO_INCREMENT for table `parent_table`
 --
 ALTER TABLE `parent_table`
-  MODIFY `Parent_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `Parent_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `student_table`
 --
 ALTER TABLE `student_table`
-  MODIFY `Student_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `Student_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `tutor_profile_data_table`
 --
 ALTER TABLE `tutor_profile_data_table`
-  MODIFY `tutor_profile_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `tutor_profile_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `tutor_profile_status_table`
 --
 ALTER TABLE `tutor_profile_status_table`
-  MODIFY `profile_status_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `profile_status_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `tutor_table`
 --
 ALTER TABLE `tutor_table`
-  MODIFY `Tutor_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `Tutor_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- Constraints for dumped tables

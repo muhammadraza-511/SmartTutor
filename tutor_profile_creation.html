@@ -5,62 +5,290 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tutor Dashboard</title>
     <style>
-        /* Basic styles for the navigation menu */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-image: url('images/background1.png');
+            /* background-size: cover; */
+            background-position: center; 
+            background-repeat: repeat;
+            
+        }
+
+        .form-wrapper {
+            max-width: 600px;
+            width: 100%;
+            margin-left: 400px;
+            margin-top: -20px;
+            margin-bottom: 10px;
+            padding: 20px;
+            background-color: #FDF8EE;
+            border-radius: 8px;
+            position: static;
+            transition: none;
+            max-height: 100vh;
+        }
+
+        header {
+            background: #fff;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ccc;
+            
+        }
         nav {
-            background-color: #333;
-            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        nav a {
-            float: left;
-            display: block;
-            color: white;
-            text-align: center;
-            padding: 14px 20px;
+        .logo {
+            font-size: 30px;
+            font-weight: bold;
+            font-style: italic;
+            font-family: "Montserrat";
+            color: #000000;
             text-decoration: none;
+            color: inherit;
         }
-        nav a:hover {
-            background-color: #ddd;
-            color: black;
+        .logo span{
+            color: #2C98F0;
         }
-        /* Styles for the form */
+        .auth-buttons {
+            display: flex;
+        }
+
+        .auth-buttons a {
+             /* margin-left: 10px; */
+            padding: 5px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+        }
+        .signup {
+            background-color: #FFAB40;
+            transition: background-color 0.3s ease;
+        }
+
+        .signup:hover {
+        background-color: #bc7314;
+        }
+
+        /* Progress bar container */
+.progress-bar {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 15px;
+    background-color: #f1f1f1;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+/* Default step styling */
+.progress-bar .step {
+    font-size: 14px;
+    color: #555;
+    padding: 8px 16px;
+    border-radius: 8px;
+    position: relative;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+/* Styling for active step */
+.progress-bar .step.active {
+    font-weight: bold;
+    color: #fff;
+    background-color: #2C98F0;
+    cursor: pointer;
+}
+
+/* Styling for completed step with green background and checkmark */
+.progress-bar .step.completed {
+    font-weight: bold;
+    color: #fff;
+    background-color: #28a745;
+    border-radius: 8px;
+    cursor: default;
+}
+
+/* Arrow separator */
+.progress-bar .step:not(:last-child)::after {
+    content: '>';
+    font-size: 18px;
+    margin-left: 10px;
+    color: #999;
+}
+
+/* Prevent active color from disappearing on click */
+.progress-bar .step.active:focus,
+.progress-bar .step.active:active {
+    background-color: #2C98F0;
+    color: #fff;
+    outline: none;
+}
+
         form {
-            margin: 20px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            /* margin-top: 20px; */
+            transition: none;
+            position: relative;
         }
+
         label {
-            display: block;
             margin: 10px 0 5px;
         }
-        input, select, textarea {
-            width: 100%;
+
+        input, select {
             padding: 8px;
-            margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            width: 100%;
+            margin-bottom: 15px;
         }
+        textarea {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            margin-bottom: 15px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .alert-message {
+            color: red;
+        }
+
+        /* Container for arranging buttons horizontally */
+        .button-container {
+            display: flex;
+            gap: 10px; /* Space between buttons */
+            justify-content: center; /* Center the buttons horizontally */
+            align-items: center;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* Button styling */
+        button {
+            font-size: 16px; /* Adjusted for better readability */
+            /* width: 40px; */
+            padding: 8px 20px;
+            margin: 5px;
+            margin-top: -5px;
+            /* font-weight: bold; */
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            background-color: #2C98F0;
+            transition: background-color 0.3s ease;
+            border: none; /* Remove any default border */
+            cursor: pointer; /* Adds a pointer on hover */
+        }
+        button{
+            background-color: #2C98F0;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #006fbb;
+        }
+        .button2 {
+            background-color: #FFAB40;
+            transition: background-color 0.3s ease;
+        }
+        .button2:hover{
+            background-color: #bc7314;
+        }
+
         .form-section {
-            margin-bottom: 40px;
-            display: none; /* Hide all sections initially */
+            display: none;
         }
         .alert-message {
             color: red;
         }
+        .instruction-box {
+            width: 250px;
+            margin-top: 140px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #2C98F0;
+            color: #fff;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    /* Alert box styling */
+    .alert-box {
+        background-color: #fff;
+        padding: 20px 30px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 400px;
+        width: 90%;
+    }
+
+    /* Alert message text */
+    .alert-message {
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 20px;
+    }
     </style>
 </head>
 <body>
-
+    <div class="overlay" id="customAlert">
+        <div class="alert-box">
+            <div class="alert-message">
+                You haven't created your profile yet. Please build your profile.
+            </div>
+            <button class="button2" onclick="closeAlert()">OK</button>
+        </div>
+    </div>
     <!-- Header Section -->
     <header>
-        <h1>Welcome, Tutor!</h1>
-
-        <!-- Navigation Menu -->
         <nav>
-            <a href="#about">About</a>
-            <a href="#education">Education</a>
-            <a href="#description">Description</a>
-            <a href="#availability-pricing">Availability & Pricing</a>
+          <a href="/" class="logo"><span>Smart</span>Tutor</a>
+          <div class="auth-buttons">
+            <a href="loginpage.html" class="signup">Logout</a>
+            <!-- Profile Icon -->
+            <div class="profile-icon"></div>
+          </div>
         </nav>
     </header>
 
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+        <div class="step" id="step-1">1 About</div>
+        <div class="step" id="step-2">2 Education</div>
+        <div class="step" id="step-3">3 Description</div>
+        <div class="step" id="step-4">4 Availability & Pricing</div>
+    </div>
+    <div class="form-wrapper">
     <!-- About Section -->
     <section id="about" class="form-section" style="display: block;">
         <h2>About You</h2>
@@ -77,17 +305,38 @@
             <label for="city">City</label>
             <input type="text" id="city" name="city" required>
 
-            <label for="languages">Languages (Enter multiple, separated by commas)</label>
-            <input type="text" id="languages" name="languages" placeholder="e.g., English, Spanish, French" required>
-
-            <label for="profile-picture">Upload Degree</label>
-            <input type="file" id="profile-picture" name="profile_picture" accept=".jpg, .jpeg, .png" required>
-
-
-            <button type="button" onclick="nextSection('about', 'education')">Next</button>
+            <label for="languages">Languages</label>
+            <div id="languages-container">
+                <div class="language-field">
+                    <input type="text" name="languages[]" placeholder="Enter a language">
+                    <button type="button" class="add-language" onclick="addLanguageField()">+</button>
+                </div>
+            </div>
+            <!-- <label for="profile-picture">Upload your Picture</label>
+            <input type="file" id="profile-picture" name="profile_picture" accept=".jpg, .jpeg, .png" required> -->
+            <div class="profile-photo">
+                <h3>Profile Photo</h3>
+                <p>Choose a photo that will help learners get to know you.</p>
+                <label for="profile-picture">Upload your Picture</label>
+                <input type="file" id="profile-picture" name="profile_picture" accept=".jpg, .jpeg, .png" required>
+                <!-- <button type="button" onclick="nextSection('about', 'education', 1)">Next</button> -->
+            </div>
+            <p id="profile-name"></p>
+            
+            <div class="button-container">
+            <button type="button" onclick="nextSection('about', 'education', 1)">Next</button>
+            </div>
         </form>
+        <div class="instruction-box">
+            <h3>Instructions</h3>
+            <p><strong>Profile Photo:</strong> Upload a recent, clear photo to help students recognize you. Preferably, use a photo where you are the only one visible and avoid busy backgrounds.</p>
+            <p><strong>Email:</strong> Enter a valid email address that you regularly check, as students may use this to reach you.</p>
+            <p><strong>Languages:</strong> List all languages you are fluent in. This will help match you with students who speak these languages.</p>
+        </div>
     </section>
-
+    
+</div>
+    <div class="form-wrapper">
     <!-- Education Section -->
     <section id="education" class="form-section">
         <h2>Education</h2>
@@ -138,20 +387,41 @@
             <label for="degree-upload">Upload Degree</label>
             <input type="file" id="degree-upload" name="degree_upload" accept=".pdf, .jpg, .jpeg, .png" required>
 
-            <button type="button" onclick="nextSection('education', 'description')">Next</button>
-            <button type="button" onclick="previousSection('education', 'about')">Previous</button>
+            <div class="button-container">
+                <button type="button" onclick="nextSection('education', 'description', 2)">Next</button>
+                <button class="button2" onclick="previousSection('education', 'about', 1)">Previous</button>
+            </div>
         </form>
+        <div class="instruction-box" id="education-instructions" style="display: block;">
+            <h3>Instructions</h3>
+            <p><strong>Highest Degree:</strong> Select your highest level of education from the options available.</p>
+            <p><strong>University/Institution:</strong> Enter the name of the institution where you obtained or are currently pursuing this degree.</p>
+            <p><strong>Graduation Year:</strong> Indicate the year in which you graduated or expect to graduate.</p>
+            <p><strong>Specializations:</strong> Mention any relevant specializations or major subjects related to the degree.</p>
+        </div>
     </section>
-
+    
+</div>
+    <div class="form-wrapper">
     <!-- Description Section -->
     <section id="description" class="form-section">
         <h2>Description</h2>
         <form id="description-form">
-            <label for="subject">Subject You Teach</label>
-            <input type="text" id="subject" name="subject" required>
+            <label for="subject">Subjects You Teach</label>
+        <div id="subjects-container">
+            <div class="subject-field">
+                <input type="text" name="subjects[]" placeholder="Enter a subject">
+                <button type="button" class="add-subject" onclick="addSubjectField()">+</button>
+            </div>
+        </div>
 
-            <label for="grade">Grade of Students You Teach</label>
-            <input type="text" id="grade" name="grade" required>
+        <label for="grade">Grades of Students You Teach</label>
+        <div id="grades-container">
+            <div class="grade-field">
+                <input type="text" name="grades[]" placeholder="Enter a grade">
+                <button type="button" class="add-grade" onclick="addGradeField()">+</button>
+            </div>
+        </div>
 
 
             <label for="session-type">Session type</label>
@@ -159,6 +429,7 @@
                 <option value="" disabled selected>Select Prefered Type of Session</option>
                 <option value="One to one Session">One on One Session</option>
                 <option value="Group Session">Group Session</option>
+                <option value="Both">Both</option>
             </select>
 
             <label for="self-introduction">Self Introduction (250 words)</label>
@@ -172,12 +443,21 @@
             <div class="alert-message">
                 <small>Max 250 words</small>
             </div>
-
-            <button type="button" onclick="nextSection('description', 'availability-pricing')">Next</button>
-            <button type="button" onclick="previousSection('description', 'education')">Previous</button>
+            <div class="button-container">
+            <button type="button" onclick="nextSection('description', 'availability-pricing', 3)">Next</button>
+            <button class="button2" onclick="previousSection('description', 'education', 2)">Previous</button>
+            </div>
         </form>
+        <div class="instruction-box" id="description-instructions" style="display: block;">
+            <h3>Instructions</h3>
+            <p><strong>Profile Summary:</strong> Provide a brief, engaging summary about yourself and your experience. Highlight your expertise and what makes you a great tutor.</p>
+            <p><strong>Teaching Style:</strong> Describe your teaching methods, approach, or any unique techniques you use to help students learn better.</p>
+            <p><strong>Subjects and Expertise:</strong> List the subjects you specialize in, including any levels (e.g., beginner, intermediate, advanced).</p>
+        </div>
     </section>
-
+    
+</div>
+    <div class="form-wrapper">
     <!-- Availability & Pricing Section -->
     <section id="availability-pricing" class="form-section">
         <h2>Availability & Pricing</h2>
@@ -185,8 +465,13 @@
             <label for="teaching-fee">Expected Teaching Fee (per hour)</label>
             <input type="number" id="teaching-fee" name="teaching_fee" step="0.01" required>
 
-            <label for="availability-days">Availability Days (Comma separated)</label>
-            <input type="text" id="availability-days" name="availability_days" placeholder="e.g., Monday, Wednesday, Friday" required>
+            <label for="availability-days">Availability Days</label>
+<div id="availability-days-container">
+    <div class="availability-day-field">
+        <input type="text" name="availability_days[]" placeholder="Enter a day (e.g., Monday)">
+        <button type="button" class="add-availability-day" onclick="addAvailabilityDayField()">+</button>
+    </div>
+</div>
 
             <label for="availability-time">Availability Time</label>
             <select id="availability-time" name="availability_time" required>
@@ -197,15 +482,46 @@
                 <option value="midnight">Midnight</option>
                 <option value="anytime">Anytime</option>
             </select>
-
+            <div class="button-container">
             <button type="button" onclick="submitForm(event)">Submit</button>
-            <button type="button" onclick="previousSection('availability-pricing', 'description')">Previous</button>
+            <button class="button2" onclick="previousSection('availability-pricing', 'description', 3)">Previous</button>
+            </div>
         </form>
+        <div class="instruction-box" id="availability-pricing-instructions" style="display: block;">
+            <h3>Instructions</h3>
+            <p><strong>Availability:</strong> Specify the days and hours you are available to teach. Be as clear as possible to help students find time that works for both of you.</p>
+            <p><strong>Time Zone:</strong> Indicate your current time zone to avoid scheduling conflicts.</p>
+            <p><strong>Pricing:</strong> Set your hourly rate. Make sure your rate is competitive but reflects your experience and expertise.</p>
+        </div>
     </section>
-
+    </div>
     <script>
 
-        alert("You haven't created your profile yet. Please build your profile");
+function closeAlert() {
+        document.getElementById("customAlert").style.display = "none";
+    }
+
+    // Show the alert box on page load
+    window.onload = function() {
+        document.getElementById("customAlert").style.display = "flex";
+    };
+        // Keep track of completed steps
+        let completedSteps = 0;
+
+        function nextSection(currentSectionId, nextSectionId, stepNumber) {
+            // Mark the current step as completed
+            document.getElementById(`step-${stepNumber}`).classList.add("completed");
+            document.getElementById(currentSectionId).style.display = "none";
+            document.getElementById(nextSectionId).style.display = "block";
+            completedSteps = Math.max(completedSteps, stepNumber); // Update the max completed step
+            document.getElementById(`step-${stepNumber + 1}`).classList.add("active");
+        }
+
+        function previousSection(currentSectionId, previousSectionId, stepNumber) {
+            document.getElementById(currentSectionId).style.display = "none";
+            document.getElementById(previousSectionId).style.display = "block";
+        }
+      
         let degreeUploadName = '';
 
         document.getElementById('degree-upload').addEventListener('change', function (event) {
@@ -215,29 +531,137 @@
             }
         });
 
+        function addLanguageField() {
+    const container = document.getElementById('languages-container');
+    const newField = document.createElement('div');
+    newField.classList.add('language-field');
+
+    newField.innerHTML = `
+        <input type="text" name="languages[]" placeholder="Enter a language">
+        <button type="button" class="remove-language" onclick="removeLanguageField(this)">-</button>
+    `;
+
+    container.appendChild(newField);
+}
+
+function removeLanguageField(button) {
+    const field = button.parentNode;
+    const container = document.getElementById('languages-container');
+    container.removeChild(field);
+}
+
+function gatherLanguages() {
+    const languageFields = document.querySelectorAll('input[name="languages[]"]');
+    const languages = Array.from(languageFields).map(field => field.value.trim()).filter(Boolean);
+    return languages.join(', ');
+}
+function addSubjectField() {
+    const container = document.getElementById('subjects-container');
+    const newField = document.createElement('div');
+    newField.classList.add('subject-field');
+
+    newField.innerHTML = `
+        <input type="text" name="subjects[]" placeholder="Enter a subject">
+        <button type="button" class="remove-subject" onclick="removeSubjectField(this)">-</button>
+    `;
+
+    container.appendChild(newField);
+}
+
+function removeSubjectField(button) {
+    const field = button.parentNode;
+    const container = document.getElementById('subjects-container');
+    container.removeChild(field);
+}
+
+function addGradeField() {
+    const container = document.getElementById('grades-container');
+    const newField = document.createElement('div');
+    newField.classList.add('grade-field');
+
+    newField.innerHTML = `
+        <input type="text" name="grades[]" placeholder="Enter a grade">
+        <button type="button" class="remove-grade" onclick="removeGradeField(this)">-</button>
+    `;
+
+    container.appendChild(newField);
+}
+
+function removeGradeField(button) {
+    const field = button.parentNode;
+    const container = document.getElementById('grades-container');
+    container.removeChild(field);
+}
+
+function gatherSubjects() {
+    const subjectFields = document.querySelectorAll('input[name="subjects[]"]');
+    const subjects = Array.from(subjectFields).map(field => field.value.trim()).filter(Boolean);
+    return subjects.join(', ');
+}
+
+function gatherGrades() {
+    const gradeFields = document.querySelectorAll('input[name="grades[]"]');
+    const grades = Array.from(gradeFields).map(field => field.value.trim()).filter(Boolean);
+    return grades.join(', ');
+}
+
+function addAvailabilityDayField() {
+    const container = document.getElementById('availability-days-container');
+    const newField = document.createElement('div');
+    newField.classList.add('availability-day-field');
+
+    newField.innerHTML = `
+        <input type="text" name="availability_days[]" placeholder="Enter a day (e.g., Monday)">
+        <button type="button" class="remove-availability-day" onclick="removeAvailabilityDayField(this)">-</button>
+    `;
+
+    container.appendChild(newField);
+}
+
+function removeAvailabilityDayField(button) {
+    const field = button.parentNode;
+    const container = document.getElementById('availability-days-container');
+    container.removeChild(field);
+}
+
+function gatherAvailabilityDays() {
+    const availabilityFields = document.querySelectorAll('input[name="availability_days[]"]');
+    const availabilityDays = Array.from(availabilityFields).map(field => field.value.trim()).filter(Boolean);
+    return availabilityDays.join(', ');
+}
+
         function submitForm(event) {
             event.preventDefault();
+
+                // Gather subjects and grades
+            const subjects = gatherSubjects(); // Call function to get subjects
+            const grades = gatherGrades(); // Call function to get grades
+
+            // Display subjects and grades in an alert
+            alert(`Subjects: ${subjects}\nGrades: ${grades}`);
+
     
             const formData = new FormData();
             formData.append('email', document.getElementById('email').value);
             formData.append('roll_number', document.getElementById('roll-number').value);
             formData.append('country', document.getElementById('country').value);
             formData.append('city', document.getElementById('city').value);
-            formData.append('languages', document.getElementById('languages').value);
+            formData.append('languages', gatherLanguages());
             formData.append('university', document.getElementById('university').value);
             formData.append('degree_name', document.getElementById('degree-name').value);
             formData.append('degree_type', document.getElementById('degree-type').value);
             formData.append('specialization', document.getElementById('specialization').value);
             formData.append('start_year', document.getElementById('start-year').value);
             formData.append('end_year', document.getElementById('end-year').value);
-            formData.append('subject', document.getElementById('subject').value);
-            formData.append('grade', document.getElementById('grade').value);
+            formData.append('subjects', gatherSubjects()); // Gather subjects
+            formData.append('grades', gatherGrades());
             formData.append('session_type', document.getElementById('session-type').value);
             formData.append('self_introduction', document.getElementById('self-introduction').value);
             formData.append('teaching_experience', document.getElementById('teaching-experience').value);
             formData.append('teaching_fee', document.getElementById('teaching-fee').value);
-            formData.append('availability_days', document.getElementById('availability-days').value);
+            formData.append('availability_days', gatherAvailabilityDays());
             formData.append('availability_time', document.getElementById('availability-time').value);
+            
     
             // Append the file
             const degreeFile = document.getElementById('degree-upload').files[0];
@@ -265,16 +689,18 @@
             })
             .catch(error => console.error('Error:', error));
         }
-    
-        function nextSection(currentSectionId, nextSectionId) {
-            document.getElementById(currentSectionId).style.display = "none";
-            document.getElementById(nextSectionId).style.display = "block";
-        }
 
-        function previousSection(currentSectionId, previousSectionId) {
-            document.getElementById(currentSectionId).style.display = "none";
-            document.getElementById(previousSectionId).style.display = "block";
-        }
+        document.querySelectorAll('.progress-bar .step').forEach((step, index) => {
+            step.addEventListener('click', () => {
+                if (index <= completedSteps) {
+                    document.getElementById(`step-${index + 1}`).classList.remove("active");
+                    document.getElementById(`step-${index + 1}`).style.display = "block";
+                    document.querySelectorAll('.form-section').forEach(section => section.style.display = 'none');
+                    document.getElementById(['about', 'education', 'description', 'availability-pricing'][index]).style.display = "block";
+                }
+            });
+        });
+    
     </script>
 
 </body>

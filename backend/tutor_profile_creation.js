@@ -26,7 +26,28 @@ module.exports = (app, db) => {
     // Route to handle profile creation data and file uploads
     app.post('/api/tutor_profile_creation', upload.fields([{ name: 'degree_upload' }, { name: 'profile_picture' }]), (req, res) => {
         const profileData = req.body;
-        const { email, roll_number, country, city, languages, university, degree_name, degree_type, specialization, start_year, end_year, subject, grade, session_type, self_introduction, teaching_experience, teaching_fee, availability_days, availability_time } = profileData;
+
+        const {
+            email,
+            roll_number,
+            country,
+            city,
+            languages,
+            university,
+            degree_name,
+            degree_type,
+            specialization,
+            start_year,
+            end_year,
+            subjects, // Comma-separated subjects from client-side
+            grades,   // Comma-separated grades from client-side
+            session_type,
+            self_introduction,
+            teaching_experience,
+            teaching_fee,
+            availability_days,
+            availability_time,
+        } = profileData;
 
         // Validate email and roll number in tutor_table
         db.query(
@@ -70,7 +91,7 @@ module.exports = (app, db) => {
                         }
                         degreeLink = newDegreeFileName;
                         console.log("Degree file uploaded and renamed to:", newDegreeFileName);
-                        
+
                         // Check if both files are renamed before inserting data
                         if (!uploadedProfilePic || profilePicLink) {
                             renameAndInsertData();
@@ -92,7 +113,7 @@ module.exports = (app, db) => {
                         }
                         profilePicLink = newProfilePicFileName;
                         console.log("Profile picture uploaded and renamed to:", newProfilePicFileName);
-                        
+
                         // Check if both files are renamed before inserting data
                         if (!uploadedDegreeFile || degreeLink) {
                             renameAndInsertData();
@@ -111,7 +132,27 @@ module.exports = (app, db) => {
     });
 
     function insertProfileData(tutorId, profileData, degreeLink, profilePicLink, res) {
-        const { email, roll_number, country, city, languages, university, degree_name, degree_type, specialization, start_year, end_year, subject, grade, session_type, self_introduction, teaching_experience, teaching_fee, availability_days, availability_time } = profileData;
+        const {
+            email,
+            roll_number,
+            country,
+            city,
+            languages,
+            university,
+            degree_name,
+            degree_type,
+            specialization,
+            start_year,
+            end_year,
+            subjects, // Comma-separated subjects
+            grades,   // Comma-separated grades
+            session_type,
+            self_introduction,
+            teaching_experience,
+            teaching_fee,
+            availability_days,
+            availability_time,
+        } = profileData;
 
         const deleteQuery = 'DELETE FROM tutor_profile_data_table WHERE Tutor_ID = ?';
         db.query(deleteQuery, [tutorId], (deleteErr, deleteResult) => {
@@ -130,9 +171,28 @@ module.exports = (app, db) => {
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
             const values = [
-                tutorId, email, roll_number, country, city, languages, university, degree_name, degree_type, specialization,
-                start_year, end_year, degreeLink, subject, grade, session_type,
-                self_introduction, teaching_experience, teaching_fee, availability_days, availability_time, profilePicLink
+                tutorId,
+                email,
+                roll_number,
+                country,
+                city,
+                languages,
+                university,
+                degree_name,
+                degree_type,
+                specialization,
+                start_year,
+                end_year,
+                degreeLink,
+                subjects, // Pass as-is (already comma-separated)
+                grades,   // Pass as-is (already comma-separated)
+                session_type,
+                self_introduction,
+                teaching_experience,
+                teaching_fee,
+                availability_days,
+                availability_time,
+                profilePicLink,
             ];
 
             db.query(insertQuery, values, (err, result) => {
@@ -150,11 +210,10 @@ module.exports = (app, db) => {
 
                     res.json({
                         message: 'Profile created successfully, status set to pending. Redirecting to login page...',
-                        redirect: '/loginpage.html'
+                        redirect: '/loginpage.html',
                     });
                 });
             });
         });
     }
 };
-
