@@ -97,11 +97,47 @@ module.exports = (app, db) => {
         if (!req.session.user_details) {
             return res.status(401).send('Unauthorized access. Please log in.');
         }
+
         const user = req.session.user_details;
         const table = user.Admin_Roll_number ? 'admin_table' :
             user.Student_roll_No ? 'student_table' :
             user.Tutor_Roll_No ? 'tutor_table' : 'parent_table';
 
-        res.json({ user, table });
+        if (table === 'parent_table') {
+            // Fetch parent details along with their child's details
+            const parentID = user.Parent_ID;
+
+            const parentQuery = `
+                SELECT * 
+                FROM parent_table 
+                WHERE Parent_ID = ?
+            `;
+            const studentQuery = `
+                SELECT * 
+                FROM student_table 
+                WHERE Student_ID = ?
+            `;
+
+            db.query(parentQuery, [parentID], (err, parentResults) => {
+                if (err) return res.status(500).send('Error fetching parent details.');
+
+                if (parentResults.length > 0) {
+                    const parent = parentResults[0];
+                    const studentID = parent.Student_ID;
+
+                    db.query(studentQuery, [studentID], (err, studentResults) => {
+                        if (err) return res.status(500).send('Error fetching student details.');
+
+                        const student = studentResults.length > 0 ? studentResults[0] : null;
+                        return res.json({ user: parent, child: student });
+                    });
+                } else {
+                    return res.status(404).send('Parent details not found.');
+                }
+            });
+        } else {
+            // Return details for other user roles
+            res.json({ user, table });
+        }
     });
 };

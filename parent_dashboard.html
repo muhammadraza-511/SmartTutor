@@ -8,17 +8,38 @@
 <body>
     <h1>Welcome, Parent!</h1>
     <div id="userDetails"></div>
+    <div id="studentDetails"></div>
     <script>
         fetch('/dashboard')
             .then(response => response.json())
             .then(data => {
-                const user = data.user;
+                const parent = data.user;
+                const child = data.child;
+
+                // Display parent details
                 document.getElementById('userDetails').innerHTML = `
-                    <p>Email: ${user.Parent_Email}</p>
-                    <p>Parent id: ${user.Parent_ID}</p>
-                    <p>Roll Number: ${user.Parent_Roll_No}</p>
-                    <p>Contact Number: ${user.Parent_number}</p>
+                    <h2>Parent Details:</h2>
+                    <p>Email: ${parent.Parent_Email}</p>
+                    <p>Parent ID: ${parent.Parent_ID}</p>
+                    <p>Roll Number: ${parent.Parent_Roll_No}</p>
+                    <p>Contact Number: ${parent.Parent_number}</p>
                 `;
+
+                // Display child details if available
+                if (child) {
+                    document.getElementById('studentDetails').innerHTML = `
+                        <h2>Child Details:</h2>
+                        <p>Student ID: ${child.Student_ID}</p>
+                        <p>Name: ${child.Student_Name}</p>
+                        <p>Roll Number: ${child.Student_roll_No}</p>
+                        <p>Email: ${child.Student_Email}</p>
+                        <p>Contact Number: ${child.Student_number}</p>
+                    `;
+                } else {
+                    document.getElementById('studentDetails').innerHTML = `
+                        <p>No child details found for this parent.</p>
+                    `;
+                }
             })
             .catch(error => console.error('Error fetching user details:', error));
     </script>
