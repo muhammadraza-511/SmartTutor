@@ -369,17 +369,10 @@
           <span>Dashboard</span></a>
         </li>
         <li>
-          <a href=""><span class="las la-user"></span>
-          <span>Profile</span></a>
+          <a href="student_search_for_tutor.html"><span class="las la-user"></span>
+          <span>Search for Tutor</span></a>
         </li>
-        <li>
-          <a href=""><span class="las la-calendar"></span>
-          <span>View Session Schedule</span></a>
-        </li>
-        <li>
-          <a href=""><span class="las la-list"></span>
-          <span>Students List</span></a>
-        </li>
+
       </ul>
     </div>
   </div>
@@ -422,48 +415,53 @@
   </div>
 
   <script>
+    // Fetch data and store in sessionStorage
     fetch('/dashboard')
-            .then(response => response.json())
-            .then(data => {
-                const user = data.user;
-                // Update the header with the tutor's name
-                document.getElementById('studentName').textContent = user.name || user.Student_Name;
-                document.getElementById('studentEmail').textContent = user.Student_Email;
+        .then(response => response.json())
+        .then(data => {
+            const user = data.user;
 
-                // Display tutor details in the card
-                document.getElementById('userDetails').innerHTML = `
-                    <div>
-                        <label for="fullName">Full Name</label>
-                        <div class="info">${user.Student_Name}</div>
-                    </div>
-                    <div>
-                        <label for="nickName">Roll Number</label>
-                        <div class="info">${user.Student_roll_No || 'N/A'}</div>
-                    </div>
-                    <div>
-                        <label for="email">Email</label>
-                        <div class="info">${user.Student_Email}</div>
-                    </div>
-                    <div>
-                        <label for="gender">Gender</label>
-                        <div class="info">${user.Tutor_Gender || 'N/A'}</div>
-                    </div>
-                    <div>
-                        <label for="country">Country</label>
-                        <div class="info">${user.Tutor_Country || 'N/A'}</div>
-                    </div>
-                    <div>
-                        <label for="language">Language</label>
-                        <div class="info">${user.Tutor_Language || 'N/A'}</div>
-                    </div>
-                    <div>
-                        <label for="timeZone">Contact Number</label>
-                        <div class="info">${user.Student_number || 'N/A'}</div>
-                    </div>
-                    
-                `;
-            });
-            
+            // Store user details in session storage
+            sessionStorage.setItem('studentData', JSON.stringify(user));
+
+            // Update the UI with the fetched data
+            updateStudentDetails(user);
+        });
+
+    // Function to update UI with student details
+    function updateStudentDetails(user) {
+        document.getElementById('studentName').textContent = user.Student_Name || 'N/A';
+        document.getElementById('studentEmail').textContent = user.Student_Email || 'N/A';
+
+        document.getElementById('userDetails').innerHTML = `
+            <div>
+                <label for="fullName">Full Name</label>
+                <div class="info">${user.Student_Name || 'N/A'}</div>
+            </div>
+            <div>
+                <label for="nickName">Roll Number</label>
+                <div class="info">${user.Student_roll_No || 'N/A'}</div>
+            </div>
+            <div>
+                <label for="email">Email</label>
+                <div class="info">${user.Student_Email || 'N/A'}</div>
+            </div>
+            <div>
+                <label for="timeZone">Contact Number</label>
+                <div class="info">${user.Student_number || 'N/A'}</div>
+            </div>
+        `;
+    }
+
+    // On page load, check if data exists in session storage and display it
+    document.addEventListener('DOMContentLoaded', () => {
+        const storedData = sessionStorage.getItem('studentData');
+        if (storedData) {
+            const user = JSON.parse(storedData);
+            updateStudentDetails(user);
+        }
+    });
 </script>
+
 </body>
 </html>

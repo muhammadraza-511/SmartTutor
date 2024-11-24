@@ -52,6 +52,18 @@ require('./tutor_profile_creation')(app, db);
 
 // Import and use the adminHandleTutorProfileStatus module
 require('./admin_handle_tutor_profile_status')(app, db);
+// Import and use the student_search_for_tutor module
+require('./student_search_for_tutor')(app, db);
+require('./approve_tutor')(app, db);
+
+
+require('./parent_approve_tutor_appointed_by_student')(app, db);
+require('./update_tutor_status')(app, db);
+
+require('./tutor_manage_student_requests')(app, db);
+require('./tutor_handle_student_request')(app, db);
+
+
 
 
 

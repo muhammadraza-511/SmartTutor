@@ -360,116 +360,119 @@
 </head>
 <body>
     <input type="checkbox" id="nav-toggle">
-  <div class="sidebar">
-    <div class="sidebar-brand">
-      <!-- <a href="/" class="logo"><span></span></a> -->
-      <h2><img src="src=images/Logo.png" alt=""><span >Smart Tutor</span></h2>
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h2><img src="src=images/Logo.png" alt=""><span>Smart Tutor</span></h2>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li>
+                    <a href="" class="active"><span class="las la-home"></span>
+                    <span>Dashboard</span></a>
+                </li>
+                <li>
+                    <a href="tutor_manage_student_requests.html" onclick="saveUserToSession()"><span class="las la-user"></span>
+                    <span>Manage student requests</span></a>
+                </li>
+                <li>
+                    <a href="loginpage.html"><span class="las la-list"></span>
+                    <span>Logout</span></a>
+                </li>
+            </ul>
+        </div>
     </div>
-    <div class="sidebar-menu">
-      <ul>
-        <li>
-          <a href="" class="active"><span class="las la-home"></span>
-          <span>Dashboard</span></a>
-        </li>
-        <li>
-          <a href=""><span class="las la-user"></span>
-          <span>Profile</span></a>
-        </li>
-        <li>
-          <a href=""><span class="las la-calendar"></span>
-          <span>View Session Schedule</span></a>
-        </li>
-        <li>
-          <a href=""><span class="las la-list"></span>
-          <span>Students List</span></a>
-        </li>
-      </ul>
-    </div>
-  </div>
 
-  <div class="main-content">
-    <header >
-        <h2 style="margin-top: 7px;">
-            <label for="nav-toggle">
-                <!-- <span img src="images/bluebar3.png"  alt=""></span> -->
-                <img src="images/bluebar2.png" alt="Menu Icon" class="menu-icon">
-            </label>
-            Dashboard
-        </h2>
-        <div class="search-wrapper">
-            <span class="las la-search"></span>
-            <input type="search" placeholder="Search here" />
-        </div>
-        <div class="user-wrapper">
-            <img src="images/user.jpg" width="40px" height="30px" alt="">
-            <div>
-                <h4 id="userWrapperTutorName">Tutor</h4> <!-- Changed ID -->
-                <small>Tutor</small>
+    <div class="main-content">
+        <header>
+            <h2 style="margin-top: 7px;">
+                <label for="nav-toggle">
+                    <img src="images/bluebar2.png" alt="Menu Icon" class="menu-icon">
+                </label>
+                Dashboard
+            </h2>
+            <div class="search-wrapper">
+                <span class="las la-search"></span>
+                <input type="search" placeholder="Search here" />
             </div>
-        </div>
-    </header>
-    <main>
-        <div class="container">
-            <div class="profile-header">
-                <img src="user-photo.jpg" alt="User Photo">
+            <div class="user-wrapper">
+                <img src="images/user.jpg" width="40px" height="30px" alt="">
                 <div>
-                    <h3 id="profileHeaderTutorName"> </h3> <!-- Changed ID -->
-                    <p id="tutorEmail"> </p>
+                    <h4 id="userWrapperTutorName">Tutor</h4>
+                    <small>Tutor</small>
                 </div>
-                <button>Edit</button>
             </div>
-            
-            <div class="profile-details" id="userDetails">
-            </div> 
-        </div>
-    </main>
-  </div>
+        </header>
+        <main>
+            <div class="container">
+                <div class="profile-header">
+                    <img src="user-photo.jpg" alt="User Photo">
+                    <div>
+                        <h3 id="profileHeaderTutorName"> </h3>
+                        <p id="tutorEmail"> </p>
+                    </div>
+                    <button>Edit</button>
+                </div>
+                <div class="profile-details" id="userDetails">
+                </div> 
+            </div>
+        </main>
+    </div>
 
-  <script>
-    fetch('/dashboard')
-    .then(response => response.json())
-    .then(data => {
-        const user = data.user;
-        console.log(user); // Check what properties are in the `user` object
+    <script>
+        fetch('/dashboard')
+        .then(response => response.json())
+        .then(data => {
+            const user = data.user;
 
-        // Update the header and profile header with the tutor's name
-        document.getElementById('userWrapperTutorName').textContent = user.Tutor_Name;
-        // document.getElementById('profileHeaderTutorName').textContent = user.name || user.tutorName;
-        document.getElementById('profileHeaderTutorName').textContent = user.Tutor_Name;
-        document.getElementById('tutorEmail').textContent = user.Tutor_Email;
+            // Update the header and profile header with the tutor's name
+            document.getElementById('userWrapperTutorName').textContent = user.Tutor_Name;
+            document.getElementById('profileHeaderTutorName').textContent = user.Tutor_Name;
+            document.getElementById('tutorEmail').textContent = user.Tutor_Email;
 
-        // Display tutor details in the card
-        document.getElementById('userDetails').innerHTML = `
-            <div>
-                <label for="fullName">Full Name</label>
-                <div class="info">${user.Tutor_Name}</div>
-            </div>
-            <div>
-                <label for="nickName">Roll Number</label>
-                <div class="info">${user.Tutor_Roll_No || 'N/A'}</div>
-            </div>
-            <div>
-                <label for="email">Email</label>
-                <div class="info">${user.Tutor_Email}</div>
-            </div>
-            <div>
-                <label for="gender">Gender</label>
-                <div class="info">${user.Tutor_Gender || 'N/A'}</div>
-            </div>
-            <div>
-                <label for="country">Country</label>
-                <div class="info">${user.Tutor_Country || 'N/A'}</div>
-            </div>
-            <div>
-                <label for="language">Language</label>
-                <div class="info">${user.Tutor_Language || 'N/A'}</div>
-            </div>
-            <div>
-                <label for="timeZone">Contact Number</label>
-                <div class="info">${user.Tutor_Number || 'N/A'}</div>
-            </div>
-        `;
-    });
-</script>
+            // Display tutor details in the card
+            document.getElementById('userDetails').innerHTML = `
+                <div>
+                    <label for="fullName">Full Name</label>
+                    <div class="info">${user.Tutor_Name}</div>
+                </div>
+                <div>
+                    <label for="nickName">Roll Number</label>
+                    <div class="info">${user.Tutor_Roll_No || 'N/A'}</div>
+                </div>
+                <div>
+                    <label for="email">Email</label>
+                    <div class="info">${user.Tutor_Email}</div>
+                </div>
+                <div>
+                    <label for="gender">Gender</label>
+                    <div class="info">${user.Tutor_Gender || 'N/A'}</div>
+                </div>
+                <div>
+                    <label for="country">Country</label>
+                    <div class="info">${user.Tutor_Country || 'N/A'}</div>
+                </div>
+                <div>
+                    <label for="language">Language</label>
+                    <div class="info">${user.Tutor_Language || 'N/A'}</div>
+                </div>
+                <div>
+                    <label for="timeZone">Contact Number</label>
+                    <div class="info">${user.Tutor_Number || 'N/A'}</div>
+                </div>
+            `;
+
+            // Save user data in session storage
+            sessionStorage.setItem('tutorDetails', JSON.stringify(user));
+        });
+
+        // Function to save user details to session storage explicitly
+        function saveUserToSession() {
+            const userDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
+            if (!userDetails) {
+                alert("User details are not loaded yet.");
+            }
+        }
+    </script>
 </body>
+
 </html>
