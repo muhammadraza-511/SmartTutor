@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Student Requests</title>
+    <style>
+        .v-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .v-card h3 {
+            margin: 0 0 8px;
+        }
+        .v-card p {
+            margin: 4px 0;
+        }
+        .buttons {
+            margin-top: 8px;
+        }
+        .buttons button {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Manage Student Requests</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Tutor Details</h2>
+            <div id="tutorDetails">
+                <p>Loading tutor details...</p>
+            </div>
+        </section>
+        <section>
+            <h2>Pending Student Requests</h2>
+            <div id="studentRequests">
+                <p>Loading student requests...</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Retrieve tutor details from session storage
+        const tutorDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
+
+        // Display tutor details on the page
+        if (tutorDetails) {
+            document.getElementById('tutorDetails').innerHTML = `
+                <p><strong>Name:</strong> ${tutorDetails.Tutor_Name}</p>
+                <p><strong>Email:</strong> ${tutorDetails.Tutor_Email}</p>
+                <p><strong>Roll Number:</strong> ${tutorDetails.Tutor_Roll_No || 'N/A'}</p>
+                <p><strong>Contact Number:</strong> ${tutorDetails.Tutor_Number || 'N/A'}</p>
+            `;
+        } else {
+            document.getElementById('tutorDetails').innerHTML = `
+                <p>Error: Tutor details not found. Please go back to the dashboard.</p>
+            `;
+        }
+
+        // Fetch student requests from the server
+        const fetchStudentRequests = () => {
+            if (tutorDetails && tutorDetails.Tutor_ID) {
+                fetch(`/tutor_manage_student_requests?Tutor_ID=${tutorDetails.Tutor_ID}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const studentRequestsDiv = document.getElementById('studentRequests');
+
+                        if (data.success && data.data.length > 0) {
+                            studentRequestsDiv.innerHTML = data.data.map(request => `
+                                <div class="v-card" id="request-${request.Student_ID}">
+                                    <h3>${request.Student_Name}</h3>
+                                    <p><strong>Roll No:</strong> ${request.Student_roll_No}</p>
+                                    <p><strong>Email:</strong> ${request.Student_Email}</p>
+                                    <p><strong>Contact:</strong> ${request.Student_number}</p>
+                                    <h4>Parent Details</h4>
+                                    <p><strong>Roll No:</strong> ${request.Parent_Roll_No}</p>
+                                    <p><strong>Email:</strong> ${request.Parent_Email}</p>
+                                    <p><strong>Contact:</strong> ${request.Parent_number}</p>
+                                    <div class="buttons">
+                                        <button onclick="handleRequest('accept', ${request.Student_ID}, ${tutorDetails.Tutor_ID})">Accept</button>
+                                        <button onclick="handleRequest('reject', ${request.Student_ID}, ${tutorDetails.Tutor_ID})">Reject</button>
+                                    </div>
+                                </div>
+                            `).join('');
+                        } else {
+                            studentRequestsDiv.innerHTML = `<p>${data.message || 'No pending student requests found.'}</p>`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error fetching student requests:", error);
+                        document.getElementById('studentRequests').innerHTML = `
+                            <p>Error fetching student requests. Please try again later.</p>
+                        `;
+                    });
+            }
+        };
+
+        const handleRequest = (action, Student_ID, Tutor_ID) => {
+            fetch(`/tutor_handle_student_request`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action, Student_ID, Tutor_ID })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    // Remove the request card
+                    document.getElementById(`request-${Student_ID}`).remove();
+                }
+            })
+            .catch(error => console.error("Error handling request:", error));
+        };
+
+        fetchStudentRequests();
+    </script>
+</body>
+</html>

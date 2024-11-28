@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Approve Communities</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Pending Communities</h1>
+  <table id="pendingCommunitiesTable" border="1">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Subject</th>
+        <th>Created By</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Rows will be populated by JavaScript -->
+    </tbody>
+  </table>
+
+  <script>
+    async function fetchPendingCommunities() {
+      const response = await fetch('/api/community/pending');
+      const communities = await response.json();
+
+      const tableBody = document.querySelector('#pendingCommunitiesTable tbody');
+      tableBody.innerHTML = '';
+
+      communities.forEach((community) => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+          <td>${community.id}</td>
+          <td>${community.name}</td>
+          <td>${community.description}</td>
+          <td>${community.subject}</td>
+          <td>${community.created_by}</td>
+          <td>
+            <button onclick="updateCommunityStatus(${community.id}, 'approved')">Approve</button>
+            <button onclick="updateCommunityStatus(${community.id}, 'rejected')">Reject</button>
+          </td>
+        `;
+
+        tableBody.appendChild(row);
+      });
+    }
+
+    async function updateCommunityStatus(communityId, status) {
+      const response = await fetch('/api/community/approve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ communityId, status }),
+      });
+
+      const result = await response.json();
+      alert(result.message);
+      fetchPendingCommunities(); // Refresh the table
+    }
+
+    // Fetch pending communities on page load
+    fetchPendingCommunities();
+  </script>
+</body>
+</html>

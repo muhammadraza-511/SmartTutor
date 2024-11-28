@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approve Tutor Appointed by Student</title>
+    <style>
+        .v-card {
+            display: flex;
+            align-items: flex-start;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .v-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 16px;
+        }
+        .v-card h3 {
+            margin: 0;
+            color: #0056b3;
+        }
+        .v-card p {
+            margin: 4px 0;
+        }
+        .btn {
+            margin: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .approve-btn {
+            background-color: green;
+            color: white;
+        }
+        .reject-btn {
+            background-color: red;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Approve Tutor Appointed by Student</h1>
+    <p>Click <a href="parent_dashboard.html">here</a> to Go to home page.</p>
+
+    <div id="parentDetails">
+        <h2>Logged-in Parent Details</h2>
+        <p id="parentEmail">Email: </p>
+        <p id="parentRollNo">Roll Number: </p>
+        <p id="parentID">Parent ID: </p>
+        <p id="parentContact">Contact Number: </p>
+    </div>
+
+    <div id="tutorCards">
+        <h2>Tutor Approval Requests</h2>
+        <p id="noTutorsMessage" style="display: none;">No tutors found for approval.</p>
+    </div>
+
+    <script>
+        // Retrieve Parent Details from Session Storage
+        const parentDetails = JSON.parse(sessionStorage.getItem('parentDetails'));
+    
+        if (parentDetails) {
+            document.getElementById('parentEmail').textContent = `Email: ${parentDetails.Parent_Email}`;
+            document.getElementById('parentRollNo').textContent = `Roll Number: ${parentDetails.Parent_Roll_No || 'N/A'}`;
+            document.getElementById('parentID').textContent = `Parent ID: ${parentDetails.Parent_ID}`;
+            document.getElementById('parentContact').textContent = `Contact Number: ${parentDetails.Parent_number}`;
+    
+            // Fetch Tutor Approval Requests
+            const parentID = parentDetails.Parent_ID;
+            fetch(`/parent_approve_tutor_appointed_by_student`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ parentID })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const tutorCardsContainer = document.getElementById('tutorCards');
+                const noTutorsMessage = document.getElementById('noTutorsMessage');
+                tutorCardsContainer.innerHTML = `<h2>Tutor Approval Requests</h2>`;
+                if (data.tutors && data.tutors.length > 0) {
+                    noTutorsMessage.style.display = 'none';
+                    data.tutors.forEach(tutor => {
+                        const card = document.createElement('div');
+                        card.className = 'v-card';
+                        card.id = `tutor-card-${tutor.Tutor_ID}`; // Add ID for easy reference
+                        card.innerHTML = `
+                            <img src="${tutor.imagePath}" alt="${tutor.Tutor_Name}'s picture">
+                            <div>
+                                <h3>${tutor.Tutor_Name}</h3>
+                                <p><strong>Email:</strong> ${tutor.Tutor_Email}</p>
+                                <p><strong>Phone:</strong> ${tutor.Tutor_Number}</p>
+                                <p><strong>Roll Number:</strong> ${tutor.Tutor_Roll_No}</p>
+                                <p><strong>Country:</strong> ${tutor.tutor_country}</p>
+                                <p><strong>City:</strong> ${tutor.tutor_city}</p>
+                                <p><strong>Language:</strong> ${tutor.tutor_language}</p>
+                                <p><strong>Degree:</strong> <a href="${tutor.degreeLink}" target="_blank">View Degree</a></p>
+                                <p><strong>Specialization:</strong> ${tutor.tutor_specialization}</p>
+                                <p><strong>Experience:</strong> ${tutor.tutor_experience}</p>
+                                <p><strong>Fee:</strong> ${tutor.tutor_teaching_fee}</p>
+                                <p><strong>Subjects:</strong> ${tutor.tutor_teaches_subject}</p>
+                                <button class="btn approve-btn" data-tutor-id="${tutor.Tutor_ID}" data-action="accept">Accept Tutor</button>
+                                <button class="btn reject-btn" data-tutor-id="${tutor.Tutor_ID}" data-action="reject">Reject Tutor</button>
+                            </div>
+                        `;
+                        tutorCardsContainer.appendChild(card);
+                    });
+                } else {
+                    noTutorsMessage.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching tutors:", error);
+            });
+        } else {
+            document.getElementById('parentDetails').innerHTML = `<p>Parent details not found. Please log in again.</p>`;
+        }
+    
+        // Handle accept/reject tutor
+        document.getElementById('tutorCards').addEventListener('click', (event) => {
+            if (event.target && event.target.classList.contains('btn')) {
+                const tutorID = event.target.getAttribute('data-tutor-id');
+                const action = event.target.getAttribute('data-action');
+                const parentID = parentDetails.Parent_ID;
+    
+                fetch('/update_tutor_status', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tutorID, parentID, action })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(`Tutor ${action}ed successfully.`);
+                        // Find the corresponding v-card and remove it
+                        const tutorCard = document.getElementById(`tutor-card-${tutorID}`);
+                        if (tutorCard) {
+                            tutorCard.remove(); // Removes the v-card from the DOM
+                        }
+                    } else {
+                        alert('Error updating tutor status.');
+                    }
+                })
+                .catch(error => {
+                    console.error("Error updating tutor status:", error);
+                });
+            }
+        });
+    </script>
+    </body>
+</html>

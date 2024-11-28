@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Best Tutor - SmartTutor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #bae0ff; /* Solid background color */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        header {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 50px;
+            background-color: rgba(255, 255, 255, 0.8);
+            transition: background-color 0.3s ease;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        header:hover {
+            background-color: #bae0ff; /* Light blue on hover */
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: bold;
+            color: teal;
+        }
+
+        .dashboard-button {
+            background-color: teal;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        .dashboard-button:hover {
+            background-color: #004d40; /* Darker shade on hover */
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .preferences {
+            background-color: rgba(186, 224, 255, 0.8); /* Transparent light blue */
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .preferences h2 {
+            color: teal; /* Color for the preferences title */
+            margin-bottom: 20px;
+        }
+
+        .preferences select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .preferences select:hover {
+            background-color: rgba(0, 128, 128, 0.1);
+            color: teal;
+            border-color: teal;
+        }
+
+        .search-button {
+            width: 100%;
+            padding: 12px;
+            background-color: teal;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-button:hover {
+            background-color: #004d40;
+        }
+
+        .tutor-cards {
+            display: none; /* Initially hidden */
+            flex-direction: column;
+            width: 100%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+
+        .tutor-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            flex-direction: column; /* Align items in a column */
+            transition: transform 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .tutor-card:hover {
+            transform: scale(1.02); /* Slightly scale up on hover */
+        }
+
+        .tutor-card img {
+            width: 80px; /* Adjust image size */
+            height: 80px;
+            border-radius: 50%; /* Circle shape */
+            margin-bottom: 10px; /* Space below image */
+        }
+
+        .tutor-details {
+            text-align: center; /* Center align text */
+            margin-bottom: 10px; /* Space below details */
+        }
+
+        .tutor-name {
+            color: teal; /* Name color */
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .tutor-info {
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .tutor-rating {
+            color: #FFA500; /* Star color */
+            margin-bottom: 10px; /* Space below rating */
+        }
+
+        .change-preference-button {
+            margin-top: 20px;
+            padding: 12px;
+            background-color: teal; /* Button color */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Smooth transition */
+            display: none; /* Initially hidden */
+        }
+
+        .change-preference-button:hover {
+            background-color: #004d40; /* Darker shade on hover */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 20px;
+            }
+
+            main {
+                padding: 20px;
+            }
+
+            .preferences {
+                padding: 20px;
+            }
+        }
+    </style>
+    <script>
+        function showTutors() {
+            document.querySelector('.preferences').style.display = 'none'; // Hide preferences container
+            document.querySelector('.tutor-cards').style.display = 'flex'; // Show tutor cards
+            document.querySelector('.change-preference-button').style.display = 'block'; // Show change preferences button
+        }
+
+        function changePreferences() {
+            document.querySelector('.preferences').style.display = 'block'; // Show preferences container
+            document.querySelector('.tutor-cards').style.display = 'none'; // Hide tutor cards
+            document.querySelector('.change-preference-button').style.display = 'none'; // Hide change preferences button
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>SmartTutor</h1>
+        </div>
+        <button class="dashboard-button" onclick="window.location.href='StudentDashboard.html'">Move to Dashboard</button>
+    </header>
+
+    <main>
+        <div class="preferences">
+            <h2>Select Your Preferences</h2>
+            <select>
+                <option value="" disabled selected>Preferred Timing</option>
+                <option value="morning">Morning</option>
+                <option value="afternoon">Afternoon</option>
+                <option value="evening">Evening</option>
+            </select>
+            <select>
+                <option value="" disabled selected>Preferred Language</option>
+                <option value="english">English</option>
+                <option value="urdu">Urdu</option>
+                <option value="french">French</option>
+            </select>
+            <select>
+                <option value="" disabled selected>Preferred Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="any">Any</option>
+            </select>
+            <select>
+                <option value="" disabled selected>Subject</option>
+                <option value="maths">Mathematics</option>
+                <option value="science">Science</option>
+                <option value="english">English</option>
+            </select>
+            <select>
+                <option value="" disabled selected>Your Grade</option>
+                <option value="grade1">Grade 1</option>
+                <option value="grade2">Grade 2</option>
+                <option value="grade3">Grade 3</option>
+            </select>
+            <select>
+                <option value="" disabled selected>Tutor Teaching Experience</option>
+                <option value="0-1">0-1 years</option>
+                <option value="1-3">1-3 years</option>
+                <option value="3+">3+ years</option>
+            </select>
+            <select>
+                <option value="" disabled selected>Preferred City</option>
+                <option value="karachi">Karachi</option>
+                <option value="lahore">Lahore</option>
+                <option value="islamabad">Islamabad</option>
+            </select>
+            <button class="search-button" onclick="showTutors()">Search Tutor</button> 
+        </div>
+
+        <div class="tutor-cards">
+            <div class="tutor-card">
+                <img src="images/sir_1.jpeg" alt="Tutor Image"> 
+                <div class="tutor-details">
+                    <div class="tutor-name">Mr. Shoaib Saleem Khattak</div>
+                    <div class="tutor-info">Lecturer at FAST<br>
+                    MS. (Computer Science) FAST Nuces, Islamabad (2016)<br>
+                    BS. (Computer Science) FAST Nuces, Islamabad (2012)</div>
+                    <div class="tutor-rating">★★★★☆ (20)</div>
+                </div>
+                <button class="search-button" onclick="alert('Details clicked!')">Details</button>
+            </div>
+            <div class="tutor-card">
+                <img src="images/sir_2.jpeg" alt="Tutor Image"> 
+                <div class="tutor-details">
+                    <div class="tutor-name">Mr. Hassan Raza</div>
+                    <div class="tutor-info">Lecturer at FAST<br>
+                    PhD. (Electrical Engineering) FAST Nuces, Islamabad (2019)<br>
+                    MS. (Electrical Engineering) Comsats, Islamabad (2016)</div>
+                    <div class="tutor-rating">★★★★☆ (15)</div>
+                </div>
+                <button class="search-button" onclick="alert('Details clicked!')">Details</button>
+            </div>
+        </div>
+
+        <button class="change-preference-button" onclick="changePreferences()">Change Preferences</button>
+    </main>
+</body>
+</html>

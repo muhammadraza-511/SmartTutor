@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Community Search and Join</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 0;
+      }
+      h1,
+      h2 {
+        color: #333;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+      }
+      #community-list {
+        margin-top: 20px;
+      }
+      .community {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        margin: 10px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 15px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Search and Join Communities</h1>
+      <div>
+        <input
+          type="text"
+          id="subject"
+          placeholder="Enter subject"
+          style="width: 70%; padding: 10px; margin-right: 10px"
+        />
+        <button onclick="searchCommunities()">Search</button>
+      </div>
+      <div id="community-list">
+        <h2>Available Communities</h2>
+        <!-- Dynamic community list will appear here -->
+      </div>
+    </div>
+
+    <script>
+      function searchCommunities() {
+        const subject = document.getElementById("subject").value;
+
+        // Clear previous results
+        const listContainer = document.getElementById("community-list");
+        listContainer.innerHTML = "<h2>Available Communities</h2>";
+
+        if (!subject) {
+          alert("Please enter a subject to search!");
+          return;
+        }
+
+        // API call to fetch communities
+        axios
+          .get(`/api/community/search?subject=${subject}`)
+          .then((response) => {
+            const communities = response.data;
+
+            if (communities.length === 0) {
+              listContainer.innerHTML +=
+                "<p>No communities found for the specified subject.</p>";
+              return;
+            }
+
+            communities.forEach((community) => {
+              const communityElement = document.createElement("div");
+              communityElement.className = "community";
+              communityElement.innerHTML = `
+                            <div>
+                                <strong>${community.name}</strong> - <em>${community.subject}</em>
+                                <p>${community.description}</p>
+                            </div>
+                            <button onclick="joinCommunity(${community.id})">Join</button>
+                        `;
+              listContainer.appendChild(communityElement);
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching communities:", error);
+            alert("An error occurred while searching for communities.");
+          });
+      }
+
+      function joinCommunity(communityId) {
+        // Fetch the logged-in student's details from session storage
+        const studentDetails = JSON.parse(
+          sessionStorage.getItem("studentData")
+        );
+        if (!studentDetails || !studentDetails.Student_ID) {
+          alert(
+            "Unable to fetch student details. Please ensure you are logged in."
+          );
+          return;
+        }
+
+        const studentId = studentDetails.Student_ID;
+
+        // API call to join the community
+        axios
+          .post("/api/community/join", { studentId, communityId })
+          .then((response) => {
+            alert(response.data.message);
+          })
+          .catch((error) => {
+            console.error("Error joining community:", error);
+            alert("You have already joined the community.");
+          });
+      }
+    </script>
+  </body>
+</html>

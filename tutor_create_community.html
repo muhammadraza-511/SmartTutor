@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Community</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Create a Community</h1>
+  <form id="createCommunityForm">
+    <label for="name">Community Name:</label>
+    <input type="text" id="name" name="name" placeholder="Enter community name" required>
+    <br><br>
+
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" placeholder="Enter description" rows="4" required></textarea>
+    <br><br>
+
+    <label for="subject">Subject:</label>
+    <input type="text" id="subject" name="subject" placeholder="Enter subject" required>
+    <br><br>
+
+    <button type="submit">Create Community</button>
+  </form>
+
+  <script>
+    document.getElementById('createCommunityForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Get the logged-in tutor details from session storage
+      const tutorDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
+
+      if (!tutorDetails || !tutorDetails.Tutor_ID) {
+        alert("Unable to fetch tutor details. Please ensure you are logged in.");
+        return;
+      }
+
+      const formData = new FormData(e.target);
+
+      const response = await fetch('/api/community/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.get('name'),
+          description: formData.get('description'),
+          subject: formData.get('subject'),
+          tutorId: tutorDetails.Tutor_ID, // Automatically include logged-in tutor ID
+        }),
+      });
+
+      const result = await response.json();
+      alert(result.message);
+    });
+  </script>
+</body>
+</html>

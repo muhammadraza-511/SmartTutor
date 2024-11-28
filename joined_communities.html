@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Joined Communities</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        #community-list {
+            margin-top: 20px;
+        }
+        .community {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .community-details {
+            flex: 1;
+        }
+        .view-button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .view-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>My Joined Communities</h1>
+        <div id="community-list">
+            <h2>Communities</h2>
+            <!-- Dynamic list of communities will appear here -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const storedData = sessionStorage.getItem('studentData');
+
+            if (!storedData) {
+                alert('Session expired. Redirecting to login.');
+                window.location.href = 'loginpage.html'; // Redirect to login
+                return;
+            }
+
+            const student = JSON.parse(storedData);
+            const studentId = student.Student_ID;
+
+            // Fetch the list of joined communities
+            axios.get(`/api/community/joined?studentId=${studentId}`)
+                .then(response => {
+                    const communities = response.data;
+
+                    const listContainer = document.getElementById('community-list');
+                    if (communities.length === 0) {
+                        listContainer.innerHTML += '<p>No joined communities found.</p>';
+                        return;
+                    }
+
+                    communities.forEach(community => {
+                        const communityElement = document.createElement('div');
+                        communityElement.className = 'community';
+                        communityElement.innerHTML = `
+                            <div class="community-details">
+                                <strong>${community.name}</strong> - <em>${community.subject}</em>
+                                <p>${community.description}</p>
+                            </div>
+                            <button class="view-button" onclick="goToCommunity(${community.id})">View Community</button>
+                        `;
+                        listContainer.appendChild(communityElement);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching joined communities:', error);
+                    alert('An error occurred while fetching your joined communities.');
+                });
+        });
+
+        // Navigate to community.html with the communityId
+        function goToCommunity(communityId) {
+            window.location.href = `community.html?communityId=${communityId}`;
+        }
+    </script>
+</body>
+</html>
