@@ -8,7 +8,7 @@ module.exports = (app, db) => {
     let query = `
       SELECT 
         t.Tutor_ID, t.Tutor_Name, t.Tutor_Roll_No, t.Tutor_Email, t.Tutor_Number, 
-        tp.tutor_teaches_subject, tp.tutor_experience, tp.tutor_teaching_fee, 
+        tp.tutor_teaches_subject, tp.tutor_experience, tp.tutor_teaching_fee, tp.tutor_availability_days, 
         tp.tutor_introduction, tp.tutor_availability_time, tp.tutor_country, 
         tp.tutor_language, tp.tutor_teaches_to_grade
       FROM tutor_table AS t

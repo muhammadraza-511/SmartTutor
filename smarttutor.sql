@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 24, 2024 at 10:13 PM
+-- Generation Time: Nov 28, 2024 at 05:54 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -65,6 +65,106 @@ INSERT INTO `assigned_tutors_record_table` (`record_ID`, `Student_ID`, `Parent_I
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `communities`
+--
+
+CREATE TABLE `communities` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `subject` varchar(255) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `status` enum('pending','approved','rejected') DEFAULT 'pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `communities`
+--
+
+INSERT INTO `communities` (`id`, `name`, `description`, `subject`, `created_by`, `status`, `created_at`) VALUES
+(1, 'Social Community', 'm c c', 'Maths', 41, 'approved', '2024-11-26 13:53:56'),
+(2, 'Social Community', 'mx x ', 'Maths', 41, 'approved', '2024-11-26 14:01:27'),
+(3, 'Social Community', 'new onw', 'English', 41, 'approved', '2024-11-27 11:29:53'),
+(4, 'Alian Anwar', ',,,,,', 'English', 41, 'rejected', '2024-11-27 11:35:55'),
+(5, 'Alian Anwar 1', 'x c.,cc', 'English', 41, 'approved', '2024-11-27 11:36:08');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `community_chat`
+--
+
+CREATE TABLE `community_chat` (
+  `id` int(11) NOT NULL,
+  `community_id` int(11) DEFAULT NULL,
+  `sender_id` int(11) NOT NULL,
+  `sender_role` enum('student','tutor') NOT NULL,
+  `message` text DEFAULT NULL,
+  `sent_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `community_chat`
+--
+
+INSERT INTO `community_chat` (`id`, `community_id`, `sender_id`, `sender_role`, `message`, `sent_at`) VALUES
+(1, 1, 28, 'student', 'mm', '2024-11-28 16:15:49'),
+(2, 1, 28, 'student', 'mmsm', '2024-11-28 16:48:36'),
+(3, 1, 41, 'tutor', 'kkk', '2024-11-28 16:49:04'),
+(4, 1, 29, 'student', 'nwe onw', '2024-11-28 16:52:54');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `community_files`
+--
+
+CREATE TABLE `community_files` (
+  `id` int(11) NOT NULL,
+  `community_id` int(11) DEFAULT NULL,
+  `sender_id` int(11) NOT NULL,
+  `sender_role` enum('student','tutor') NOT NULL,
+  `file_url` varchar(255) DEFAULT NULL,
+  `file_type` varchar(50) DEFAULT NULL,
+  `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `community_files`
+--
+
+INSERT INTO `community_files` (`id`, `community_id`, `sender_id`, `sender_role`, `file_url`, `file_type`, `uploaded_at`) VALUES
+(1, 1, 28, 'student', 'uploads\\1732810563560-task1A.PNG', 'image', '2024-11-28 16:16:03'),
+(2, 1, 40, 'tutor', 'uploads\\1732810597766-28.pdf', 'application', '2024-11-28 16:16:37'),
+(3, 1, 41, 'tutor', 'uploads\\1732812557042-41.pdf', 'application', '2024-11-28 16:49:17');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `community_members`
+--
+
+CREATE TABLE `community_members` (
+  `id` int(11) NOT NULL,
+  `community_id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `joined_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `community_members`
+--
+
+INSERT INTO `community_members` (`id`, `community_id`, `student_id`, `joined_at`) VALUES
+(5, 1, 28, '2024-11-27 16:06:56'),
+(8, 5, 28, '2024-11-27 16:58:23'),
+(9, 3, 28, '2024-11-27 16:59:00'),
+(10, 1, 29, '2024-11-28 21:52:29');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `otp_table`
 --
 
@@ -82,7 +182,9 @@ CREATE TABLE `otp_table` (
 
 INSERT INTO `otp_table` (`otpid`, `email`, `otp`, `timestamp`, `status`) VALUES
 (25, 'munammustafa253@gmail.com', 574598, '2024-11-25 00:08:07', 'authorized'),
-(26, 'munammustafa953@gmail.com', 406696, '2024-11-25 00:15:47', 'authorized');
+(26, 'munammustafa953@gmail.com', 406696, '2024-11-25 00:15:47', 'authorized'),
+(27, 'rajaalyan977@gmail.com', 420649, '2024-11-26 18:55:33', 'authorized'),
+(28, 'i210730@nu.edu.pk', 909811, '2024-11-26 19:14:10', 'authorized');
 
 -- --------------------------------------------------------
 
@@ -105,7 +207,9 @@ CREATE TABLE `parent_table` (
 
 INSERT INTO `parent_table` (`Parent_ID`, `Student_ID`, `Parent_Roll_No`, `Parent_Email`, `Parent_number`, `Parent_Password`) VALUES
 (25, 25, '24P-6351', 'munammustafa253@gmail.com', '03435231900', '$2b$10$ys0BZ.PtT9I0qo6xZxks2OvWdNmGeWce..rRwhV6U8my5.Ks8F87S'),
-(26, 26, '24P-3394', 'munammustafa953@gmail.com', '03435231900', '$2b$10$NokLdgMimUlLZtb.pwk.w.Xt8re0DbAGhHISiyIMUA5/UDcZxd9fS');
+(26, 26, '24P-3394', 'munammustafa953@gmail.com', '03435231900', '$2b$10$NokLdgMimUlLZtb.pwk.w.Xt8re0DbAGhHISiyIMUA5/UDcZxd9fS'),
+(28, 28, '24P-6020', 'aliananwar0@gmail.com', '12345678123', '$2b$10$94j9xEacBY6gHgEKL8D4YOvb.hx1MxFqa4RVtr5nVkKTQ8H.1szq.'),
+(29, 29, '24P-9472', 'aliananwar0@gmail.com', '12345678123', '$2b$10$d.dJbfWL9980u9SowSbT5OjKzLuqm47F//LN38iCVth4NB1cZ6knq');
 
 -- --------------------------------------------------------
 
@@ -152,7 +256,9 @@ CREATE TABLE `student_table` (
 
 INSERT INTO `student_table` (`Student_ID`, `Student_Name`, `Student_roll_No`, `Student_UserName`, `Student_Email`, `Student_number`, `Password`) VALUES
 (25, 'Munam Mustafa', '24S-6351', 'Munam253', 'munammustafa953@gmail.com', '03435231909', '$2b$10$4ae5oCQMXPp/yByvZwaiUORXTbNp7o4s8ntJ/6/Zzio6X7Zcj0WKa'),
-(26, 'Munam Mustafa', '24S-3394', 'Munam25', 'munammustafa253@gmail.com', '03435231909', '$2b$10$iqK5vkeN36hOXYytNYihEe8OARekqBR7tgzmkShnZ4w1GhY92BHiC');
+(26, 'Munam Mustafa', '24S-3394', 'Munam25', 'munammustafa253@gmail.com', '03435231909', '$2b$10$iqK5vkeN36hOXYytNYihEe8OARekqBR7tgzmkShnZ4w1GhY92BHiC'),
+(28, 'Alian Anwar', '24S-6020', 'Alian 72', 'i210730@nu.edu.pk', '12345678912', '$2b$10$cU961frIhN1BBYZaXiMTmuDXCJIz0HaAmHGGkVbPYNTGQDTdSAzAS'),
+(29, 'Raja Alyan', '24S-9472', 'Alian 7272', 'rajaalyan977@gmail.com', '12345678912', '$2b$10$QxUzKICvY/Em53eYfvL.wucSp6sfloynqyGFAbvJfcJh21p6Oz6we');
 
 -- --------------------------------------------------------
 
@@ -191,7 +297,8 @@ CREATE TABLE `tutor_profile_data_table` (
 --
 
 INSERT INTO `tutor_profile_data_table` (`tutor_profile_ID`, `Tutor_ID`, `tutor_email`, `tutor_rollno`, `tutor_country`, `tutor_city`, `tutor_language`, `tutor_university`, `tutor_degree_name`, `tutor_degree_type`, `tutor_specialization`, `tutor_starting_year`, `tutor_ending_year`, `tutor_degree_link`, `tutor_teaches_subject`, `tutor_teaches_to_grade`, `tutor_preferable_session`, `tutor_introduction`, `tutor_experience`, `tutor_teaching_fee`, `tutor_availability_days`, `tutor_availability_time`, `tutor_profile_pic`) VALUES
-(24, 40, 'munammustafa253@gmail.com', '24T-1954', 'Pakistan', 'Islamabad', 'English, Urdu, Punjabi', 'FAST NUCES', 'CS', 'Bachelor', 'CS', '2011', '2016', '40.pdf', 'English, Urdu, Chemistry', '7, 8, 9', 'Group Session', 'I am Munam Mustafa', 'I have alot of experience', 5000.00, 'Monday, Tuesday, Wednesday, Thursday', 'anytime', '40.jpeg');
+(24, 40, 'munammustafa253@gmail.com', '24T-1954', 'Pakistan', 'Islamabad', 'English, Urdu, Punjabi', 'FAST NUCES', 'CS', 'Bachelor', 'CS', '2011', '2016', '40.pdf', 'English, Urdu, Chemistry', '7, 8, 9', 'Group Session', 'I am Munam Mustafa', 'I have alot of experience', 5000.00, 'Monday, Tuesday, Wednesday, Thursday', 'anytime', '40.jpeg'),
+(25, 41, 'rajaalyan977@gmail.com', '24T-1687', 'Pakistan', 'Rawalpindi', 'English', 'Fast', 'BS', 'CS', 'web development', '2021', '2024', '41.pdf', 'Maths', 'A', 'Both', ',sx,', '2 years', 1500.00, 'Monday', 'anytime', '41.png');
 
 -- --------------------------------------------------------
 
@@ -210,7 +317,8 @@ CREATE TABLE `tutor_profile_status_table` (
 --
 
 INSERT INTO `tutor_profile_status_table` (`Tutor_ID`, `profile_status`, `profile_status_ID`) VALUES
-(40, 'accepted', 19);
+(40, 'accepted', 19),
+(41, 'pending', 20);
 
 -- --------------------------------------------------------
 
@@ -233,7 +341,8 @@ CREATE TABLE `tutor_table` (
 --
 
 INSERT INTO `tutor_table` (`Tutor_ID`, `Tutor_Name`, `Tutor_Roll_No`, `Tutor_Email`, `Tutor_Number`, `Tutor_password`, `Tutor_UserName`) VALUES
-(40, 'Munam Mustafa', '24T-1954', 'munammustafa253@gmail.com', '03435231909', '$2b$10$gtrcvj5dqMjjklgjEd78buwuGX5wZTddPeQz1YXZSnAwZH4jpjRF6', 'Munam253');
+(40, 'Munam Mustafa', '24T-1954', 'munammustafa253@gmail.com', '03435231909', '$2b$10$gtrcvj5dqMjjklgjEd78buwuGX5wZTddPeQz1YXZSnAwZH4jpjRF6', 'Munam253'),
+(41, 'Alian Anwar', '24T-1687', 'rajaalyan977@gmail.com', '03486977089', '$2b$10$4octtdowuk5WsFSUrNjwS./5mwl13ixY58Z7WlZmVFM/cJEdtxjvm', 'Alian 72');
 
 --
 -- Indexes for dumped tables
@@ -254,6 +363,37 @@ ALTER TABLE `assigned_tutors_record_table`
   ADD KEY `Student_ID` (`Student_ID`),
   ADD KEY `Parent_ID` (`Parent_ID`),
   ADD KEY `Tutor_ID` (`Tutor_ID`);
+
+--
+-- Indexes for table `communities`
+--
+ALTER TABLE `communities`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `created_by` (`created_by`);
+
+--
+-- Indexes for table `community_chat`
+--
+ALTER TABLE `community_chat`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `community_id` (`community_id`),
+  ADD KEY `sender_id` (`sender_id`);
+
+--
+-- Indexes for table `community_files`
+--
+ALTER TABLE `community_files`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `community_id` (`community_id`),
+  ADD KEY `sender_id` (`sender_id`);
+
+--
+-- Indexes for table `community_members`
+--
+ALTER TABLE `community_members`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `community_id` (`community_id`),
+  ADD KEY `student_id` (`student_id`);
 
 --
 -- Indexes for table `otp_table`
@@ -320,16 +460,40 @@ ALTER TABLE `assigned_tutors_record_table`
   MODIFY `record_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
+-- AUTO_INCREMENT for table `communities`
+--
+ALTER TABLE `communities`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `community_chat`
+--
+ALTER TABLE `community_chat`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `community_files`
+--
+ALTER TABLE `community_files`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `community_members`
+--
+ALTER TABLE `community_members`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT for table `otp_table`
 --
 ALTER TABLE `otp_table`
-  MODIFY `otpid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `otpid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `parent_table`
 --
 ALTER TABLE `parent_table`
-  MODIFY `Parent_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `Parent_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `student_approve_tutor_status_table`
@@ -341,25 +505,25 @@ ALTER TABLE `student_approve_tutor_status_table`
 -- AUTO_INCREMENT for table `student_table`
 --
 ALTER TABLE `student_table`
-  MODIFY `Student_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `Student_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `tutor_profile_data_table`
 --
 ALTER TABLE `tutor_profile_data_table`
-  MODIFY `tutor_profile_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `tutor_profile_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `tutor_profile_status_table`
 --
 ALTER TABLE `tutor_profile_status_table`
-  MODIFY `profile_status_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `profile_status_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `tutor_table`
 --
 ALTER TABLE `tutor_table`
-  MODIFY `Tutor_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `Tutor_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- Constraints for dumped tables
@@ -372,6 +536,31 @@ ALTER TABLE `assigned_tutors_record_table`
   ADD CONSTRAINT `assigned_tutors_record_table_ibfk_1` FOREIGN KEY (`Student_ID`) REFERENCES `student_table` (`Student_ID`),
   ADD CONSTRAINT `assigned_tutors_record_table_ibfk_2` FOREIGN KEY (`Parent_ID`) REFERENCES `parent_table` (`Parent_ID`),
   ADD CONSTRAINT `assigned_tutors_record_table_ibfk_3` FOREIGN KEY (`Tutor_ID`) REFERENCES `tutor_table` (`Tutor_ID`);
+
+--
+-- Constraints for table `communities`
+--
+ALTER TABLE `communities`
+  ADD CONSTRAINT `communities_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `tutor_table` (`Tutor_ID`);
+
+--
+-- Constraints for table `community_chat`
+--
+ALTER TABLE `community_chat`
+  ADD CONSTRAINT `community_chat_ibfk_1` FOREIGN KEY (`community_id`) REFERENCES `communities` (`id`);
+
+--
+-- Constraints for table `community_files`
+--
+ALTER TABLE `community_files`
+  ADD CONSTRAINT `community_files_ibfk_1` FOREIGN KEY (`community_id`) REFERENCES `communities` (`id`);
+
+--
+-- Constraints for table `community_members`
+--
+ALTER TABLE `community_members`
+  ADD CONSTRAINT `community_members_ibfk_1` FOREIGN KEY (`community_id`) REFERENCES `communities` (`id`),
+  ADD CONSTRAINT `community_members_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `student_table` (`Student_ID`);
 
 --
 -- Constraints for table `parent_table`

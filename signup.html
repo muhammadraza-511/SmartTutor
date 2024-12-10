@@ -13,7 +13,7 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Futura, "Trebuchet MS", Arial, sans-serif;
             background-color: #f7f7f7;
         }
 
@@ -93,8 +93,8 @@
         }
 
         .signup-image img {
-            max-width: 90%;
-            z-index: 2;
+            max-width: 89%;
+            z-index: 1;
             position: relative;
         }
 
@@ -192,7 +192,53 @@
         .student-fields, .tutor-fields, .signup-form button[type="submit"] {
             display: none;
         }
+        /* Overlay and Alert Styling */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
 
+.alert-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 300px;
+}
+
+.alert-box h3 {
+    color: #000000;
+    margin-bottom: 10px;
+}
+
+.alert-box p {
+    color: #444;
+    margin-bottom: 20px;
+}
+
+.alert-box button {
+    background-color: #2C98F0;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.alert-box button:hover {
+    background-color: #2670ad;
+}
         @media (max-width: 768px) {
             main {
                 flex-direction: column;
@@ -249,7 +295,15 @@
         function generateParentRollNo(studentRollNo) {
             return studentRollNo.replace('S', 'P'); // Replace 'S' with 'P'
         }
-    
+        function showAlert(title, message) {
+    document.getElementById('alertTitle').textContent = title;
+    document.getElementById('alertMessage').textContent = message;
+    document.getElementById('alertOverlay').style.display = 'flex';
+}
+
+function closeAlert() {
+    document.getElementById('alertOverlay').style.display = 'none';
+}
         function submitForm(event) {
             event.preventDefault();
             let role = document.querySelector('.role-selection .active').innerText.toLowerCase();
@@ -283,32 +337,33 @@
     
                 // Validate password requirements
                 if (!validatePassword(studentPassword)) {
-                    alert("Student password must be at least 7 characters long and contain at least one number and one special character.");
+                    
+                    showAlert("Student password must be at least 7 characters long and contain at least one number and one special character.");
                     return;
                 }
     
                 // Check if passwords match
                 if (studentPassword !== studentConfirmPassword) {
-                    alert("Passwords do not match for the student form.");
+                    showAlert("Passwords do not match for the student form.");
                     return;
                 }
     
                 // Check if student and parent contact numbers are different
                 if (studentContact === parentContact) {
-                    alert("Student and parent contact numbers must be different.");
+                    showAlert("Student and parent contact numbers must be different.");
                     return;
                 }
     
                 // Check if student and parent emails are different
                 if (studentEmail === parentEmail) {
-                    alert("Student and parent emails must be different.");
+                    showAlert("Student and parent emails must be different.");
                     return;
                 }
     
                 // Validate required fields for students
                 for (const key in data) {
                     if (!data[key]) {
-                        alert(`${key.replace(/_/g, ' ').toUpperCase()} is required.`);
+                        showAlert(`${key.replace(/_/g, ' ').toUpperCase()} is required.`);
                         return;
                     }
                 }
@@ -334,25 +389,25 @@
     
                 // Validate password requirements
                 if (!validatePassword(tutorPassword)) {
-                    alert("Tutor password must be at least 7 characters long and contain at least one number and one special character.");
+                    showAlert("Tutor password must be at least 7 characters long and contain at least one number and one special character.");
                     return;
                 }
     
                 // Check if passwords match
                 if (tutorPassword !== tutorConfirmPassword) {
-                    alert("Passwords do not match for the tutor form.");
+                    showAlert("Passwords do not match for the tutor form.");
                     return;
                 }
     
                 // Validate required fields for tutors
                 for (const key in data) {
                     if (!data[key]) {
-                        alert(`${key.replace(/_/g, ' ').toUpperCase()} is required.`);
+                        showAlert(`${key.replace(/_/g, ' ').toUpperCase()} is required.`);
                         return;
                     }
                 }
             }
-    
+            
             fetch('/api/signup', {
                 method: 'POST',
                 headers: {
@@ -367,18 +422,16 @@
                 } else if(data.action === 'open_otp_page'){
                     window.open(data.redirectUrl, '_blank');
                 } else {
-                    alert(data.message);
+                    //showAlert("Error", data.message);
+
+                    showAlert(data.message);
                 }
             })
             .catch(error => console.error('Error:', error));
+
+            //showAlert("Success", "You have successfully signed up!");
         }
     </script>
-    
-
-
-
-    
-    
     
 </head>
 
@@ -436,5 +489,12 @@
             </div>
         </div>
     </main>
+    <div class="overlay" id="alertOverlay">
+        <div class="alert-box">
+            <h3 id="alertTitle">Alert</h3>
+            <p id="alertMessage">This is a message.</p>
+            <button onclick="closeAlert()">OK</button>
+        </div>
+    </div>
 </body>
 </html>

@@ -27,6 +27,16 @@ module.exports = (app, db) => {
         });
     }
 
+    // Add this function to delete OTP from otp_table
+    function deleteOtpByEmail(email, callback) {
+        const deleteQuery = 'DELETE FROM otp_table WHERE email = ?';
+        db.query(deleteQuery, [email], (err, results) => {
+            if (err) return callback(err);
+            callback(null, results.affectedRows > 0); // Returns true if a row is deleted
+        });
+    }
+
+
 
 
     // Generate a unique Tutor Roll Number
@@ -214,6 +224,16 @@ module.exports = (app, db) => {
     
                                         res.json({ message: 'Student and Parent registered successfully!', redirect: '/index.html' });
                                     });
+                                    deleteOtpByEmail(email, (err, isDeleted) => {
+                                        if (err) {
+                                            console.error('Error deleting OTP entry:', err);
+                                        } else if (isDeleted) {
+                                            console.log(`OTP entry for ${email} deleted successfully.`);
+                                        } else {
+                                            console.log(`No OTP entry found for ${email} to delete.`);
+                                        }
+                                    });
+                                    
                                 });
                             });
                         });
@@ -302,6 +322,16 @@ module.exports = (app, db) => {
                                 });
                             });
                         });
+                        deleteOtpByEmail(email, (err, isDeleted) => {
+                            if (err) {
+                                console.error('Error deleting OTP entry:', err);
+                            } else if (isDeleted) {
+                                console.log(`OTP entry for ${email} deleted successfully.`);
+                            } else {
+                                console.log(`No OTP entry found for ${email} to delete.`);
+                            }
+                        });
+                        
                     });
                 });
             });

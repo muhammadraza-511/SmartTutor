@@ -143,12 +143,18 @@ nav ul li:hover::after {
 }
 
 .search-bar button {
-    padding: 10px 20px;
-    background-color: #2C98F0;
+    padding: 15px 30px; /* Increased padding to make it larger */
+    background-color: #2C98F0; /* Default background color */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 16px; /* Optional: increase font size for better visibility */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.search-bar button:hover {
+    background-color: #1A76C2; /* Hover background color */
 }
 
 .hero-image img {

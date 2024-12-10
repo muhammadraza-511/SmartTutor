@@ -268,6 +268,42 @@
                 width: 100%;
             }
         }
+        /* Modal content */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #modal-ok-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #2C98F0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #modal-ok-btn:hover {
+            background-color: #1A76C2;
+        }
     </style>
 </head>
 <body>
@@ -312,14 +348,14 @@
 
                 <!-- Social Login Buttons -->
                 <div class="social-login">
-                    <a href="#" class="google">
+                    <a href="#" class="google" id="google-login-btn">
                         <img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="Google Icon">
                         Continue with Google
                     </a>
-                    <a href="#" class="facebook">
+                    <!-- <a href="#" class="facebook">
                         <img src="https://img.icons8.com/color/48/000000/facebook-new.png" alt="Facebook Icon">
                         Continue with Facebook
-                    </a>
+                    </a> -->
                 </div>
             </form>
         </div>
@@ -330,6 +366,33 @@
             <img src="images/OBJECTS.png" alt="Promotional Image">
         </div>
     </main>
+    <div id="error-modal" class="modal">
+        <div class="modal-content">
+            <p id="error-message">Invalid username or password.</p>
+            <button id="modal-ok-btn">OK</button>
+        </div>
+    </div>
+<script>
+ document.addEventListener('DOMContentLoaded', () => {
+            const googleLoginBtn = document.getElementById('google-login-btn');
+            const modal = document.getElementById('error-modal');
+            const modalOkBtn = document.getElementById('modal-ok-btn');
+            const errorMessage = document.getElementById('error-message');
 
+            googleLoginBtn.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent default action
+                showErrorModal('Google login is coming soon!');
+            });
+
+            modalOkBtn.addEventListener('click', () => {
+                modal.style.display = 'none'; // Hide modal on OK button click
+            });
+
+            function showErrorModal(message) {
+                errorMessage.textContent = message;
+                modal.style.display = 'flex'; // Show modal
+            }
+        });
+</script>
 </body>
 </html>

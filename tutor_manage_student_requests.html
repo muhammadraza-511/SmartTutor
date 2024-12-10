@@ -3,10 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel= "stylesheet" href= "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" >
+  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>Manage Student Requests</title>
     <style>
+         *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        list-style-type: none;
+        text-decoration: none;
+        font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+    }
+    .logo {
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+    font-family: "Montserrat";
+    color: #000000;
+    text-decoration: none;
+    color: inherit;
+}
+.logo span{
+    color: #f4f4f4;
+}
+    .sidebar{
+        width: 345px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background: #2C98F0;
+        z-index: 100;
+        transition: width 300ms;
+    }
+    .sidebar-brand{
+        height: 90px;
+        padding: 1rem 0rem 1rem 2rem;
+        color: #fff;
+    }
+    .sidebar-brand span{
+        display: inline-block;
+        padding-right: 1rem;
+    }
+    .sidebar-menu{
+        margin-top: 1rem;
+    }
+    .sidebar-menu li{
+        width: 100%;
+        margin-bottom: 1.3rem;
+        padding-left: 2rem;
+
+    }
+    .sidebar-menu a{
+        padding-left: 1rem;
+        display: block;
+        color: #fff;
+        font-size: 1.1rem;
+        padding-top: 1rem;
+    }
+    .sidebar-menu a.active{
+        background: #fff;
+        padding-top: 1rem ;
+        padding-bottom: 1rem ;
+        color: #2C98F0;
+        border-radius: 30px 0px 0px 30px;
+    }
+    .sidebar-menu a:hover{
+        background: #fff;
+        padding-top: 1rem ;
+        padding-bottom: 1rem ;
+        color: #2C98F0;
+        border-radius: 30px 0px 0px 30px;
+        transition-duration: 0.5s;
+    }
+    .sidebar-menu a span :first-child{
+        font-size: 1.5rem;
+        padding-right: 1rem;
+    }
+    .menu-icon {
+    width: 33px;
+    height: 33px;
+    margin-top: -2px; /* Adjust this value to move the image down */
+    vertical-align: middle;
+    }
+    #nav-toggle{
+        display: none;
+        
+    }
+    #nav-toggle:checked + .sidebar{
+        width: 70px;  
+    }
+    #nav-toggle:checked + .sidebar .sidebar-brand ,
+    #nav-toggle:checked + .sidebar li {
+        padding-left: 1rem;
+        text-align: center;
+    }
+    #nav-toggle:checked + .sidebar li a{
+        padding-left: 0rem;
+    }
+    #nav-toggle:checked + .sidebar li a span{
+        padding-left: 0rem;
+    }
+    #nav-toggle:checked + .sidebar .sidebar-brand h2 span:last-child,
+    #nav-toggle:checked + .sidebar li a span:last-child{
+        display: none;  
+    }
+    #nav-toggle:checked ~ .main-content{
+        margin-left: 70px;  
+    }
+    #nav-toggle:checked ~ .main-content header{
+        width: calc(100% - 70px);  
+        left: 70px;
+    }
+    .main-content{
+        transition: margin-left 300ms;
+        margin-left: 345px;
+        background-color: #ddd;
+    }
+    header{
+        background: #fff;
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        position: fixed;
+        left: 345px;
+        width: calc(100% - 345px);
+        top: 0;
+        z-index: 100;
+        transition: left 300ms;
+    }
+    header h2{
+        color: #222;
+    }
+    header label span{
+        font-size: 1.7rem;
+        padding-right: 1rem;
+
+    }
+    .search-wrapper{
+        border: 1px solid #ccc;
+        /* border-radius: 25px; */
+        height: 50px;
+        display: flex;
+        align-items: center;
+        overflow-x: hidden;
+    }
+    .search-wrapper span{
+        display: inline-block;
+        padding: 0rem 1rem;
+        font-size: 1.5rem;
+    }
+    .search-wrapper input{
+        height: 100%;
+        padding: .5rem;
+
+    }
+    .user-wrapper{
+        display: flex;
+        align-items: center;
+    }
+    .user-wrapper img{
+        border-radius: 50%;
+        margin-left: 1rem;
+
+    }
+    .user-wrapper small{
+        display: inline-block;
+        color: black;
+        
+    }
+    main{
+        margin-top: 90px;
+        padding: 2rem 1.5rem;
+        width: 100%;
+        background: #ffffff;
+        min-height: calc(100vh - 90px);
+    }
         .v-card {
-            border: 1px solid #ddd;
+            border: 1px solid #ffffff;
             border-radius: 8px;
             padding: 16px;
             margin: 16px 0;
@@ -18,107 +196,346 @@
         .v-card p {
             margin: 4px 0;
         }
-        .buttons {
-            margin-top: 8px;
+.accept-btn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.reject-btn {
+    background: #F44336;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.accept-btn:hover,
+.reject-btn:hover {
+    opacity: 0.9;
+}
+
+#alertModal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
-        .buttons button {
-            margin-right: 8px;
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         }
+
+        .modal-content h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .modal-content button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #2C98F0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-content button:hover {
+            background-color: #1A76C2;
+        }
+@media only screen and (max-width: 1200px) {
+        .sidebar{
+            width: 70px;  
+        }
+
+       
+       .sidebar .sidebar-brand,
+       .sidebar li{
+            padding-left: 1rem;
+            text-align: center;
+        }
+        .sidebar li a{
+            padding-left: 0rem;
+        }
+        
+        .sidebar .sidebar-brand h2 span:last-child,
+        .sidebar li a span:last-child{
+            display: none;  
+        }
+        .main-content{
+            margin-left: 70px;  
+        }
+        .main-content header{
+            width: calc(100% - 70px);  
+            left: 70px;
+        }
+        
+        .sidebar:hover{
+            width: 345px;
+            z-index: 200;
+        }
+       .sidebar:hover .sidebar-brand,
+        .sidebar:hover li{
+            padding-left: 1rem;
+            text-align: left;
+        }
+        .sidebar:hover li a{
+            padding-left: 0rem;
+        }
+        
+        .sidebar:hover .sidebar-brand h2 span:last-child,
+        .sidebar:hover li a span:last-child{
+            display: inline;  
+        }
+    }
+@media only screen and (max-width: 960px) {
+    
+    .container {
+        grid-template-columns: repeat(3,1fr);
+    }
+}
+@media only screen and (max-width: 768px){
+    .container {
+        grid-template-columns: 100%;
+    }
+    .search-wrapper{
+        display: none;
+    }
+}
+
+
+    @media only screen and (max-width: 768px){
+        .container{
+            grid-template-columns: repeat(2,1fr);
+        }
+        .search-wrapper{
+            display:none;
+
+        }
+        .sidebar{
+            left: -100% !important;
+        }
+        header h2 label {
+            display: inline-block;
+            justify-content: center !important;
+            align-items: center;
+            background: var(#2C98F0);
+            padding-right: 0rem;
+            margin-right: 1rem;
+            height: 40px;
+            width: 40px;
+            color: #030202;
+            border-radius: 50%;
+        }
+
+        header h2{
+            font-size: 1.1rem;
+        }
+        header h2 span{
+            text-align: center;
+            padding-right: 0rem;
+        }
+        .main-content{
+            width: 100%;
+            margin-left: 0rem;
+        }
+        header{
+            width: 100% !important;
+            left: 0 !important;
+        }
+
+        #nav-toggle:checked + .sidebar{
+            left: 0 !important;
+            z-index: 100;
+            width: 345px;
+        }
+    
+        #nav-toggle:checked + .sidebar .sidebar-brand,
+        #nav-toggle:checked + .sidebar li{
+            padding-left: 1rem;
+            text-align: left;
+        }
+        #nav-toggle:checked + .sidebar li a{
+            padding-left: 1rem;
+        }
+        
+        #nav-toggle:checked + .sidebar .sidebar-brand h2 span:last-child,
+        #nav-toggle:checked + .sidebar li a span:last-child{
+            display: inline;  
+        }
+
+        #nav-toggle:checked ~ .main-content{
+            margin-left: 0rem !important;
+        }
+
+    }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Manage Student Requests</h1>
-    </header>
-    <main>
-        <section>
-            <h2>Tutor Details</h2>
-            <div id="tutorDetails">
-                <p>Loading tutor details...</p>
+    <input type="checkbox" id="nav-toggle">
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h2><img src="src=images/Logo.png" alt=""><span>Smart Tutor</span></h2>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li>
+                    <a href="tutor_dashboard.html" ><span class="las la-home"></span>
+                    <span>Dashboard</span></a>
+                </li>
+                <li>
+                    <a href="" class="active" onclick="saveUserToSession()"><span class="las la-user"></span>
+                    <span>Manage student requests</span></a>
+                </li>
+                <li>
+                    <a href="created_communities.html"><span class="fa-solid fa-people-group"></span>
+                    <span>Created Communities</span></a>
+                </li>
+                <li>
+                    <a href="tutor_create_community.html"><span class="fa-solid fa-people-roof"></span>
+                    <span>Create New Community</span></a>
+                </li>
+                <li>
+                    <a href="loginpage.html"><span class="fa-solid fa-right-from-bracket"></span>
+                    <span>Logout</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="main-content">
+        <header>
+            <h2 style="margin-top: 7px;">
+                <label for="nav-toggle">
+                    <img src="images/bluebar2.png" alt="Menu Icon" class="menu-icon">
+                </label>
+                Dashboard
+            </h2>
+    
+            <div class="user-wrapper">
+                <img src="images/user.jpg" width="40px" height="30px" alt="">
+                <div>
+                    <h4 id="userWrapperTutorName">Tutor</h4>
+                    <small>Tutor</small>
+                </div>
             </div>
-        </section>
-        <section>
-            <h2>Pending Student Requests</h2>
-            <div id="studentRequests">
-                <p>Loading student requests...</p>
-            </div>
-        </section>
-    </main>
-
+        </header>
+        <main>
+            <section style="background: #ffffffe0; padding: 20px; border-radius: 10px; ">
+                <h2 style="color: #2C98F0; text-align: center; margin-bottom: 20px;">Pending Student Requests</h2>
+                <div id="studentRequests" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <p style="text-align: center; font-size: 1.2rem; color: #666;">Loading student requests...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+  <!-- Alert Modal -->
+  <div id="alertModal">
+    <div class="modal-content">
+        <h3 id="alertMessage"></h3>
+        <button id="closeModalBtn">OK</button>
+    </div>
+</div>
     <script>
-        // Retrieve tutor details from session storage
         const tutorDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
+    
+    // Display tutor details on the page
+    if (tutorDetails) {
+        document.getElementById('userWrapperTutorName').textContent = tutorDetails.Tutor_Name;
+    } else {
+        document.getElementById('tutorDetails').innerHTML = `
+            <p>Error: Tutor details not found. Please go back to the dashboard.</p>
+        `;
+    }
+         // Retrieve tutor details from session storage
+       
 
-        // Display tutor details on the page
-        if (tutorDetails) {
-            document.getElementById('tutorDetails').innerHTML = `
-                <p><strong>Name:</strong> ${tutorDetails.Tutor_Name}</p>
-                <p><strong>Email:</strong> ${tutorDetails.Tutor_Email}</p>
-                <p><strong>Roll Number:</strong> ${tutorDetails.Tutor_Roll_No || 'N/A'}</p>
-                <p><strong>Contact Number:</strong> ${tutorDetails.Tutor_Number || 'N/A'}</p>
-            `;
-        } else {
-            document.getElementById('tutorDetails').innerHTML = `
-                <p>Error: Tutor details not found. Please go back to the dashboard.</p>
-            `;
-        }
-
-        // Fetch student requests from the server
-        const fetchStudentRequests = () => {
-            if (tutorDetails && tutorDetails.Tutor_ID) {
-                fetch(`/tutor_manage_student_requests?Tutor_ID=${tutorDetails.Tutor_ID}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const studentRequestsDiv = document.getElementById('studentRequests');
-
-                        if (data.success && data.data.length > 0) {
-                            studentRequestsDiv.innerHTML = data.data.map(request => `
-                                <div class="v-card" id="request-${request.Student_ID}">
-                                    <h3>${request.Student_Name}</h3>
-                                    <p><strong>Roll No:</strong> ${request.Student_roll_No}</p>
-                                    <p><strong>Email:</strong> ${request.Student_Email}</p>
-                                    <p><strong>Contact:</strong> ${request.Student_number}</p>
-                                    <h4>Parent Details</h4>
-                                    <p><strong>Roll No:</strong> ${request.Parent_Roll_No}</p>
-                                    <p><strong>Email:</strong> ${request.Parent_Email}</p>
-                                    <p><strong>Contact:</strong> ${request.Parent_number}</p>
-                                    <div class="buttons">
-                                        <button onclick="handleRequest('accept', ${request.Student_ID}, ${tutorDetails.Tutor_ID})">Accept</button>
-                                        <button onclick="handleRequest('reject', ${request.Student_ID}, ${tutorDetails.Tutor_ID})">Reject</button>
-                                    </div>
-                                </div>
-                            `).join('');
-                        } else {
-                            studentRequestsDiv.innerHTML = `<p>${data.message || 'No pending student requests found.'}</p>`;
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error fetching student requests:", error);
-                        document.getElementById('studentRequests').innerHTML = `
-                            <p>Error fetching student requests. Please try again later.</p>
-                        `;
-                    });
-            }
-        };
-
-        const handleRequest = (action, Student_ID, Tutor_ID) => {
-            fetch(`/tutor_handle_student_request`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action, Student_ID, Tutor_ID })
-            })
+// Fetch student requests from the server
+const fetchStudentRequests = () => {
+    if (tutorDetails && tutorDetails.Tutor_ID) {
+        fetch(`/tutor_manage_student_requests?Tutor_ID=${tutorDetails.Tutor_ID}`)
             .then(response => response.json())
             .then(data => {
-                alert(data.message);
-                if (data.success) {
-                    // Remove the request card
-                    document.getElementById(`request-${Student_ID}`).remove();
+                const studentRequestsDiv = document.getElementById('studentRequests');
+                if (data.success && data.data.length > 0) {
+                    studentRequestsDiv.innerHTML = data.data.map(request => `
+                        <div class="v-card" id="request-${request.Student_ID}" style="background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 15px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                            <h3 style="color: #2C98F0;">${request.Student_Name}</h3>
+                            <p><strong>Roll No:</strong> ${request.Student_roll_No}</p>
+                            <p><strong>Email:</strong> ${request.Student_Email}</p>
+                            <p><strong>Contact:</strong> ${request.Student_number}</p>
+                            <h4 style="color: #2C98F0;">Parent Details</h4>
+                            <p><strong>Roll No:</strong> ${request.Parent_Roll_No}</p>
+                            <p><strong>Email:</strong> ${request.Parent_Email}</p>
+                            <p><strong>Contact:</strong> ${request.Parent_number}</p>
+                            <div class="buttons" style="margin-top: 10px; text-align: center;">
+                                <button class="accept-btn" onclick="handleRequest('accept', ${request.Student_ID}, ${tutorDetails.Tutor_ID})">Accept</button>
+                                <button class="reject-btn" onclick="handleRequest('reject', ${request.Student_ID}, ${tutorDetails.Tutor_ID})">Reject</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    studentRequestsDiv.innerHTML = `<p style="text-align: center; font-size: 1.2rem; color: #666;">${data.message || 'No pending student requests found.'}</p>`;
                 }
             })
-            .catch(error => console.error("Error handling request:", error));
-        };
+            .catch(error => {
+                console.error("Error fetching student requests:", error);
+                document.getElementById('studentRequests').innerHTML = `
+                    <p style="text-align: center; font-size: 1.2rem; color: red;">Error fetching student requests. Please try again later.</p>
+                `;
+            });
+    }
+};
 
-        fetchStudentRequests();
+// Handle request actions (accept/reject)
+const handleRequest = (action, Student_ID, Tutor_ID) => {
+    fetch(`/tutor_handle_student_request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, Student_ID, Tutor_ID })
+    })
+    .then(response => response.json())
+    .then(data => {
+        showAlert(data.message);
+        if (data.success) {
+            document.getElementById(`request-${Student_ID}`).remove();
+        }
+    })
+    .catch(error => console.error("Error handling request:", error));
+};
+
+// Show alert modal
+const showAlert = (message) => {
+    const alertModal = document.getElementById('alertModal');
+    const alertMessage = document.getElementById('alertMessage');
+    alertMessage.textContent = message;
+    alertModal.style.display = 'flex';
+};
+
+// Close alert modal
+document.getElementById('closeModalBtn').addEventListener('click', () => {
+    document.getElementById('alertModal').style.display = 'none';
+});
+
+fetchStudentRequests();
     </script>
 </body>
 </html>

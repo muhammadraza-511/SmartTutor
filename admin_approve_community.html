@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel= "stylesheet" href= "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" >
   <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <title>Tutor Dashboard</title>
-  <style>
+  <title>Approve Communities</title>
+  <!-- <link rel="stylesheet" href="style.css"> -->
+   <style>
+    /* Section Title Styling */
     *{
         padding: 0;
         margin: 0;
@@ -189,45 +191,138 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
         }
-        .profile-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .profile-header img {
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            margin-right: 20px;
-        }
-        .profile-header div {
-            flex-grow: 1;
-        }
-        .profile-header h2 {
-            color: #030202;
-            margin: 0;
-            font-size: 24px;
-        }
-        .profile-header p {
-            color: #666;
-        }
-        .profile-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        .profile-details label {
-            display: block;
-            color: #999;
-            margin-bottom: 5px;
-        }
-        .profile-details .info {
-            padding: 10px;
-            background: #f0f0f0;
-            border-radius: 5px;
-        }
+.section-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
 
-    @media only screen and (max-width: 1200px) {
+/* Table Wrapper Styling */
+.table-wrapper {
+  margin: 0 auto;
+  width: 90%;
+  overflow-x: auto;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  
+}
+
+/* Table Styling */
+#pendingCommunitiesTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 1rem;
+  text-align: left;
+}
+
+#pendingCommunitiesTable th,
+#pendingCommunitiesTable td {
+  border: 1px solid #ddd;
+  padding: 10px 15px;
+}
+
+#pendingCommunitiesTable th {
+  background-color: #2C98F0;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+#pendingCommunitiesTable tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#pendingCommunitiesTable tr:hover {
+  background-color: #f1f1f1;
+}
+
+#pendingCommunitiesTable td button {
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  background-color: #2C98F0;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#pendingCommunitiesTable td button:hover {
+  background-color: #0056b3;
+}
+/* Action Button Styling */
+.action-button {
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  color: #fff;
+}
+
+.action-button.approve {
+  background-color: #28a745; /* Green for approve */
+}
+
+.action-button.approve:hover {
+  background-color: #218838;
+}
+
+.action-button.reject {
+  background-color: #dc3545; /* Red for reject */
+}
+
+.action-button.reject:hover {
+  background-color: #c82333;
+}
+/* Custom Alert Box */
+.custom-alert {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.custom-alert-content {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+}
+
+.custom-alert-content p {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.custom-alert-content button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.custom-alert-content button:hover {
+  background-color: #0056b3;
+}
+@media only screen and (max-width: 1200px) {
         .sidebar{
             width: 70px;  
         }
@@ -353,123 +448,141 @@
         }
 
     }
-    /* @media only screen and (max-width: 560px){
-
-} */
-
-    
-  </style>
+   </style>
 </head>
 <body>
-    <input type="checkbox" id="nav-toggle">
-    <div class="sidebar">
-        <div class="sidebar-brand">
-            <h2><img src="src=images/Logo.png" alt=""><span>Smart Tutor</span></h2>
-        </div>
-        <div class="sidebar-menu">
-            <ul>
-                <li>
-                    <a href="" class="active"><span class="las la-home"></span>
-                    <span>Dashboard</span></a>
-                </li>
-                <li>
-                    <a href="tutor_manage_student_requests.html" onclick="saveUserToSession()"><span class="las la-user"></span>
-                    <span>Manage student requests</span></a>
-                </li>
-                <li>
-                    <a href="created_communities.html"><span class="fa-solid fa-people-group"></span>
-                    <span>Created Communities</span></a>
-                </li>
-                <li>
-                    <a href="tutor_create_community.html"><span class="fa-solid fa-people-roof"></span>
-                    <span>Create New Community</span></a>
-                </li>
-                <li>
-                    <a href="loginpage.html"><span class="fa-solid fa-right-from-bracket"></span>
-                    <span>Logout</span></a>
-                </li>
-            </ul>
-        </div>
+  <input type="checkbox" id="nav-toggle">
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <!-- <a href="/" class="logo"><span></span></a> -->
+      <h2><img src="src=images/Logo.png" alt=""><span >Smart Tutor</span></h2>
     </div>
+    <div class="sidebar-menu">
+      <ul>
+        <li>
+          <a href="admin_dashboard.html" ><span class="las la-home"></span>
+          <span>Dashboard</span></a>
+        </li>
+        <li>
+          <a href="admin_handle_tutor_profile_status.html"><span class="las la-user"></span>
+          <span>Tutor Profile Status</span></a>
+        </li>
+        <li>
+            <a href="" class="active"><span class="fa-solid fa-people-group"></span>
+            <span>Approve Communities</span></a>
+          </li>
+        <li>
+          <a href="index.html"><span class="fa-solid fa-right-from-bracket"></span>
+          <span>Logout</span></a>
+        </li>
 
-    <div class="main-content">
-        <header>
-            <h2 style="margin-top: 7px;">
-                <label for="nav-toggle">
-                    <img src="images/bluebar2.png" alt="Menu Icon" class="menu-icon">
-                </label>
-                Dashboard
-            </h2>
-          
-            <div class="user-wrapper">
-                <img src="images/user.jpg" width="40px" height="30px" alt="">
-                <div>
-                    <h4 id="userWrapperTutorName">Tutor</h4>
-                    <small>Tutor</small>
-                </div>
-            </div>
-        </header>
-        <main>
-            <div class="container">
-                <div class="profile-header">
-                    <img src="user-photo.jpg" alt="User Photo">
-                    <div>
-                        <h3 id="profileHeaderTutorName"> </h3>
-                        <p id="tutorEmail"> </p>
-                    </div>
-               
-                </div>
-                <div class="profile-details" id="userDetails">
-                </div> 
-            </div>
-        </main>
+      </ul>
     </div>
+  </div>
 
-    <script>
-        fetch('/dashboard')
-        .then(response => response.json())
-        .then(data => {
-            const user = data.user;
+  <div class="main-content">
+    <header >
+        <h2 style="margin-top: 7px;">
+            <label for="nav-toggle">
+                <!-- <span img src="images/bluebar3.png"  alt=""></span> -->
+                <img src="images/bluebar2.png" alt="Menu Icon" class="menu-icon">
+            </label>
+            Dashboard
+        </h2>
+        
+        <div class="user-wrapper">
+            <img src="images/user.jpg" width="40px" height="30px" alt="">
+            <div>
+                <h4 id="userWrapperAdminName">Admin</h4> <!-- Changed ID -->
+                <small>Admin</small>
+            </div>
+        </div>
+    </header>
+    <main>
+      <div class="container">
+        <h1 class="section-title">Pending Communities</h1>
+        <div class="table-wrapper">
+          <table id="pendingCommunitiesTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Subject</th>
+                <th>Created By</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Rows will be populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>    
+  </div>
+  
+  <script>
+    async function fetchPendingCommunities() {
+  const response = await fetch('/api/community/pending');
+  const communities = await response.json();
 
-            // Update the header and profile header with the tutor's name
-            document.getElementById('userWrapperTutorName').textContent = user.Tutor_Name;
-            document.getElementById('profileHeaderTutorName').textContent = user.Tutor_Name;
-            document.getElementById('tutorEmail').textContent = user.Tutor_Email;
+  const tableBody = document.querySelector('#pendingCommunitiesTable tbody');
+  tableBody.innerHTML = '';
 
-            // Display tutor details in the card
-            document.getElementById('userDetails').innerHTML = `
-                <div>
-                    <label for="fullName">Full Name</label>
-                    <div class="info">${user.Tutor_Name}</div>
-                </div>
-                <div>
-                    <label for="nickName">Roll Number</label>
-                    <div class="info">${user.Tutor_Roll_No || 'N/A'}</div>
-                </div>
-                <div>
-                    <label for="email">Email</label>
-                    <div class="info">${user.Tutor_Email}</div>
-                </div>
+  communities.forEach((community) => {
+    const row = document.createElement('tr');
 
+    row.innerHTML = `
+      <td>${community.id}</td>
+      <td>${community.name}</td>
+      <td>${community.description}</td>
+      <td>${community.subject}</td>
+      <td>${community.created_by}</td>
+      <td>
+        <button class="action-button approve" onclick="updateCommunityStatus(${community.id}, 'approved')">Approve</button>
+        <button class="action-button reject" onclick="updateCommunityStatus(${community.id}, 'rejected')">Reject</button>
+      </td>
+    `;
 
-                <div>
-                    <label for="timeZone">Contact Number</label>
-                    <div class="info">${user.Tutor_Number || 'N/A'}</div>
-                </div>
-            `;
+    tableBody.appendChild(row);
+  });
+}
 
-            // Save user data in session storage
-            sessionStorage.setItem('tutorDetails', JSON.stringify(user));
-        });
+async function updateCommunityStatus(communityId, status) {
+  const response = await fetch('/api/community/approve', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ communityId, status }),
+  });
 
-        // Function to save user details to session storage explicitly
-        function saveUserToSession() {
-            const userDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
-            if (!userDetails) {
-                alert("User details are not loaded yet.");
-            }
-        }
-    </script>
+  const result = await response.json();
+  showCustomAlert(result.message); // Use the custom alert
+  fetchPendingCommunities(); // Refresh the table
+}
+
+// Fetch pending communities on page load
+fetchPendingCommunities();
+
+// Custom Alert Function
+function showCustomAlert(message) {
+  const alertBox = document.createElement('div');
+  alertBox.innerHTML = `
+    <div class="custom-alert">
+      <div class="custom-alert-content">
+        <p>${message}</p>
+        <button onclick="closeCustomAlert()">OK</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(alertBox);
+}
+
+function closeCustomAlert() {
+  const alertBox = document.querySelector('.custom-alert');
+  if (alertBox) alertBox.remove();
+}
+
+  </script>
 </body>
-
 </html>

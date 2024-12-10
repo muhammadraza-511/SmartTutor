@@ -27,6 +27,8 @@ db.connect((err) => {
 // Serve the static files
 app.use(express.static(path.join(__dirname, '..')));
 
+// Serve uploaded files statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Serve static files from tutor_pic and tutor_degree folders
 app.use('/tutor_pic', express.static(path.join(__dirname, 'tutor_pic')));
@@ -63,9 +65,11 @@ require('./update_tutor_status')(app, db);
 require('./tutor_manage_student_requests')(app, db);
 require('./tutor_handle_student_request')(app, db);
 
+// Import and use the community module
+require('./communitycreate')(app, db);
 
-
-
+// Import and use the communityPosts module
+require('./community')(app, db);
 
 
 // Start the server

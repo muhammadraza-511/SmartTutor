@@ -62,6 +62,44 @@
             background-color: #bc7314;
             transition-duration: 0.7s;
         }
+
+        /* Overlay and Modal Styling */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 300px;
+            width: 80%;
+        }
+        .modal p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            color: #333;
+        }
+        .modal button {
+            background-color: #2C98F0;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal button:hover {
+            background-color: #00457e;
+        }
     </style>
 </head>
 <body>
@@ -73,22 +111,37 @@
         <button id="verify-btn" class="secondary">Verify OTP</button>
     </div>
 
+    <!-- Overlay and Modal -->
+    <div class="overlay" id="alert-overlay">
+        <div class="modal">
+            <p id="alert-message">Alert Message</p>
+            <button onclick="closeAlert()">OK</button>
+        </div>
+    </div>
+
     <script>
-        // Extract the email from the URL query parameter
+        const emailDisplay = document.getElementById('email-display');
+        const alertOverlay = document.getElementById('alert-overlay');
+        const alertMessage = document.getElementById('alert-message');
+
+        // Extract email from query parameters
         const urlParams = new URLSearchParams(window.location.search);
         const email = urlParams.get('email');
+        emailDisplay.textContent = email || 'Email not provided';
 
-        // Display the email
-        const emailDisplay = document.getElementById('email-display');
-        if (email) {
-            emailDisplay.textContent = email;
-        } else {
-            emailDisplay.textContent = 'Email not provided';
+        // Show alert function
+        function showAlert(message) {
+            alertMessage.textContent = message;
+            alertOverlay.style.display = 'flex';
         }
 
-        // Button click handlers
+        // Close alert function
+        function closeAlert() {
+            alertOverlay.style.display = 'none';
+        }
+
+        // Event listeners for buttons
         document.getElementById('send_otp').addEventListener('click', () => {
-            // Send OTP to the backend
             fetch('/api/send_otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -96,19 +149,18 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    alert(data.message || 'OTP sent successfully!');
+                    showAlert(data.message || 'OTP sent successfully!');
                 })
-                .catch(err => console.error('Error sending OTP:', err));
+                .catch(err => showAlert('Error sending OTP.'));
         });
 
         document.getElementById('verify-btn').addEventListener('click', () => {
             const otp = document.getElementById('otp-input').value.trim();
             if (!otp) {
-                alert('Please enter the OTP.');
+                showAlert('Please enter the OTP.');
                 return;
             }
 
-            // Verify OTP with the backend
             fetch('/api/verify_otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -117,13 +169,13 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.message === 'Verification successful!') {
-                        alert('Verification successful!');
-                        window.close(); // Close the tab
+                        showAlert('Verification successful!');
+                        setTimeout(() => window.close(), 2000); // Close tab after 2 seconds
                     } else {
-                        alert(data.message); // Display error message
+                        showAlert(data.message);
                     }
                 })
-                .catch(err => console.error('Error verifying OTP:', err));
+                .catch(err => showAlert('Error verifying OTP.'));
         });
     </script>
 </body>

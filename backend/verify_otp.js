@@ -1,7 +1,6 @@
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 
-
 module.exports = (app, db) => {
     // Endpoint to handle OTP verification
     app.post('/api/verify_otp', (req, res) => {
@@ -32,7 +31,7 @@ module.exports = (app, db) => {
                     WHERE email = ? AND otp = ?
                 `;
                 
-                db.query(updateSql, [email, otp], (updateErr, updateResults) => {
+                db.query(updateSql, [email, otp], (updateErr) => {
                     if (updateErr) {
                         console.error('Error updating OTP status:', updateErr);
                         return res.status(500).json({ message: 'Error verifying OTP.' });
@@ -41,6 +40,22 @@ module.exports = (app, db) => {
                     // Send success response
                     console.log('OTP verified successfully!');
                     res.status(200).json({ message: 'Verification successful!' });
+
+                    // Schedule deletion of the OTP record after 1 minute
+                    setTimeout(() => {
+                        const deleteSql = `
+                            DELETE FROM otp_table 
+                            WHERE email = ? AND otp = ?
+                        `;
+                        
+                        db.query(deleteSql, [email, otp], (deleteErr) => {
+                            if (deleteErr) {
+                                console.error('Error deleting OTP record:', deleteErr);
+                            } else {
+                                console.log(`OTP record for email: ${email} deleted successfully.`);
+                            }
+                        });
+                    }, 60000); // 60000 ms = 1 minute
                 });
             } else {
                 // No matching OTP found

@@ -51,19 +51,91 @@ module.exports = (app, db) => {
                 `;
 
                 if (action === 'accept') {
-                    const assignQuery = `
-                        INSERT INTO assigned_tutors_record_table (Student_ID, Parent_ID, Tutor_ID)
-                        VALUES (?, ?, ?)
+                    // First check if the entry already exists
+                    const checkExistingQuery = `
+                        SELECT * FROM assigned_tutors_record_table
+                        WHERE Student_ID = ? AND Parent_ID = ? AND Tutor_ID = ?
                     `;
-                    db.query(assignQuery, [Student_ID, Parent_ID, Tutor_ID], (err) => {
+
+                    db.query(checkExistingQuery, [Student_ID, Parent_ID, Tutor_ID], (err, results) => {
                         if (err) {
-                            console.error("Error assigning tutor:", err);
-                            return res.status(500).json({ success: false, message: "Failed to assign tutor" });
+                            console.error("Error checking for existing record:", err);
+                            return res.status(500).json({ success: false, message: "Failed to check for existing record" });
                         }
 
-                        const emailMessage = `Your request has been accepted.\n\nTutor Details:\n${tutorDetails}`;
-                        sendEmail(Student_Email, Parent_Email, 'Request Accepted', emailMessage);
-                        res.json({ success: true, message: "Request accepted and emails sent" });
+                        // If an existing record is found, delete it
+                        if (results.length > 0) {
+                            const deleteQuery = `
+                                DELETE FROM assigned_tutors_record_table
+                                WHERE Student_ID = ? AND Parent_ID = ? AND Tutor_ID = ?
+                            `;
+                            db.query(deleteQuery, [Student_ID, Parent_ID, Tutor_ID], (err) => {
+                                if (err) {
+                                    console.error("Error deleting previous record:", err);
+                                    return res.status(500).json({ success: false, message: "Failed to delete previous record" });
+                                }
+
+                                // Now insert the new record
+                                const assignQuery = `
+                                    INSERT INTO assigned_tutors_record_table (Student_ID, Parent_ID, Tutor_ID)
+                                    VALUES (?, ?, ?)
+                                `;
+                                db.query(assignQuery, [Student_ID, Parent_ID, Tutor_ID], (err) => {
+                                    if (err) {
+                                        console.error("Error assigning tutor:", err);
+                                        return res.status(500).json({ success: false, message: "Failed to assign tutor" });
+                                    }
+
+                                    // Update tutor_approving_status to 'approved'
+                                    const updateStatusQuery = `
+                                        UPDATE student_approve_tutor_status_table
+                                        SET tutor_approving_status = 'approved'
+                                        WHERE Student_ID = ? AND Tutor_ID = ?
+                                    `;
+
+                                    db.query(updateStatusQuery, [Student_ID, Tutor_ID], (err) => {
+                                        if (err) {
+                                            console.error("Error updating tutor approving status:", err);
+                                            return res.status(500).json({ success: false, message: "Failed to update tutor approving status" });
+                                        }
+
+                                        const emailMessage = `Your request has been accepted.\n\nTutor Details:\n${tutorDetails}`;
+                                        sendEmail(Student_Email, Parent_Email, 'Request Accepted', emailMessage);
+                                        res.json({ success: true, message: "Request accepted, status updated, and emails sent" });
+                                    });
+                                });
+                            });
+                        } else {
+                            // If no existing record, insert the new record directly
+                            const assignQuery = `
+                                INSERT INTO assigned_tutors_record_table (Student_ID, Parent_ID, Tutor_ID)
+                                VALUES (?, ?, ?)
+                            `;
+                            db.query(assignQuery, [Student_ID, Parent_ID, Tutor_ID], (err) => {
+                                if (err) {
+                                    console.error("Error assigning tutor:", err);
+                                    return res.status(500).json({ success: false, message: "Failed to assign tutor" });
+                                }
+
+                                // Update tutor_approving_status to 'approved'
+                                const updateStatusQuery = `
+                                    UPDATE student_approve_tutor_status_table
+                                    SET tutor_approving_status = 'approved'
+                                    WHERE Student_ID = ? AND Tutor_ID = ?
+                                `;
+
+                                db.query(updateStatusQuery, [Student_ID, Tutor_ID], (err) => {
+                                    if (err) {
+                                        console.error("Error updating tutor approving status:", err);
+                                        return res.status(500).json({ success: false, message: "Failed to update tutor approving status" });
+                                    }
+
+                                    const emailMessage = `Your request has been accepted.\n\nTutor Details:\n${tutorDetails}`;
+                                    sendEmail(Student_Email, Parent_Email, 'Request Accepted', emailMessage);
+                                    res.json({ success: true, message: "Request accepted, status updated, and emails sent" });
+                                });
+                            });
+                        }
                     });
                 } else if (action === 'reject') {
                     const deleteQuery = `
