@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <title>Student Search for Tutor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    #studentDetails, #searchResults, #searchSection {
+      margin: 20px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      background-color: #f9f9f9;
+    }
+    .v-card {
+      display: flex;
+      align-items: flex-start;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .v-card img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-right: 16px;
+    }
+    .v-card h3 {
+      margin: 0;
+      color: #0056b3;
+    }
+    .v-card p {
+      margin: 4px 0;
+    }
+    button {
+      background-color: #0056b3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #003d80;
+    }
+  </style>
+</head>
+<body>
+    <h1>Search for Tutor</h1>
+    <p>Click <a href="student_dashboard.html">here</a> to Go to home page.</p>
+  
+    <!-- Student Details Section -->
+    <div id="studentDetails">
+      <h2>Logged-In Student Details</h2>
+      <p><strong>Student ID:</strong> <span id="studentID">Loading...</span></p>
+      <p><strong>Roll Number:</strong> <span id="studentRollNo">Loading...</span></p>
+      <p><strong>Email:</strong> <span id="studentEmail">Loading...</span></p>
+    </div>
+  
+    <!-- Search Section -->
+    <div id="searchSection">
+      <h2>Search Tutors</h2>
+      <input type="text" id="searchSubject" placeholder="Enter subject (e.g., Math)" />
+      <select id="searchAvailability">
+        <option value="Anytime">Anytime</option>
+        <option value="Morning">Morning</option>
+        <option value="Afternoon">Afternoon</option>
+        <option value="Evening">Evening</option>
+        <option value="Midnight">Midnight</option>
+      </select>
+      <input type="number" id="searchPrice" placeholder="Enter maximum price (optional)" />
+      <input type="text" id="searchCountry" placeholder="Search by country (optional)" />
+      <input type="text" id="searchByName" placeholder="Search by tutor name (optional)" />
+      <input type="text" id="searchLanguage" placeholder="Enter language (e.g., English)" />
+      <input type="number" id="searchGrade" placeholder="Enter grade (e.g., 9)" />
+      <button id="searchButton">Search</button>
+    </div>
+  
+    <!-- Search Results Section -->
+    <div id="searchResults">
+      <h2>Search Results</h2>
+      <p id="noResultsMessage" style="display: none;">No tutors found for the given criteria.</p>
+    </div>
+  
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const storedData = sessionStorage.getItem('studentData');
+        if (storedData) {
+          const user = JSON.parse(storedData);
+          document.getElementById('studentID').textContent = user.Student_ID || 'N/A';
+          document.getElementById('studentRollNo').textContent = user.Student_roll_No || 'N/A';
+          document.getElementById('studentEmail').textContent = user.Student_Email || 'N/A';
+        } else {
+          document.getElementById('studentDetails').innerHTML = `
+            <p>No student details found. Please log in again.</p>
+          `;
+        }
+      });
+  
+      document.getElementById('searchButton').addEventListener('click', () => {
+        const subject = document.getElementById('searchSubject').value.trim();
+        const availability = document.getElementById('searchAvailability').value;
+        const price = document.getElementById('searchPrice').value;
+        const country = document.getElementById('searchCountry').value.trim();
+        const name = document.getElementById('searchByName').value.trim();
+        const language = document.getElementById('searchLanguage').value.trim();
+        const grade = document.getElementById('searchGrade').value.trim();
+
+        fetch('/parent_search_for_tutor', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subject, availability, price: price || null, country: country || null, name, language, grade: grade || null })
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('No tutors found for the given criteria.');
+            }
+            return response.json();
+          })
+          .then(data => {
+            const resultsContainer = document.getElementById('searchResults');
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            resultsContainer.innerHTML = '<h2>Search Results</h2>';
+  
+            if (data.tutors && data.tutors.length > 0) {
+              noResultsMessage.style.display = 'none';
+              data.tutors.forEach(tutor => {
+                const card = document.createElement('div');
+                card.className = 'v-card';
+                card.innerHTML = `
+                  <img src="${tutor.imagePath}" alt="${tutor.Tutor_Name}'s picture">
+                  <div>
+                    <h3>${tutor.Tutor_Name}</h3>
+                    <p><strong>Email:</strong> ${tutor.Tutor_Email}</p>
+                    <p><strong>Phone:</strong> ${tutor.Tutor_Number}</p>
+                    <p><strong>Subjects:</strong> ${tutor.tutor_teaches_subject}</p>
+                    <p><strong>Experience:</strong> ${tutor.tutor_experience} years</p>
+                    <p><strong>Fee:</strong> $${tutor.tutor_teaching_fee}/hour</p>
+                    <p><strong>Introduction:</strong> ${tutor.tutor_introduction}</p>
+                    <p><strong>Languages:</strong> ${tutor.tutor_language}</p>
+                    <p><strong>Teaches to Grade:</strong> ${tutor.tutor_teaches_to_grade}</p>
+
+                  </div>
+                `;
+                resultsContainer.appendChild(card);
+              });
+            } else {
+              noResultsMessage.style.display = 'block';
+            }
+          })
+          .catch(error => {
+            console.error('Error searching tutors:', error);
+            document.getElementById('searchResults').innerHTML = `
+              <h2>Search Results</h2>
+              <p>${error.message}</p>
+            `;
+          });
+      });
+    </script>
+</body>
+</html>

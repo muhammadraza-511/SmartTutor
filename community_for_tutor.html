@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel= "stylesheet" href= "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" >
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Community Chat</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+      /* General Page Styles */
+      *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        list-style-type: none;
+        text-decoration: none;
+        font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+    }
+    .logo {
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+    font-family: "Montserrat";
+    color: #000000;
+    text-decoration: none;
+    color: inherit;
+}
+.logo span{
+    color: #f4f4f4;
+}
+    .sidebar{
+        width: 345px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background: #2C98F0;
+        z-index: 100;
+        transition: width 300ms;
+    }
+    .sidebar-brand{
+        height: 90px;
+        padding: 1rem 0rem 1rem 2rem;
+        color: #fff;
+    }
+    .sidebar-brand span{
+        display: inline-block;
+        padding-right: 1rem;
+    }
+    .sidebar-menu{
+        margin-top: 1rem;
+    }
+    .sidebar-menu li{
+        width: 100%;
+        margin-bottom: 1.3rem;
+        padding-left: 2rem;
+
+    }
+    .sidebar-menu a{
+        padding-left: 1rem;
+        display: block;
+        color: #fff;
+        font-size: 1.1rem;
+        padding-top: 1rem;
+    }
+    .sidebar-menu a.active{
+        background: #fff;
+        padding-top: 1rem ;
+        padding-bottom: 1rem ;
+        color: #2C98F0;
+        border-radius: 30px 0px 0px 30px;
+    }
+    .sidebar-menu a:hover{
+        background: #fff;
+        padding-top: 1rem ;
+        padding-bottom: 1rem ;
+        color: #2C98F0;
+        border-radius: 30px 0px 0px 30px;
+        transition-duration: 0.5s;
+    }
+    .sidebar-menu a span :first-child{
+        font-size: 1.5rem;
+        padding-right: 1rem;
+    }
+    .menu-icon {
+    width: 33px;
+    height: 33px;
+    margin-top: -2px; /* Adjust this value to move the image down */
+    vertical-align: middle;
+    }
+    #nav-toggle{
+        display: none;
+        
+    }
+    #nav-toggle:checked + .sidebar{
+        width: 70px;  
+    }
+    #nav-toggle:checked + .sidebar .sidebar-brand ,
+    #nav-toggle:checked + .sidebar li {
+        padding-left: 1rem;
+        text-align: center;
+    }
+    #nav-toggle:checked + .sidebar li a{
+        padding-left: 0rem;
+    }
+    #nav-toggle:checked + .sidebar li a span{
+        padding-left: 0rem;
+    }
+    #nav-toggle:checked + .sidebar .sidebar-brand h2 span:last-child,
+    #nav-toggle:checked + .sidebar li a span:last-child{
+        display: none;  
+    }
+    #nav-toggle:checked ~ .main-content{
+        margin-left: 70px;  
+    }
+    #nav-toggle:checked ~ .main-content header{
+        width: calc(100% - 70px);  
+        left: 70px;
+    }
+    .main-content{
+        transition: margin-left 300ms;
+        margin-left: 345px;
+    }
+    header{
+        background: #fff;
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        position: fixed;
+        left: 345px;
+        width: calc(100% - 345px);
+        top: 0;
+        z-index: 100;
+        transition: left 300ms;
+    }
+    header h2{
+        color: #222;
+    }
+    header label span{
+        font-size: 1.7rem;
+        padding-right: 1rem;
+
+    }
+    .search-wrapper{
+        border: 1px solid #ccc;
+        /* border-radius: 25px; */
+        height: 50px;
+        display: flex;
+        align-items: center;
+        overflow-x: hidden;
+    }
+    .search-wrapper span{
+        display: inline-block;
+        padding: 0rem 1rem;
+        font-size: 1.5rem;
+    }
+    .search-wrapper input{
+        height: 100%;
+        padding: .5rem;
+
+    }
+    .user-wrapper{
+        display: flex;
+        align-items: center;
+    }
+    .user-wrapper img{
+        border-radius: 50%;
+        margin-left: 1rem;
+
+    }
+    .user-wrapper small{
+        display: inline-block;
+        color: black;
+        
+    }
+    main {
+    margin-top: 90px;
+    padding: 2rem 1.5rem;
+    width: 100%;
+    /* width: calc(100% - 345px);  */
+    background: #f0f0f0;
+    min-height: calc(100vh - 90px);
+}
+
+.container {
+    width: 100%; /* Occupy the full width */
+    margin: 0; /* Remove any margins */
+    background: transparent; /* Remove background for full-page effect */
+    box-shadow: none; /* Remove shadow */
+    padding: 20px; /* Retain padding for spacing */
+}
+
+/* Chat Section Styling */
+.chat-section {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: calc(100vh - 110px); /* Full height minus header and padding */
+    overflow: hidden;
+}
+
+.chat-container {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.chat-message {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #e7f3ff;
+    color: #333;
+    font-size: 0.9rem;
+    word-wrap: break-word;
+}
+
+.chat-message strong {
+    color: #2C98F0;
+}
+
+.chat-message img {
+    max-width: 100%;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.chat-input {
+    display: flex;
+    gap: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #ffffff;
+}
+
+.chat-input input {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    font-size: 0.9rem;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+}
+
+.chat-input button {
+    background-color: #2C98F0;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.chat-input button:hover {
+    background-color: #1a6fb4;
+}
+
+.file-upload {
+    display: flex;
+    gap: 10px;
+}
+
+.file-upload input {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #f0f0f0;
+}
+
+.file-upload button {
+    background-color: #2C98F0;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.file-upload button:hover {
+    background-color: #1a6fb4;
+}
+
+    </style>
+  </head>
+  <body>
+    <input type="checkbox" id="nav-toggle">
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h2><img src="src=images/Logo.png" alt=""><span>Smart Tutor</span></h2>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li>
+                    <a href="tutor_dashboard.html" ><span class="las la-home"></span>
+                    <span>Dashboard</span></a>
+                </li>
+                <li>
+                    <a href="" class="active"><span class="fa-solid fa-people-group"></span>
+                    <span>Created Communities</span></a>
+                </li>
+                <li>
+                    <a href="created_communities.html"><span class="fa-solid fa-people-roof"></span>
+                    <span>Back to Communities</span></a>
+                </li>
+                <li>
+                    <a href="loginpage.html"><span class="fa-solid fa-right-from-bracket"></span>
+                    <span>Logout</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h2 style="margin-top: 7px;">
+                <label for="nav-toggle">
+                    <img src="images/bluebar2.png" alt="Menu Icon" class="menu-icon">
+                </label>
+                Dashboard
+            </h2>
+            <div class="search-wrapper">
+                <span class="las la-search"></span>
+                <input type="search" placeholder="Search here" />
+            </div>
+            <div class="user-wrapper">
+                <img src="images/user.jpg" width="40px" height="30px" alt="">
+                <div>
+                    <h4 id="userWrapperTutorName">Tutor</h4>
+                    <small>Tutor</small>
+                </div>
+            </div>
+        </header>
+        <main>
+          <h2>Community Chat</h2>
+          <div class="container">
+              <div class="chat-section">
+                  <!-- Chat Messages Container -->
+                  <div id="chatMessages" class="chat-container"></div>
+      
+                  <!-- Message Input -->
+                  <div class="chat-input">
+                      <input type="text" id="messageInput" placeholder="Type your message..." />
+                      <button onclick="sendMessage()">Send</button>
+                  </div>
+      
+                  <!-- File Upload -->
+                  <div class="file-upload">
+                      <input type="file" id="fileInput" />
+                      <button onclick="uploadFile()">Upload File</button>
+                  </div>
+              </div>
+          </div>
+      </main>
+      
+    </div>
+    
+
+    <script>
+      const tutorDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
+    
+    // Display tutor details on the page
+    if (tutorDetails) {
+        document.getElementById('userWrapperTutorName').textContent = tutorDetails.Tutor_Name;
+    } else {
+        document.getElementById('tutorDetails').innerHTML = `
+            <p>Error: Tutor details not found. Please go back to the dashboard.</p>
+        `;
+    }
+      // Function to extract community ID from URL
+      function getCommunityId() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get("communityId");
+      }
+
+      // Function to get tutor ID and Name from session storage
+      function getTutorData() {
+        const storedData = sessionStorage.getItem("tutorDetails");
+        if (!storedData) {
+          alert("Session expired. Redirecting to login.");
+          window.location.href = "loginpage.html"; // Redirect to login
+          return null;
+        }
+        return JSON.parse(storedData); // Returns {Tutor_ID, Tutor_Name}
+      }
+
+      // Function to send a message
+      function sendMessage() {
+        const tutorData = getTutorData();
+        const communityId = getCommunityId();
+        if (!tutorData || !communityId) return;
+
+        const message = document.getElementById("messageInput").value; // Get the message input value
+
+        if (!message.trim()) {
+          alert("Message cannot be empty");
+          return;
+        }
+
+        const role = "tutor"; // Set role to tutor for message sending
+
+        axios
+          .post("/api/community/chat", {
+            userId: tutorData.Tutor_ID,
+            communityId,
+            message,
+            role,
+          })
+          .then((response) => {
+            // Append the new text message to the chat container
+            appendMessageToChat(
+              message,
+              "text",
+              tutorData.Tutor_Name,
+              role
+            );
+            document.getElementById("messageInput").value = ""; // Clear the input field
+          })
+          .catch((error) => {
+            console.error("Error sending message:", error);
+            alert("An error occurred while sending the message.");
+          });
+      }
+
+      // Function to upload a file
+      function uploadFile() {
+        const tutorData = getTutorData();
+        const communityId = getCommunityId();
+        if (!tutorData || !communityId) return;
+
+        const file = document.getElementById("fileInput").files[0]; // Get the selected file
+
+        if (!file) {
+          alert("Please select a file to upload");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("userId", tutorData.Tutor_ID); // Use Tutor_ID for file upload
+        formData.append("communityId", communityId);
+        formData.append("role", "tutor"); // Role is tutor
+
+        axios
+          .post("/api/community/upload", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          })
+          .then((response) => {
+            // Append the uploaded file to the chat container
+            appendMessageToChat(
+              response.data.fileUrl,
+              "file",
+              tutorData.Tutor_Name,
+              "tutor"
+            );
+          })
+          .catch((error) => {
+            console.error("Error uploading file:", error);
+            alert("An error occurred while uploading the file.");
+          });
+      }
+
+      // Append Message Function
+      function appendMessageToChat(content, type, senderName, senderRole) {
+        const chatContainer = document.getElementById("chatMessages");
+        const messageElement = document.createElement("div");
+        messageElement.classList.add("chat-message");
+
+        const roleTag = senderRole === "tutor" ? "(Tutor)" : "(Student)"; // Adjust role tag
+
+        if (type === "text") {
+          messageElement.innerHTML = `<strong>${senderName} ${roleTag}:</strong> ${content}`;
+        } else if (type === "file") {
+          const fileType = content.split(".").pop().toLowerCase();
+
+          if (["jpg", "jpeg", "png", "gif"].includes(fileType)) {
+            messageElement.innerHTML = `<strong>${senderName} ${roleTag}:</strong><br><img src="${content}" alt="Image">`;
+          } else if (fileType === "pdf") {
+            messageElement.innerHTML = `<strong>${senderName} ${roleTag}:</strong><br><a href="${content}" target="_blank">View PDF</a>`;
+          } else {
+            messageElement.innerHTML = `<strong>${senderName} ${roleTag}:</strong><br><a href="${content}" target="_blank">View File</a>`;
+          }
+        }
+
+        chatContainer.appendChild(messageElement);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      // Fetch messages and files for the community when the page loads
+      window.onload = function () {
+        const communityId = getCommunityId();
+        if (!communityId) return;
+
+        axios
+          .get(`/api/community/chat-and-files/${communityId}`)
+          .then((response) => {
+            const messages = response.data;
+            messages.forEach((item) => {
+              if (item.type === "message") {
+                appendMessageToChat(
+                  item.message,
+                  "text",
+                  item.sender_name,
+                  item.sender_role
+                );
+              } else if (item.type === "file") {
+                appendMessageToChat(
+                  item.file_url,
+                  "file",
+                  item.sender_name,
+                  item.sender_role
+                );
+              }
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching messages:", error);
+          });
+      };
+    </script>
+  </body>
+</html>

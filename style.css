@@ -1,0 +1,443 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+html {
+    scroll-behavior: smooth;
+  }
+
+header {
+    background: #fff;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+    font-family: "Montserrat";
+    color: #000000;
+    text-decoration: none;
+    color: inherit;
+}
+.logo span{
+    color: #2C98F0;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+}
+
+nav ul li {
+    margin-left: 30px; /* Increased space between links */
+}
+
+nav ul li a {
+    text-decoration: none;
+    /* font-weight: bold; */
+    color: #333;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #2C98F0; /* Change color on hover */
+}
+nav ul li::after {
+    content: '';
+    width: 0%;
+    height: 2px;
+    background: #2C98F0;
+    display: block;
+    margin: auto;
+    transition: 0.5s;
+}
+nav ul li:hover::after {
+    width: 100%;
+}
+
+.auth-buttons {
+    display: flex;
+}
+
+.auth-buttons a {
+    margin-left: 10px;
+    padding: 5px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+}
+
+.login {
+    background-color: #2C98F0;
+    transition: background-color 0.3s ease;
+}
+
+.login:hover {
+    background-color: #00457e;
+}
+.signup {
+    background-color: #FFAB40;
+    transition: background-color 0.3s ease;
+}
+.signup:hover{
+    background-color: #bc7314;
+}
+
+.hero {
+    /* background-color: #F8FBFF; */
+    background-image: url('images/background1.png');
+    background-size: cover; /* Ensures the image covers the entire section */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    padding: 50px 0; /* Adjust padding as needed */
+    padding: 60px 20px;
+}
+
+.hero-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 8%;
+    padding-right: 8%;
+}
+
+.hero-text {
+    max-width: 50%;
+}
+
+.hero-content h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #333;
+}
+
+.hero-content h1 span {
+    color: #2C98F0;
+}
+
+.search-bar {
+    margin-top: 20px;
+}
+
+.search-bar input {
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.search-bar button {
+    padding: 15px 30px; /* Increased padding to make it larger */
+    background-color: #2C98F0; /* Default background color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px; /* Optional: increase font size for better visibility */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.search-bar button:hover {
+    background-color: #1A76C2; /* Hover background color */
+}
+
+.hero-image img {
+    width: 450px;
+    border-radius: 10px;
+}
+
+/* Features section */
+.features {
+    display: flex;
+    justify-content: space-around;
+    padding: 40px 20px;
+    background-color: #4aaaf9;
+}
+
+.feature-card {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    width: 30%;
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+}
+
+.feature-card img {
+    width: 60px;
+    margin-bottom: 10px;
+}
+
+.feature-card h3 {
+    font-size: 20px;
+    color: #2C98F0;
+    margin-bottom: 10px;
+}
+
+.feature-card p {
+    font-size: 16px;
+    color: #333;
+}
+  
+/* Instructor section */
+.instructors {
+    text-align: center;
+    padding: 40px 15px;
+  }
+  
+  .instructors h2 {
+    font-size: 32px;
+    color: #333;
+  }
+  
+  .instructors-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+  }
+  
+  .instructor-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    width: 200px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .instructor-card img {
+    width: 90%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .instructor-card h4 {
+    font-size: 20px;
+    color: #333;
+    margin: 10px 0 5px;
+  }
+  
+  .instructor-card p {
+    color: #777;
+    font-size: 16px;
+  }
+  
+  /* Achievements section */
+  .achievements {
+    background-image: url('images/background1.png');
+    background-size: cover; /* Ensures the image covers the entire section */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    padding: 50px 0; /* Adjust padding as needed */
+    text-align: center;
+    /* background-color: #f9f9f9; */
+    padding: 50px 20px;
+  }
+  
+  .achievements h2 {
+    font-size: 32px;
+    color: #333;
+  }
+  
+  .achievements .underline {
+    margin-top: 2px;
+    width: 100px;
+  }
+  
+  .achievements-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 30px;
+  }
+  
+  .achievement-item {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    width: 150px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .achievement-item .achievement-number {
+    font-size: 36px;
+    color: #3498db;
+    font-weight: bold;
+  }
+  
+  .achievement-item p {
+    color: #777;
+    font-size: 18px;
+    margin-top: 10px;
+  }
+  
+  /* Student Feedback Section */
+.student-feedback {
+    background-color: #ffffff;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.student-feedback h2 {
+    font-size: 36px;
+    font-weight: 600;
+    color: #333;
+}
+
+.student-feedback h2 span {
+    color: #2C98F0;
+}
+
+.student-feedback p {
+    color: #666;
+    margin-bottom: 40px;
+}
+
+.feedback-cards {
+    display: flex;
+    justify-content: space-around;
+}
+
+.feedback-card {
+    background-color: #f1f1f1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    width: 40%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.feedback-card img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.feedback-content h3 {
+    font-size: 18px;
+    color: #333;
+}
+
+.feedback-content .role {
+    font-size: 14px;
+    color: #999;
+    margin-bottom: 10px;
+}
+
+.feedback-content p {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Footer Section */
+footer {
+    background-color: #f1f1f1;
+    padding: 40px 20px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.footer-brand {
+    text-align: left;
+}
+
+.footer-brand h2 {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+}
+
+.footer-brand h2 span {
+    color: #2C98F0;
+}
+
+.footer-brand p {
+    margin: 10px 0;
+}
+
+.social-icons a {
+    margin-right: 10px;
+}
+
+.footer-links {
+    text-align: left;
+}
+
+.footer-links h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.footer-links ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links ul li {
+    margin-bottom: 10px;
+}
+
+.footer-links ul li a {
+    text-decoration: none;
+    color: #666;
+}
+
+.footer-subscribe h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.footer-subscribe p {
+    margin-bottom: 10px;
+}
+
+.footer-subscribe input {
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.footer-subscribe button {
+    padding: 10px 20px;
+    background-color: #2C98F0;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.footer-subscribe button:hover {
+    background-color: #2C75C0;
+}
+  

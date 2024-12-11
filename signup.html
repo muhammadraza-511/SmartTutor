@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - SmartTutor</title>
+    <style>
+        /* Your existing styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+            background-color: #f7f7f7;
+        }
+
+        header {
+            background: #fff;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 30px;
+            font-weight: bold;
+            font-style: italic;
+            font-family: "Montserrat";
+            color: #000000;
+            text-decoration: none;
+            color: inherit;
+        }
+        .logo span{
+            color: #2C98F0;
+        }
+
+        .auth-buttons {
+            display: flex;
+        }
+
+        .auth-buttons a {
+            margin-left: 10px;
+            padding: 5px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .login {
+            background-color: #2C98F0;
+            transition: background-color 0.3s ease;
+        }
+
+        .login:hover {
+            background-color: #00457e;
+        }
+
+        .signup {
+            background-color: #FFAB40;
+            transition: background-color 0.3s ease;
+        }
+        .signup:hover{
+            background-color: #bc7314;
+        }
+
+        main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0;
+            height: 100vh;
+        }
+
+        /* Section with the blue background */
+        .blue-background {
+            width: 50%;
+            background-color: #00457e;
+            background-image: url('images/bluebackgroung.jpeg');
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 50px;
+        }
+
+        .signup-image img {
+            max-width: 89%;
+            z-index: 1;
+            position: relative;
+        }
+
+        /* Section for the signup form */
+        .signup-form-container {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f7f7f7;
+            height: 100vh;
+        }
+
+        .signup-form {
+            width: 80%;
+            background-color: rgb(255, 255, 255); 
+            padding: 30px;
+            margin-top: 35px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .signup-form h2 {
+            margin-bottom: 20px;
+            color: #2C98F0;
+            text-align: center;
+        }
+
+        .signup-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .signup-form input:hover {
+            background-color: rgba(0, 128, 128, 0.1); 
+            color: #000000;
+            border-color: #2C98F0;
+        }
+
+        .signup-form input:focus {
+            background-color: rgba(115, 131, 131, 0.2);
+            color: #000000;
+            outline: none;
+            border-color: #2C98F0;
+        }
+
+        .signup-form button {
+            width: 100%;
+            padding: 12px;
+            background-color: #2C98F0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .signup-form button:hover {
+            background-color: #2670ad;
+        }
+
+        .role-selection {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .role-selection button {
+            flex: 1;
+            margin-right: 10px;
+            background-color: #2C98F0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .role-selection button:last-child {
+            margin-right: 0;
+        }
+
+        .role-selection button.active {
+            background-color: #096fc3;
+        }
+
+        .student-fields, .tutor-fields, .signup-form button[type="submit"] {
+            display: none;
+        }
+        /* Overlay and Alert Styling */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.alert-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 300px;
+}
+
+.alert-box h3 {
+    color: #000000;
+    margin-bottom: 10px;
+}
+
+.alert-box p {
+    color: #444;
+    margin-bottom: 20px;
+}
+
+.alert-box button {
+    background-color: #2C98F0;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.alert-box button:hover {
+    background-color: #2670ad;
+}
+        @media (max-width: 768px) {
+            main {
+                flex-direction: column;
+            }
+
+            .blue-background {
+                width: 100%;
+                height: 50vh;
+            }
+
+            .signup-form-container {
+                width: 100%;
+                height: auto;
+            }
+
+            .signup-form {
+                width: 90%;
+            }
+        }
+    </style>
+
+    <script>
+        function showFields(role) {
+            document.querySelector('.student-fields').style.display = 'none';
+            document.querySelector('.tutor-fields').style.display = 'none';
+            document.querySelector('.signup-form button[type="submit"]').style.display = 'none';
+    
+            const buttons = document.querySelectorAll('.role-selection button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+    
+            if (role === 'student') {
+                document.querySelector('.student-fields').style.display = 'block';
+                document.querySelector('.role-selection button:first-child').classList.add('active');
+            } else if (role === 'tutor') {
+                document.querySelector('.tutor-fields').style.display = 'block';
+                document.querySelector('.role-selection button:last-child').classList.add('active');
+            }
+    
+            document.querySelector('.signup-form button[type="submit"]').style.display = 'block';
+        }
+    
+        function validatePassword(password) {
+            // Ensure password is at least 7 characters long and contains at least one number and one special character
+            const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{7,}$/;
+            return passwordRegex.test(password);
+        }
+    
+        function generateStudentRollNo() {
+            const year = new Date().getFullYear().toString().slice(-2); // Last two digits of the current year
+            const randomDigits = Math.floor(1000 + Math.random() * 9000); // Random 4-digit number
+            return `${year}S-${randomDigits}`;
+        }
+    
+        function generateParentRollNo(studentRollNo) {
+            return studentRollNo.replace('S', 'P'); // Replace 'S' with 'P'
+        }
+        function showAlert(title, message) {
+    document.getElementById('alertTitle').textContent = title;
+    document.getElementById('alertMessage').textContent = message;
+    document.getElementById('alertOverlay').style.display = 'flex';
+}
+
+function closeAlert() {
+    document.getElementById('alertOverlay').style.display = 'none';
+}
+        function submitForm(event) {
+            event.preventDefault();
+            let role = document.querySelector('.role-selection .active').innerText.toLowerCase();
+            let data = {};
+    
+            if (role === 'student') {
+                const studentPassword = document.querySelector('input[name="student_password"]').value;
+                const studentConfirmPassword = document.querySelector('input[name="student_confirm_password"]').value;
+                const studentContact = document.querySelector('input[name="student_contact"]').value;
+                const parentContact = document.querySelector('input[name="parent_contact"]').value;
+                const studentEmail = document.querySelector('input[name="student_email"]').value;
+                const parentEmail = document.querySelector('input[name="parent_email"]').value;
+    
+                // Generate Student Roll Number
+                const studentRollNo = generateStudentRollNo();
+                const parentRollNo = generateParentRollNo(studentRollNo);
+    
+                data = {
+                    role: 'student',
+                    fullname: document.querySelector('input[name="student_fullname"]').value,
+                    username: document.querySelector('input[name="student_username"]').value,
+                    email: studentEmail,
+                    contact: studentContact,
+                    parent_email: parentEmail,
+                    parent_contact: parentContact,
+                    password: studentPassword,
+                    confirm_password: studentConfirmPassword,
+                    student_roll_no: studentRollNo,
+                    parent_roll_no: parentRollNo
+                };
+    
+                // Validate password requirements
+                if (!validatePassword(studentPassword)) {
+                    
+                    showAlert("Student password must be at least 7 characters long and contain at least one number and one special character.");
+                    return;
+                }
+    
+                // Check if passwords match
+                if (studentPassword !== studentConfirmPassword) {
+                    showAlert("Passwords do not match for the student form.");
+                    return;
+                }
+    
+                // Check if student and parent contact numbers are different
+                if (studentContact === parentContact) {
+                    showAlert("Student and parent contact numbers must be different.");
+                    return;
+                }
+    
+                // Check if student and parent emails are different
+                if (studentEmail === parentEmail) {
+                    showAlert("Student and parent emails must be different.");
+                    return;
+                }
+    
+                // Validate required fields for students
+                for (const key in data) {
+                    if (!data[key]) {
+                        showAlert(`${key.replace(/_/g, ' ').toUpperCase()} is required.`);
+                        return;
+                    }
+                }
+            } else if (role === 'tutor') {
+                const tutorPassword = document.querySelector('input[name="tutor_password"]').value;
+                const tutorConfirmPassword = document.querySelector('input[name="tutor_confirm_password"]').value;
+    
+                // Roll number generation for tutors based on current year
+                const year = new Date().getFullYear().toString().slice(-2); // Last two digits of the current year
+                const randomDigits = Math.floor(1000 + Math.random() * 9000); // 4 random digits
+                const tutorRollNumber = `${year}T-${randomDigits}`;
+    
+                data = {
+                    role: 'tutor',
+                    fullname: document.querySelector('input[name="tutor_fullname"]').value,
+                    username: document.querySelector('input[name="tutor_username"]').value,
+                    email: document.querySelector('input[name="tutor_email"]').value,
+                    contact: document.querySelector('input[name="tutor_contact"]').value,
+                    password: tutorPassword,
+                    confirm_password: tutorConfirmPassword,
+                    roll_number: tutorRollNumber
+                };
+    
+                // Validate password requirements
+                if (!validatePassword(tutorPassword)) {
+                    showAlert("Tutor password must be at least 7 characters long and contain at least one number and one special character.");
+                    return;
+                }
+    
+                // Check if passwords match
+                if (tutorPassword !== tutorConfirmPassword) {
+                    showAlert("Passwords do not match for the tutor form.");
+                    return;
+                }
+    
+                // Validate required fields for tutors
+                for (const key in data) {
+                    if (!data[key]) {
+                        showAlert(`${key.replace(/_/g, ' ').toUpperCase()} is required.`);
+                        return;
+                    }
+                }
+            }
+            
+            fetch('/api/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else if(data.action === 'open_otp_page'){
+                    window.open(data.redirectUrl, '_blank');
+                } else {
+                    //showAlert("Error", data.message);
+
+                    showAlert(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+
+            //showAlert("Success", "You have successfully signed up!");
+        }
+    </script>
+    
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="/" class="logo"><span>Smart</span>Tutor</a>
+            <div class="auth-buttons">
+                <a href="loginpage.html" class="login">Login</a>
+                <a href="index.html" class="signup">Back to Home</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="blue-background">
+            <div class="signup-image">
+                <img src="images/stu.png" alt="Sign Up">
+            </div>
+        </div>
+
+        <div class="signup-form-container">
+            <div class="signup-form">
+                <h2>Signup as</h2>
+                <div class="role-selection">
+                    <button onclick="showFields('student')">Student</button>
+                    <button onclick="showFields('tutor')">Tutor</button>
+                </div>
+
+                <form onsubmit="submitForm(event)">
+                    <!-- Student Fields -->
+                    <div class="student-fields">
+                        <input type="text" name="student_fullname" placeholder="Full Name">
+                        <input type="text" name="student_username" placeholder="User Name">
+                        <input type="email" name="student_email" placeholder="Student Email">
+                        <input type="text" name="student_contact" placeholder="Student Contact Number">
+                        <input type="password" name="student_password" placeholder="Password">
+                        <input type="password" name="student_confirm_password" placeholder="Confirm Password">
+                        <input type="email" name="parent_email" placeholder="Parent Email">
+                        <input type="text" name="parent_contact" placeholder="Parent Contact Number">
+                    </div>
+
+                    <!-- Tutor Fields -->
+                    <div class="tutor-fields">
+                        <input type="text" name="tutor_fullname" placeholder="Full Name">
+                        <input type="text" name="tutor_username" placeholder="Tutor User Name">
+                        <input type="email" name="tutor_email" placeholder="Email">
+                        <input type="text" name="tutor_contact" placeholder="Contact Number">
+                        <input type="password" name="tutor_password" placeholder="Password">
+                        <input type="password" name="tutor_confirm_password" placeholder="Confirm Password">
+                    </div>
+
+                    <button type="submit">Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <div class="overlay" id="alertOverlay">
+        <div class="alert-box">
+            <h3 id="alertTitle">Alert</h3>
+            <p id="alertMessage">This is a message.</p>
+            <button onclick="closeAlert()">OK</button>
+        </div>
+    </div>
+</body>
+</html>

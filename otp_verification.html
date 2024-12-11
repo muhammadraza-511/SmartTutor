@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <style>
+        body {
+            font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .email-display {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px -10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #2C98F0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #00457e;
+            transition-duration: 0.7s;
+        }
+        .secondary {
+            background-color: #FFAB40;
+        }
+        .secondary:hover {
+            background-color: #bc7314;
+            transition-duration: 0.7s;
+        }
+
+        /* Overlay and Modal Styling */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 300px;
+            width: 80%;
+        }
+        .modal p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            color: #333;
+        }
+        .modal button {
+            background-color: #2C98F0;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal button:hover {
+            background-color: #00457e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OTP Verification</h1>
+        <p class="email-display">Verifying email: <span id="email-display"></span></p>
+        <input type="text" id="otp-input" placeholder="Enter OTP" maxlength="6">
+        <button id="send_otp">Send OTP</button>
+        <button id="verify-btn" class="secondary">Verify OTP</button>
+    </div>
+
+    <!-- Overlay and Modal -->
+    <div class="overlay" id="alert-overlay">
+        <div class="modal">
+            <p id="alert-message">Alert Message</p>
+            <button onclick="closeAlert()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        const emailDisplay = document.getElementById('email-display');
+        const alertOverlay = document.getElementById('alert-overlay');
+        const alertMessage = document.getElementById('alert-message');
+
+        // Extract email from query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+        emailDisplay.textContent = email || 'Email not provided';
+
+        // Show alert function
+        function showAlert(message) {
+            alertMessage.textContent = message;
+            alertOverlay.style.display = 'flex';
+        }
+
+        // Close alert function
+        function closeAlert() {
+            alertOverlay.style.display = 'none';
+        }
+
+        // Event listeners for buttons
+        document.getElementById('send_otp').addEventListener('click', () => {
+            fetch('/api/send_otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    showAlert(data.message || 'OTP sent successfully!');
+                })
+                .catch(err => showAlert('Error sending OTP.'));
+        });
+
+        document.getElementById('verify-btn').addEventListener('click', () => {
+            const otp = document.getElementById('otp-input').value.trim();
+            if (!otp) {
+                showAlert('Please enter the OTP.');
+                return;
+            }
+
+            fetch('/api/verify_otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, otp })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === 'Verification successful!') {
+                        showAlert('Verification successful!');
+                        setTimeout(() => window.close(), 2000); // Close tab after 2 seconds
+                    } else {
+                        showAlert(data.message);
+                    }
+                })
+                .catch(err => showAlert('Error verifying OTP.'));
+        });
+    </script>
+</body>
+</html>
