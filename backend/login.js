@@ -9,7 +9,7 @@ module.exports = (app, db) => {
         const rollNumberRegex = /^\d{2}[ASTP]-\d{4}$/;
 
         if (!rollNumberRegex.test(rollNumber)) {
-            return res.status(400).send('Invalid roll number format. Make sure that roll numbers are in the following format: XXA-XXXX, XXS-XXXX, XXT-XXXX, XXP-XXXX where X represents any number.');
+            return res.status(400).json({ success: false, message: 'Invalid roll number format. Use XXA-XXXX, XXS-XXXX, XXT-XXXX, XXP-XXXX.' });
         }
 
         let table = '';
@@ -22,7 +22,7 @@ module.exports = (app, db) => {
         } else if (rollNumber.includes('P')) {
             table = 'parent_table';
         } else {
-            return res.status(400).send('Invalid roll number.');
+            return res.status(400).json({ success: false, message: 'Invalid roll number.' });
         }
 
         let sql = '';
@@ -42,7 +42,7 @@ module.exports = (app, db) => {
         }
 
         db.query(sql, [rollNumber], (err, results) => {
-            if (err) return res.status(500).send('Database query error.');
+            if (err) return res.status(500).json({ success: false, message: 'Database query error.' });
 
             if (results.length > 0) {
                 const user = results[0];
@@ -56,38 +56,31 @@ module.exports = (app, db) => {
                 }
 
                 if (isPasswordValid) {
-                    // Check profile status for tutors
                     if (table === 'tutor_table') {
                         const profileStatusQuery = 'SELECT profile_status FROM tutor_profile_status_table WHERE Tutor_ID = ?';
                         db.query(profileStatusQuery, [user.Tutor_ID], (err, statusResults) => {
-                            if (err) return res.status(500).send('Error checking tutor profile status.');
+                            if (err) return res.status(500).json({ success: false, message: 'Error checking tutor profile status.' });
 
                             if (statusResults.length > 0 && statusResults[0].profile_status === 'Not created') {
-                                return res.redirect('/tutor_profile_creation.html');
-                                //return res.status(400).json({ message: 'You have to create your profile first.', redirect: '/tutor_profile_creation.html' });
+                                return res.json({ success: true, redirect: '/tutor_profile_creation.html' });
                             } else {
                                 req.session.user_details = user;
-                                return res.redirect('/tutor_dashboard.html');
+                                return res.json({ success: true, redirect: '/tutor_dashboard.html' });
                             }
                         });
                     } else {
-                        // For other roles, redirect directly
                         req.session.user_details = user;
+                        const redirectUrl = table === 'admin_table' ? '/admin_dashboard.html'
+                            : table === 'student_table' ? '/student_dashboard.html'
+                            : '/parent_dashboard.html';
 
-                        switch (table) {
-                            case 'admin_table':
-                                return res.redirect('/admin_dashboard.html');
-                            case 'student_table':
-                                return res.redirect('/student_dashboard.html');
-                            case 'parent_table':
-                                return res.redirect('/parent_dashboard.html');
-                        }
+                        return res.json({ success: true, redirect: redirectUrl });
                     }
                 } else {
-                    return res.status(400).send('Invalid roll number or password.');
+                    return res.status(400).json({ success: false, message: 'Invalid roll number or password.' });
                 }
             } else {
-                return res.status(400).send('Invalid roll number or password.');
+                return res.status(400).json({ success: false, message: 'Invalid roll number or password.' });
             }
         });
     });
@@ -95,7 +88,7 @@ module.exports = (app, db) => {
     // Fetch user details for the dashboard page
     app.get('/dashboard', (req, res) => {
         if (!req.session.user_details) {
-            return res.status(401).send('Unauthorized access. Please log in.');
+            return res.status(401).json({ success: false, message: 'Unauthorized access. Please log in.' });
         }
 
         const user = req.session.user_details;
@@ -104,7 +97,6 @@ module.exports = (app, db) => {
             user.Tutor_Roll_No ? 'tutor_table' : 'parent_table';
 
         if (table === 'parent_table') {
-            // Fetch parent details along with their child's details
             const parentID = user.Parent_ID;
 
             const parentQuery = `
@@ -119,25 +111,24 @@ module.exports = (app, db) => {
             `;
 
             db.query(parentQuery, [parentID], (err, parentResults) => {
-                if (err) return res.status(500).send('Error fetching parent details.');
+                if (err) return res.status(500).json({ success: false, message: 'Error fetching parent details.' });
 
                 if (parentResults.length > 0) {
                     const parent = parentResults[0];
                     const studentID = parent.Student_ID;
 
                     db.query(studentQuery, [studentID], (err, studentResults) => {
-                        if (err) return res.status(500).send('Error fetching student details.');
+                        if (err) return res.status(500).json({ success: false, message: 'Error fetching student details.' });
 
                         const student = studentResults.length > 0 ? studentResults[0] : null;
-                        return res.json({ user: parent, child: student });
+                        return res.json({ success: true, user: parent, child: student });
                     });
                 } else {
-                    return res.status(404).send('Parent details not found.');
+                    return res.status(404).json({ success: false, message: 'Parent details not found.' });
                 }
             });
         } else {
-            // Return details for other user roles
-            res.json({ user, table });
+            res.json({ success: true, user, table });
         }
     });
 };

@@ -197,8 +197,8 @@
         }
         .profile-header img {
             border-radius: 50%;
-            width: 80px;
-            height: 80px;
+            width: 150px;
+            height: 150px;
             margin-right: 20px;
         }
         .profile-header div {
@@ -389,8 +389,8 @@
 
 /* Profile picture */
 .v-card img {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 15px;
@@ -434,15 +434,16 @@
 
 /* Button for read more/less */
 .read-more {
-    margin-top: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.95em;
-    transition: background-color 0.3s;
+    color: #ffffff;
+  background-color: #2c98f0;
+  border: 1px solid #2c98f0;
+  border-radius: 4px; /* Adds rounded corners */
+  cursor: pointer;
+  text-decoration: none; /* Removes underline */
+  font-size: 0.95em;
+  padding: 5px 10px; /* Adds padding for a button-like feel */
+  display: inline-block; /* Ensures the button looks like a box */
+  text-align: center;
 }
 
 .read-more:hover {
@@ -640,7 +641,7 @@ fetch('/api/admin_handle_tutor_status')
 
             // Read More Link
             const readMore = document.createElement('p');
-            readMore.innerHTML = `<a href="#" style="text-decoration: underline; color: blue;">Show More</a>`;
+            readMore.innerHTML = `<a href="#" class="read-more">Show More</a>`;
             readMore.style.cursor = 'pointer';
             card.appendChild(readMore);
 
@@ -672,10 +673,10 @@ fetch('/api/admin_handle_tutor_status')
                 event.preventDefault();
                 if (expandableContent.style.display === 'none') {
                     expandableContent.style.display = 'block';
-                    readMore.innerHTML = `<a href="#" style="text-decoration: underline; color: blue;">Show Less</a>`;
+                    readMore.innerHTML = `<a href="#" class="read-more" >Show Less</a>`;
                 } else {
                     expandableContent.style.display = 'none';
-                    readMore.innerHTML = `<a href="#" style="text-decoration: underline; color: blue;">Show More</a>`;
+                    readMore.innerHTML = `<a href="#" class="read-more" >Show More</a>`;
                 }
             });
 

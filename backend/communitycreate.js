@@ -14,16 +14,40 @@ module.exports = (app, db) => {
   app.post("/api/community/create", (req, res) => {
     const { name, description, subject, tutorId } = req.body;
 
-    const sql =
-      'INSERT INTO communities (name, description, subject, created_by, status) VALUES (?, ?, ?, ?, "pending")';
-    db.query(sql, [name, description, subject, tutorId], (err, results) => {
+    // Check if a community with the same name already exists
+    const checkSql = "SELECT COUNT(*) AS count FROM communities WHERE name = ?";
+    db.query(checkSql, [name], (err, results) => {
       if (err) {
         console.error(err);
-        return res.status(500).send({ error: "Failed to create community" });
+        return res
+          .status(500)
+          .send({ error: "Failed to check existing communities" });
       }
-      res.status(200).send({
-        message: "Community created successfully and is pending approval.",
-      });
+
+      if (results[0].count > 0) {
+        return res
+          .status(400)
+          .send({ error: "A community with this name already exists." });
+      }
+
+      // Insert the new community if no duplicate name is found
+      const insertSql =
+        'INSERT INTO communities (name, description, subject, created_by, status) VALUES (?, ?, ?, ?, "pending")';
+      db.query(
+        insertSql,
+        [name, description, subject, tutorId],
+        (err, results) => {
+          if (err) {
+            console.error(err);
+            return res
+              .status(500)
+              .send({ error: "Failed to create community" });
+          }
+          res.status(200).send({
+            message: "Community created successfully and is pending approval.",
+          });
+        }
+      );
     });
   });
 

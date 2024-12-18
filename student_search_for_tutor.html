@@ -161,7 +161,7 @@
     button {
      
       cursor: pointer;
-      background-color: #0056b3;
+      background-color: #2c98f0;
       color: white;
       border: none;
     }
@@ -235,12 +235,18 @@
   margin-bottom: 10px;
   position: relative;
   font-size: 1.1em;
+  width: 80%;
+  margin-left: 130px;
   /* max-width: 1000px; */
+  margin-bottom: 20px;
+}
+.tutor-profile:hover{
+  border-color: #000000;
 }
 
 .tutor-profile img {
-  width: 160px; /* Fixed width */
-  height: 160px; /* Fixed height */
+  width: 170px; /* Fixed width */
+  height: 170px; /* Fixed height */
   border-radius: 10%; /* Rounded corners */
   object-fit: cover; /* Ensures the image fills the box without distortion */
   margin-right: 10px; /* Adds space between the image and the text */
@@ -248,6 +254,8 @@
 
 .tutor-details {
   flex-grow: 1;
+  margin-left: 20px;
+  margin-right: 40px;
 }
 
 .tutor-details h3 {
@@ -258,32 +266,73 @@
 
 .tutor-details p {
   margin-bottom: 8px;
+  margin-right: 40px;
 }
 
 .tutor-fee {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 18px;
+  right: 18px;
   font-size: 1.2em;
   font-weight: bold;
-  color: #28a745;
+  color: #2c98f0;
 }
-
+.introduction-box {
+  border: 1px solid #74C0FC; /* Add a border around the box */
+  padding: 10px;            /* Add some padding for spacing */
+  border-radius: 5px;       /* Slightly round the corners */
+  background-color: #f9f9f9; /* Light background color */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for a subtle effect */
+  margin-top: 5px;          /* Add spacing above */
+  margin-right: 40px;
+}
 .hidden-details {
   display: none;
   font-size: 0.9em;
   margin-top: 8px;
+  
+}
+.hidden-details h3{
+  color: #000000;
+  margin-top: 6px;
 }
 
 .read-more {
-  color: #007bff;
+  color: #ffffff;
+  background-color: #FFAB40;
+  border: 1px solid #FFAB40;
+  border-radius: 4px; /* Adds rounded corners */
   cursor: pointer;
-  text-decoration: underline;
+  text-decoration: none; /* Removes underline */
   font-size: 0.95em;
+  padding: 5px 10px; /* Adds padding for a button-like feel */
+  display: inline-block; /* Ensures the button looks like a box */
+  text-align: center; /* Centers text inside the button */
 }
 
+.read-more:hover {
+  background-color: #bc7314; /* Darkens the background on hover */
+  border-color: #bc7314; /* Matches border color on hover */
+}
+.availability-days {
+  display: flex;
+  gap: 10px; /* Adds spacing between days */
+  flex-wrap: wrap; /* Ensures wrapping if days exceed container width */
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.availability-day {
+  background-color: #2c98f0; /* Button-like background */
+  color: #ffffff; /* White text color */
+  padding: 5px 10px; /* Adds padding for a button-like feel */
+  border-radius: 4px; /* Rounds the corners */
+  font-size: 1em; /* Slightly smaller font */
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+}
 button.approve-tutor {
-  background-color: #007bff;
+  background-color: #2c98f0;
   color: white;
   border: none;
   padding: 8px 12px;
@@ -487,32 +536,51 @@ const showFinalSearch = () => {
     return response.json();
   })
   .then((data) => {
-    if (data.tutors && data.tutors.length > 0) {
-      resultsContainer.innerHTML = data.tutors
-        .map(
-          (tutor) => `
-            <div class="tutor-profile">
-              <div class="tutor-fee">$${tutor.tutor_teaching_fee}/hour</div>
-              <img src="${tutor.imagePath}" alt="${tutor.Tutor_Name}" />
-              <div class="tutor-details">
-                <h3>${tutor.Tutor_Name}</h3>
-                <p><span class="icon"><i class="fa-solid fa-book" style="color: #74C0FC;"></i></span><strong> Subjects:</strong> ${tutor.tutor_teaches_subject}</p>
-                <p><span class="icon"><i class="fa-solid fa-trophy" style="color: #74C0FC;"></i></span> <strong> Experience:</strong> ${tutor.tutor_experience} years</p>
-                <p><span class="icon"><i class="fa-solid fa-earth-americas" style="color: #74C0FC;"></i></span> <strong> Languages:</strong> ${tutor.tutor_language}</p>
-                <div class="hidden-details" id="details-${tutor.Tutor_ID}">
-                  <p><span class="icon"><i class="fa-solid fa-phone" style="color: #74C0FC;"></i></span> </strong> ${tutor.Tutor_Number}</p>
-                  <p><span class="icon"><i class="fa-solid fa-envelope" style="color: #74C0FC;"></i></span> <strong></strong> ${tutor.Tutor_Email}</p>
-                  <p><span class="icon"><i class="fa-solid fa-calendar-days" style="color: #74C0FC;"></i></span> <strong> Availability Days:</strong> ${tutor.tutor_availability_days}</p>
-                  <p><span class="icon"><i class="fa-solid fa-clock" style="color: #74C0FC;"></i></span> <strong>Availability Time:</strong> ${tutor.tutor_availability_time}</p>
-                  <p><strong>Introduction:</strong> ${tutor.tutor_introduction}</p>
+  if (data.tutors && data.tutors.length > 0) {
+    resultsContainer.innerHTML = data.tutors
+      .map(
+        (tutor) => `
+          <div class="tutor-profile">
+            <div class="tutor-fee">Rs.${tutor.tutor_teaching_fee}/hour</div>
+            <img src="${tutor.imagePath}" alt="${tutor.Tutor_Name}" />
+            <div class="tutor-details">
+              <h3>${tutor.Tutor_Name}</h3>
+              <p><span class="icon"><i class="fa-solid fa-book" style="color: #74C0FC;"></i></span><strong>  Subjects:</strong> ${tutor.tutor_teaches_subject}</p>
+          
+              <p>
+                <strong> Experience</strong>
+                <div class="introduction-box">
+                  ${tutor.tutor_experience}
                 </div>
-                <span class="read-more" onclick="toggleDetails('${tutor.Tutor_ID}')">Read More</span><br>
-                <button class="approve-tutor" data-tutor-id="${tutor.Tutor_ID}">Approve Tutor</button>
+              </p>
+              <p><span class="icon"><i class="fa-solid fa-earth-americas" style="color: #74C0FC;"></i></span> <strong> Languages:</strong> ${tutor.tutor_language}</p>
+              <div class="hidden-details" id="details-${tutor.Tutor_ID}">
+                <p><span class="icon"><i class="fa-solid fa-phone" style="color: #74C0FC;"></i></span> ${tutor.Tutor_Number}</p>
+                <p><span class="icon"><i class="fa-solid fa-envelope" style="color: #74C0FC;"></i></span> ${tutor.Tutor_Email}</p>
+                
+                <p>
+                  <h3><strong>Introduction:</strong></h3>
+                  <div class="introduction-box">
+                    ${tutor.tutor_introduction}
+                  </div>
+                </p>
+                <p><span class="icon"><i class="fa-solid fa-clock" style="color: #74C0FC;"></i></span> <strong>Availability Time:</strong> ${tutor.tutor_availability_time}</p>
+                <p><span class="icon"><i class="fa-solid fa-calendar-days" style="color: #74C0FC;"></i></span> <strong> Availability Days:</strong></p>
+                <div class="availability-days">
+                  ${tutor.tutor_availability_days
+                    .split(",")
+                    .map((day) => `<span class="availability-day">${day.trim()}</span>`)
+                    .join("")}
+                </div>
+                
               </div>
+              <span class="read-more" onclick="toggleDetails('${tutor.Tutor_ID}')">Read More</span><br>
+              <button class="approve-tutor" data-tutor-id="${tutor.Tutor_ID}">Approve Tutor</button>
             </div>
-          `
-        )
-        .join("");
+          </div>
+        `
+      )
+      .join("");
 
       document.querySelectorAll(".approve-tutor").forEach((button) => {
         button.addEventListener("click", (e) => {

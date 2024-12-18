@@ -385,7 +385,7 @@
             </select>
 
             <label for="degree-upload">Upload Degree</label>
-            <input type="file" id="degree-upload" name="degree_upload" accept=".pdf, .jpg, .jpeg, .png" required>
+            <input type="file" id="degree-upload" name="degree_upload" accept=".pdf" required>
 
             <div class="button-container">
                 <button type="button" onclick="nextSection('education', 'description', 2)">Next</button>
@@ -638,7 +638,7 @@ function gatherAvailabilityDays() {
             const grades = gatherGrades(); // Call function to get grades
 
             // Display subjects and grades in an alert
-            alert(`Subjects: ${subjects}\nGrades: ${grades}`);
+            //alert(`Subjects: ${subjects}\nGrades: ${grades}`);
 
     
             const formData = new FormData();
