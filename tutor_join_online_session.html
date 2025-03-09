@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Online Session</title>
+</head>
+
+<body>
+    <h2>Start Your Online Session</h2>
+
+    <div class="tutor-info">
+        <h3 id="tutorName"></h3>
+        <p><strong>Roll Number:</strong> <span id="tutorRollNo"></span></p>
+        <p><strong>Email:</strong> <span id="tutorEmail"></span></p>
+        <p><strong>Contact:</strong> <span id="tutorContact"></span></p>
+    </div>
+
+    <h3>Upcoming or Ongoing Sessions</h3>
+    <div id="sessionList"></div>
+
+    <button onclick="moveToDashboard()">Move to Dashboard</button>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const userDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
+
+            if (userDetails) {
+                document.getElementById('tutorName').textContent = userDetails.Tutor_Name;
+                document.getElementById('tutorRollNo').textContent = userDetails.Tutor_Roll_No || 'N/A';
+                document.getElementById('tutorEmail').textContent = userDetails.Tutor_Email;
+                document.getElementById('tutorContact').textContent = userDetails.Tutor_Number || 'N/A';
+                
+                fetchTutorSessions(userDetails.Tutor_Roll_No);
+            } else {
+                alert("User details not found! Please log in again.");
+                window.location.href = "tutor_dashboard.html";
+            }
+        });
+
+        function fetchTutorSessions(rollNo) {
+            fetch('/getTutorSessions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tutorRollNo: rollNo })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const sessionList = document.getElementById('sessionList');
+                if (data.length === 0) {
+                    sessionList.innerHTML = '<p>No upcoming or ongoing sessions available.</p>';
+                } else {
+                    data.forEach(session => {
+                        const sessionItem = document.createElement('div');
+                        sessionItem.innerHTML = `
+                            <p><strong>Session ID:</strong> ${session.Session_ID}</p>
+                            <p><strong>Date:</strong> ${new Date(session.Session_Start_Date).toLocaleDateString()}</p>
+                            <p><strong>Start Time:</strong> ${session.Session_Start_Time}</p>
+                            <p><strong>End Time:</strong> ${session.Session_End_Time}</p>
+                            <button onclick="startSession('${session.Session_ID}', '${session.Session_Start_Time}', '${session.Session_End_Time}')">Start Session</button>
+                            <hr>
+                        `;
+                        sessionList.appendChild(sessionItem);
+                    });
+                }
+            })
+            .catch(error => console.error('Error fetching tutor sessions:', error));
+        }
+
+        function startSession(sessionId, startTime, endTime) {
+            const currentTime = new Date().toTimeString().split(' ')[0]; // HH:MM:SS
+            const userDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
+
+            if (userDetails) {
+                sessionStorage.setItem('videoCallUserDetails', JSON.stringify(userDetails));
+            }
+        
+
+            // Allow starting only if the session time is valid
+            if (currentTime >= startTime && currentTime <= endTime) {
+                alert(`Starting session: ${sessionId}`);
+                window.location.href = `/video_call.html?sessionId=${sessionId}&userType=tutor`;
+            
+            } else {
+                alert('You can start this session once the scheduled time arrives.');
+
+            }
+        }
+
+
+
+        
+
+        function moveToDashboard() {
+            window.location.href = "tutor_dashboard.html";
+        }
+    </script>
+
+</body>
+
+</html>

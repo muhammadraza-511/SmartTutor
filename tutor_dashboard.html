@@ -373,8 +373,8 @@
                     <span>Dashboard</span></a>
                 </li>
                 <li>
-                    <a href="tutor_manage_student_requests.html" onclick="saveUserToSession()"><span class="las la-user"></span>
-                    <span>Manage student requests</span></a>
+                    <a href="tutor_manage_student_requests.html"><span class="las la-user"></span>
+                    <span>Manage Student Requests</span></a>
                 </li>
                 <li>
                     <a href="created_communities.html"><span class="fa-solid fa-people-group"></span>
@@ -384,6 +384,19 @@
                     <a href="tutor_create_community.html"><span class="fa-solid fa-people-roof"></span>
                     <span>Create New Community</span></a>
                 </li>
+                <li>
+                    <a href="tutor_start_online_session.html" onclick="saveUserToSession()">
+                        <span class="fa-solid fa-video"></span>
+                        <span>Create a Session</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="tutor_join_online_session.html" onclick="saveUserToSession()">
+                        <span class="fa-solid fa-video"></span>
+                        <span>Join a Session</span>
+                    </a>
+                </li>
+
                 <li>
                     <a href="loginpage.html"><span class="fa-solid fa-right-from-bracket"></span>
                     <span>Logout</span></a>
@@ -414,13 +427,11 @@
                 <div class="profile-header">
                     <img src="user-photo.jpg" alt="User Photo">
                     <div>
-                        <h3 id="profileHeaderTutorName"> </h3>
-                        <p id="tutorEmail"> </p>
+                        <h3 id="profileHeaderTutorName"></h3>
+                        <p id="tutorEmail"></p>
                     </div>
-               
                 </div>
-                <div class="profile-details" id="userDetails">
-                </div> 
+                <div class="profile-details" id="userDetails"></div> 
             </div>
         </main>
     </div>
@@ -431,38 +442,20 @@
         .then(data => {
             const user = data.user;
 
-            // Update the header and profile header with the tutor's name
             document.getElementById('userWrapperTutorName').textContent = user.Tutor_Name;
             document.getElementById('profileHeaderTutorName').textContent = user.Tutor_Name;
             document.getElementById('tutorEmail').textContent = user.Tutor_Email;
 
-            // Display tutor details in the card
             document.getElementById('userDetails').innerHTML = `
-                <div>
-                    <label for="fullName">Full Name</label>
-                    <div class="info">${user.Tutor_Name}</div>
-                </div>
-                <div>
-                    <label for="nickName">Roll Number</label>
-                    <div class="info">${user.Tutor_Roll_No || 'N/A'}</div>
-                </div>
-                <div>
-                    <label for="email">Email</label>
-                    <div class="info">${user.Tutor_Email}</div>
-                </div>
-
-
-                <div>
-                    <label for="timeZone">Contact Number</label>
-                    <div class="info">${user.Tutor_Number || 'N/A'}</div>
-                </div>
+                <div><label>Full Name</label><div class="info">${user.Tutor_Name}</div></div>
+                <div><label>Roll Number</label><div class="info">${user.Tutor_Roll_No || 'N/A'}</div></div>
+                <div><label>Email</label><div class="info">${user.Tutor_Email}</div></div>
+                <div><label>Contact Number</label><div class="info">${user.Tutor_Number || 'N/A'}</div></div>
             `;
 
-            // Save user data in session storage
             sessionStorage.setItem('tutorDetails', JSON.stringify(user));
         });
 
-        // Function to save user details to session storage explicitly
         function saveUserToSession() {
             const userDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
             if (!userDetails) {
@@ -471,5 +464,4 @@
         }
     </script>
 </body>
-
 </html>

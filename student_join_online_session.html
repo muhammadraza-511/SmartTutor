@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Join Online Session</title>
+</head>
+
+<body>
+    <h2>Join Online Session</h2>
+
+    <div id="userDetails">
+        <!-- User details will be displayed here -->
+    </div>
+
+    <h3>Upcoming or Ongoing Sessions</h3>
+    <div id="sessionList">
+        <!-- Session details will be displayed here -->
+    </div>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const storedUser = localStorage.getItem('studentDetailsForSession');
+
+            if (storedUser) {
+                const user = JSON.parse(storedUser);
+
+                // Display student details
+                document.getElementById('userDetails').innerHTML = `
+                    <p><strong>Full Name:</strong> ${user.Student_Name || 'N/A'}</p>
+                    <p><strong>Roll Number:</strong> ${user.Student_roll_No || 'N/A'}</p>
+                    <p><strong>Email:</strong> ${user.Student_Email || 'N/A'}</p>
+                    <p><strong>Contact Number:</strong> ${user.Student_number || 'N/A'}</p>
+                `;
+
+                // Fetch and display upcoming/ongoing sessions
+                fetchStudentSessions(user.Student_roll_No);
+
+            } else {
+                alert("User details not found. Redirecting to dashboard...");
+                window.location.href = "student_dashboard.html";
+            }
+        });
+
+        function fetchStudentSessions(rollNo) {
+            fetch('/getStudentSessions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ studentRollNo: rollNo })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const sessionList = document.getElementById('sessionList');
+
+                    if (data.length === 0) {
+                        sessionList.innerHTML = '<p>No upcoming or ongoing sessions available.</p>';
+                    } else {
+                        data.forEach(session => {
+                            const sessionItem = document.createElement('div');
+                            sessionItem.innerHTML = `
+                                <p><strong>Session ID:</strong> ${session.Session_ID}</p>
+                                <p><strong>Date:</strong> ${new Date(session.Session_Start_Date).toLocaleDateString()}</p>
+                                <p><strong>Start Time:</strong> ${session.Session_Start_Time}</p>
+                                <p><strong>End Time:</strong> ${session.Session_End_Time}</p>
+                                <button onclick="joinSession('${session.Session_ID}', '${session.Session_Start_Time}', '${session.Session_End_Time}')">Join Session</button>
+                                <hr>
+                            `;
+                            sessionList.appendChild(sessionItem);
+                        });
+                    }
+                })
+                .catch(error => console.error('Error fetching student sessions:', error));
+        }
+
+        function joinSession(sessionId, startTime, endTime) {
+            const currentTime = new Date().toTimeString().split(' ')[0]; // HH:MM:SS
+
+            const userDetails = JSON.parse(localStorage.getItem('studentDetailsForSession'));
+
+            if (userDetails) {
+                sessionStorage.setItem('videoCallUserDetails', JSON.stringify(userDetails));
+            }
+        
+
+            // Allow joining only if the session is ongoing
+            if (currentTime >= startTime && currentTime <= endTime) {
+                alert(`Joining session: ${sessionId}`);
+                // Redirect to session page (if applicable)
+                window.location.href = `/video_call.html?sessionId=${sessionId}&userType=student`;            
+            } else {
+                alert('You can join this session only during the scheduled time.');
+
+            }
+        }
+
+
+
+
+        
+    </script>
+
+</body>
+
+</html>

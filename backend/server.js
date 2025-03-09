@@ -3,9 +3,15 @@ const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const path = require('path');
 const session = require('express-session');
+const http = require('http');
+const socketIO = require('socket.io');
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
 const PORT = 3000;
+
+
 
 // Middleware
 app.use(bodyParser.json());
@@ -71,8 +77,15 @@ require('./communitycreate')(app, db);
 // Import and use the communityPosts module
 require('./community')(app, db);
 
+require("./tutor_assigned_students")(app, db);
+require('./student_join_meeting_session')(app, db);
+require('./tutor_join_meeting_session')(app, db);
+
+
+require('./video_call')(io);
+
 
 // Start the server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

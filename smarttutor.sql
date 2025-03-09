@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 28, 2024 at 05:54 PM
+-- Generation Time: Mar 05, 2025 at 04:48 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -59,8 +59,8 @@ CREATE TABLE `assigned_tutors_record_table` (
 --
 
 INSERT INTO `assigned_tutors_record_table` (`record_ID`, `Student_ID`, `Parent_ID`, `Tutor_ID`) VALUES
-(9, 25, 25, 40),
-(10, 26, 26, 40);
+(14, 31, 31, 47),
+(15, 32, 32, 47);
 
 -- --------------------------------------------------------
 
@@ -83,11 +83,8 @@ CREATE TABLE `communities` (
 --
 
 INSERT INTO `communities` (`id`, `name`, `description`, `subject`, `created_by`, `status`, `created_at`) VALUES
-(1, 'Social Community', 'm c c', 'Maths', 41, 'approved', '2024-11-26 13:53:56'),
-(2, 'Social Community', 'mx x ', 'Maths', 41, 'approved', '2024-11-26 14:01:27'),
-(3, 'Social Community', 'new onw', 'English', 41, 'approved', '2024-11-27 11:29:53'),
-(4, 'Alian Anwar', ',,,,,', 'English', 41, 'rejected', '2024-11-27 11:35:55'),
-(5, 'Alian Anwar 1', 'x c.,cc', 'English', 41, 'approved', '2024-11-27 11:36:08');
+(8, 'Exams help ', 'This community is for english students', 'English', 47, 'approved', '2024-12-11 20:57:14'),
+(9, 'Social Communitry', 'this is for english', 'English', 47, 'approved', '2024-12-12 04:56:37');
 
 -- --------------------------------------------------------
 
@@ -109,10 +106,7 @@ CREATE TABLE `community_chat` (
 --
 
 INSERT INTO `community_chat` (`id`, `community_id`, `sender_id`, `sender_role`, `message`, `sent_at`) VALUES
-(1, 1, 28, 'student', 'mm', '2024-11-28 16:15:49'),
-(2, 1, 28, 'student', 'mmsm', '2024-11-28 16:48:36'),
-(3, 1, 41, 'tutor', 'kkk', '2024-11-28 16:49:04'),
-(4, 1, 29, 'student', 'nwe onw', '2024-11-28 16:52:54');
+(8, 9, 31, 'student', 'hi', '2024-12-12 04:59:18');
 
 -- --------------------------------------------------------
 
@@ -135,9 +129,7 @@ CREATE TABLE `community_files` (
 --
 
 INSERT INTO `community_files` (`id`, `community_id`, `sender_id`, `sender_role`, `file_url`, `file_type`, `uploaded_at`) VALUES
-(1, 1, 28, 'student', 'uploads\\1732810563560-task1A.PNG', 'image', '2024-11-28 16:16:03'),
-(2, 1, 40, 'tutor', 'uploads\\1732810597766-28.pdf', 'application', '2024-11-28 16:16:37'),
-(3, 1, 41, 'tutor', 'uploads\\1732812557042-41.pdf', 'application', '2024-11-28 16:49:17');
+(5, 9, 31, 'student', 'uploads\\1733979581232-Final_report.pdf', 'application', '2024-12-12 04:59:41');
 
 -- --------------------------------------------------------
 
@@ -157,10 +149,32 @@ CREATE TABLE `community_members` (
 --
 
 INSERT INTO `community_members` (`id`, `community_id`, `student_id`, `joined_at`) VALUES
-(5, 1, 28, '2024-11-27 16:06:56'),
-(8, 5, 28, '2024-11-27 16:58:23'),
-(9, 3, 28, '2024-11-27 16:59:00'),
-(10, 1, 29, '2024-11-28 21:52:29');
+(14, 8, 31, '2024-12-12 01:59:12'),
+(15, 9, 31, '2024-12-12 09:58:48');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `meeting_details`
+--
+
+CREATE TABLE `meeting_details` (
+  `Meeting_ID` int(11) NOT NULL,
+  `Tutor_ID` int(11) DEFAULT NULL,
+  `Student_ID` int(11) DEFAULT NULL,
+  `Session_ID` varchar(50) NOT NULL,
+  `Session_Start_Date` date DEFAULT curdate(),
+  `Session_Start_Time` time NOT NULL,
+  `Session_End_Time` time NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `meeting_details`
+--
+
+INSERT INTO `meeting_details` (`Meeting_ID`, `Tutor_ID`, `Student_ID`, `Session_ID`, `Session_Start_Date`, `Session_Start_Time`, `Session_End_Time`) VALUES
+(8, 47, 31, 'D59M5U0TTL', '2025-03-03', '02:50:00', '05:55:00'),
+(9, 47, 31, '9TZV4XBFUN', '2025-03-03', '09:03:00', '10:03:00');
 
 -- --------------------------------------------------------
 
@@ -175,16 +189,6 @@ CREATE TABLE `otp_table` (
   `timestamp` datetime NOT NULL,
   `status` varchar(50) DEFAULT 'unauthenticated'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `otp_table`
---
-
-INSERT INTO `otp_table` (`otpid`, `email`, `otp`, `timestamp`, `status`) VALUES
-(25, 'munammustafa253@gmail.com', 574598, '2024-11-25 00:08:07', 'authorized'),
-(26, 'munammustafa953@gmail.com', 406696, '2024-11-25 00:15:47', 'authorized'),
-(27, 'rajaalyan977@gmail.com', 420649, '2024-11-26 18:55:33', 'authorized'),
-(28, 'i210730@nu.edu.pk', 909811, '2024-11-26 19:14:10', 'authorized');
 
 -- --------------------------------------------------------
 
@@ -206,10 +210,8 @@ CREATE TABLE `parent_table` (
 --
 
 INSERT INTO `parent_table` (`Parent_ID`, `Student_ID`, `Parent_Roll_No`, `Parent_Email`, `Parent_number`, `Parent_Password`) VALUES
-(25, 25, '24P-6351', 'munammustafa253@gmail.com', '03435231900', '$2b$10$ys0BZ.PtT9I0qo6xZxks2OvWdNmGeWce..rRwhV6U8my5.Ks8F87S'),
-(26, 26, '24P-3394', 'munammustafa953@gmail.com', '03435231900', '$2b$10$NokLdgMimUlLZtb.pwk.w.Xt8re0DbAGhHISiyIMUA5/UDcZxd9fS'),
-(28, 28, '24P-6020', 'aliananwar0@gmail.com', '12345678123', '$2b$10$94j9xEacBY6gHgEKL8D4YOvb.hx1MxFqa4RVtr5nVkKTQ8H.1szq.'),
-(29, 29, '24P-9472', 'aliananwar0@gmail.com', '12345678123', '$2b$10$d.dJbfWL9980u9SowSbT5OjKzLuqm47F//LN38iCVth4NB1cZ6knq');
+(31, 31, '24P-6491', 'munammustafa253@gmail.com', '03412464855', '$2b$10$FIt7jTy9P0YYy2zp5UXfb.iNu7ViyuK4NxIVettzu8wCT4lmcE2r6'),
+(32, 32, '25P-2934', 'munammustafa953@gmail.com', '03435231900', '$2b$10$Dcm8Qds6u6U2evoxKfzRke6rGqe.OBhOOahK08JJO2JecUxtvWLXa');
 
 -- --------------------------------------------------------
 
@@ -232,7 +234,8 @@ CREATE TABLE `student_approve_tutor_status_table` (
 --
 
 INSERT INTO `student_approve_tutor_status_table` (`status_ID`, `Student_ID`, `student_approving_status`, `Parent_ID`, `parent_approving_status`, `Tutor_ID`, `tutor_approving_status`) VALUES
-(17, 26, 'approved', 26, 'pending', 40, 'pending');
+(20, 31, 'approved', 31, 'approved', 47, 'approved'),
+(21, 32, 'approved', 32, 'approved', 47, 'approved');
 
 -- --------------------------------------------------------
 
@@ -255,10 +258,8 @@ CREATE TABLE `student_table` (
 --
 
 INSERT INTO `student_table` (`Student_ID`, `Student_Name`, `Student_roll_No`, `Student_UserName`, `Student_Email`, `Student_number`, `Password`) VALUES
-(25, 'Munam Mustafa', '24S-6351', 'Munam253', 'munammustafa953@gmail.com', '03435231909', '$2b$10$4ae5oCQMXPp/yByvZwaiUORXTbNp7o4s8ntJ/6/Zzio6X7Zcj0WKa'),
-(26, 'Munam Mustafa', '24S-3394', 'Munam25', 'munammustafa253@gmail.com', '03435231909', '$2b$10$iqK5vkeN36hOXYytNYihEe8OARekqBR7tgzmkShnZ4w1GhY92BHiC'),
-(28, 'Alian Anwar', '24S-6020', 'Alian 72', 'i210730@nu.edu.pk', '12345678912', '$2b$10$cU961frIhN1BBYZaXiMTmuDXCJIz0HaAmHGGkVbPYNTGQDTdSAzAS'),
-(29, 'Raja Alyan', '24S-9472', 'Alian 7272', 'rajaalyan977@gmail.com', '12345678912', '$2b$10$QxUzKICvY/Em53eYfvL.wucSp6sfloynqyGFAbvJfcJh21p6Oz6we');
+(31, 'Munam Mustafa', '24S-6491', 'Munam253', 'munammustafa953@gmail.com', '03412464850', '$2b$10$K6/IjHHg5Brx3iaMJSokt.8Fx7K2AgM7rn8rDAv1ZSepmpxsLXXYa'),
+(32, 'Munam Mustafa', '25S-2934', 'Munam25', 'munammustafa253@gmail.com', '03435231909', '$2b$10$0zmWPpVNAc0oR9fy.Om8XObcmbglRcdliUl5oX2OvKzO7mKw7Hxq6');
 
 -- --------------------------------------------------------
 
@@ -297,8 +298,8 @@ CREATE TABLE `tutor_profile_data_table` (
 --
 
 INSERT INTO `tutor_profile_data_table` (`tutor_profile_ID`, `Tutor_ID`, `tutor_email`, `tutor_rollno`, `tutor_country`, `tutor_city`, `tutor_language`, `tutor_university`, `tutor_degree_name`, `tutor_degree_type`, `tutor_specialization`, `tutor_starting_year`, `tutor_ending_year`, `tutor_degree_link`, `tutor_teaches_subject`, `tutor_teaches_to_grade`, `tutor_preferable_session`, `tutor_introduction`, `tutor_experience`, `tutor_teaching_fee`, `tutor_availability_days`, `tutor_availability_time`, `tutor_profile_pic`) VALUES
-(24, 40, 'munammustafa253@gmail.com', '24T-1954', 'Pakistan', 'Islamabad', 'English, Urdu, Punjabi', 'FAST NUCES', 'CS', 'Bachelor', 'CS', '2011', '2016', '40.pdf', 'English, Urdu, Chemistry', '7, 8, 9', 'Group Session', 'I am Munam Mustafa', 'I have alot of experience', 5000.00, 'Monday, Tuesday, Wednesday, Thursday', 'anytime', '40.jpeg'),
-(25, 41, 'rajaalyan977@gmail.com', '24T-1687', 'Pakistan', 'Rawalpindi', 'English', 'Fast', 'BS', 'CS', 'web development', '2021', '2024', '41.pdf', 'Maths', 'A', 'Both', ',sx,', '2 years', 1500.00, 'Monday', 'anytime', '41.png');
+(28, 47, 'munammustafa253@gmail.com', '24T-6654', 'Pakistan', 'Rawalpindi', 'English, Urdu', 'FAST NUCES', 'Computer Science', 'Bachelor', 'Nil', '2009', '2014', '47.pdf', 'English, Urdu', '9, 10', 'Both', 'I am XYZ.', 'I have good experience.', 5000.00, 'Monday, Tuesday, Wednesday', 'midnight', '47.jpeg'),
+(29, 48, 'i210460@nu.edu.pk', '24T-8073', 'Pakistan', 'Islamabad', 'English, Urdu', 'FAST NUCES', 'CS', 'BS', 'Nil', '2008', '2014', '48.pdf', 'English, Maths', '10', 'Group Session', 'I am Munam Mustafa', 'This is demo.', 3000.00, 'Monday, Tuesday', 'anytime', '48.jpeg');
 
 -- --------------------------------------------------------
 
@@ -317,8 +318,8 @@ CREATE TABLE `tutor_profile_status_table` (
 --
 
 INSERT INTO `tutor_profile_status_table` (`Tutor_ID`, `profile_status`, `profile_status_ID`) VALUES
-(40, 'accepted', 19),
-(41, 'pending', 20);
+(47, 'accepted', 26),
+(48, 'accepted', 27);
 
 -- --------------------------------------------------------
 
@@ -341,8 +342,8 @@ CREATE TABLE `tutor_table` (
 --
 
 INSERT INTO `tutor_table` (`Tutor_ID`, `Tutor_Name`, `Tutor_Roll_No`, `Tutor_Email`, `Tutor_Number`, `Tutor_password`, `Tutor_UserName`) VALUES
-(40, 'Munam Mustafa', '24T-1954', 'munammustafa253@gmail.com', '03435231909', '$2b$10$gtrcvj5dqMjjklgjEd78buwuGX5wZTddPeQz1YXZSnAwZH4jpjRF6', 'Munam253'),
-(41, 'Alian Anwar', '24T-1687', 'rajaalyan977@gmail.com', '03486977089', '$2b$10$4octtdowuk5WsFSUrNjwS./5mwl13ixY58Z7WlZmVFM/cJEdtxjvm', 'Alian 72');
+(47, 'Munam Mustafa', '24T-6654', 'munammustafa253@gmail.com', '03412464850', '$2b$10$W0DxlF3UBLPk38JihzHzAOp6h1mA5W4DbHEl2zRr.O3bro.lJ0VwO', 'Munam253'),
+(48, 'Munam Mustafa', '24T-8073', 'i210460@nu.edu.pk', '03435231909', '$2b$10$6L2YYXf96j6R1jyCBhWSFu3mD3skWOsw7cy3gqV8oaBzQ/AP/Dlke', 'Munam25');
 
 --
 -- Indexes for dumped tables
@@ -394,6 +395,14 @@ ALTER TABLE `community_members`
   ADD PRIMARY KEY (`id`),
   ADD KEY `community_id` (`community_id`),
   ADD KEY `student_id` (`student_id`);
+
+--
+-- Indexes for table `meeting_details`
+--
+ALTER TABLE `meeting_details`
+  ADD PRIMARY KEY (`Meeting_ID`),
+  ADD KEY `Tutor_ID` (`Tutor_ID`),
+  ADD KEY `Student_ID` (`Student_ID`);
 
 --
 -- Indexes for table `otp_table`
@@ -457,73 +466,79 @@ ALTER TABLE `admin_table`
 -- AUTO_INCREMENT for table `assigned_tutors_record_table`
 --
 ALTER TABLE `assigned_tutors_record_table`
-  MODIFY `record_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `record_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `communities`
 --
 ALTER TABLE `communities`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `community_chat`
 --
 ALTER TABLE `community_chat`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `community_files`
 --
 ALTER TABLE `community_files`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `community_members`
 --
 ALTER TABLE `community_members`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT for table `meeting_details`
+--
+ALTER TABLE `meeting_details`
+  MODIFY `Meeting_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `otp_table`
 --
 ALTER TABLE `otp_table`
-  MODIFY `otpid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `otpid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `parent_table`
 --
 ALTER TABLE `parent_table`
-  MODIFY `Parent_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `Parent_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `student_approve_tutor_status_table`
 --
 ALTER TABLE `student_approve_tutor_status_table`
-  MODIFY `status_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `status_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `student_table`
 --
 ALTER TABLE `student_table`
-  MODIFY `Student_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `Student_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `tutor_profile_data_table`
 --
 ALTER TABLE `tutor_profile_data_table`
-  MODIFY `tutor_profile_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `tutor_profile_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `tutor_profile_status_table`
 --
 ALTER TABLE `tutor_profile_status_table`
-  MODIFY `profile_status_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `profile_status_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `tutor_table`
 --
 ALTER TABLE `tutor_table`
-  MODIFY `Tutor_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `Tutor_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- Constraints for dumped tables
@@ -561,6 +576,13 @@ ALTER TABLE `community_files`
 ALTER TABLE `community_members`
   ADD CONSTRAINT `community_members_ibfk_1` FOREIGN KEY (`community_id`) REFERENCES `communities` (`id`),
   ADD CONSTRAINT `community_members_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `student_table` (`Student_ID`);
+
+--
+-- Constraints for table `meeting_details`
+--
+ALTER TABLE `meeting_details`
+  ADD CONSTRAINT `meeting_details_ibfk_1` FOREIGN KEY (`Tutor_ID`) REFERENCES `tutor_table` (`Tutor_ID`) ON DELETE CASCADE,
+  ADD CONSTRAINT `meeting_details_ibfk_2` FOREIGN KEY (`Student_ID`) REFERENCES `student_table` (`Student_ID`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `parent_table`

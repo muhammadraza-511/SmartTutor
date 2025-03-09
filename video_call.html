@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>SmartTutor Video Call</title>
+    <style>
+        #videos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        video {
+            width: 45%;
+            border: 2px solid green;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .screen-share {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>SmartTutor Video Call</h2>
+
+    <div id="userDetails">
+        <h3>User Details</h3>
+        <p><strong>Name:</strong> <span id="userName"></span></p>
+        <p><strong>Roll Number:</strong> <span id="userRollNo"></span></p>
+        <p><strong>Email:</strong> <span id="userEmail"></span></p>
+        <p><strong>Contact:</strong> <span id="userContact"></span></p>
+    </div>
+
+    <div id="videos"></div>
+    <button id="leaveCall">Leave Call</button>
+    <button id="shareScreen">Share Screen</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-peer@9.11.1/simplepeer.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userDetails = JSON.parse(sessionStorage.getItem('videoCallUserDetails'));
+            if (userDetails) {
+                document.getElementById('userName').textContent = userDetails.Tutor_Name || userDetails.Student_Name || 'N/A';
+                document.getElementById('userRollNo').textContent = userDetails.Tutor_Roll_No || userDetails.Student_roll_No || 'N/A';
+                document.getElementById('userEmail').textContent = userDetails.Tutor_Email || userDetails.Student_Email || 'N/A';
+                document.getElementById('userContact').textContent = userDetails.Tutor_Number || userDetails.Student_number || 'N/A';
+            } else {
+                alert("User details not found!");
+            }
+        });
+
+        const socket = io();
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('sessionId');
+        const peers = {};
+
+        let localStream; // Store the user's main media stream
+
+        // Join session
+        socket.emit('joinSession', sessionId);
+
+        // Get user media (video/audio)
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(stream => {
+                localStream = stream;
+                addVideoStream(stream, true);
+
+                socket.on('userJoined', userId => {
+                    if (!peers[userId]) {
+                        createPeer(userId, stream, true);
+                    }
+                });
+
+                socket.on('signal', ({ sender, signal }) => {
+                    if (!peers[sender]) {
+                        createPeer(sender, stream, false);
+                    }
+                    peers[sender].signal(signal);
+                });
+
+                socket.on('userLeft', userId => {
+                    removePeer(userId);
+                });
+
+            })
+            .catch(err => console.error("Error accessing media devices:", err));
+
+        function createPeer(id, stream, initiator) {
+            const peer = new SimplePeer({
+                initiator: initiator,
+                trickle: false,
+                stream: stream
+            });
+
+            peer.on('signal', signal => {
+                socket.emit('signal', { target: id, signal });
+            });
+
+            peer.on('stream', remoteStream => {
+                addVideoStream(remoteStream, false, id);
+            });
+
+            peer.on('close', () => {
+                removePeer(id);
+            });
+
+            peers[id] = peer;
+        }
+
+        function addVideoStream(stream, isLocal, id = null) {
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.autoplay = true;
+            video.playsInline = true;
+            video.dataset.id = id; // Set ID to track the peer
+
+            if (isLocal) {
+                video.muted = true; // Mute local video
+            }
+
+            document.getElementById('videos').appendChild(video);
+            adjustVideoLayout();
+        }
+
+        function removePeer(id) {
+            if (peers[id]) {
+                peers[id].destroy();
+                delete peers[id];
+            }
+
+            const video = document.querySelector(`video[data-id="${id}"]`);
+            if (video) {
+                video.remove();
+            }
+
+            adjustVideoLayout();
+        }
+
+        // Adjusts video sizes dynamically
+        function adjustVideoLayout() {
+            const videos = document.querySelectorAll('#videos video');
+            videos.forEach(video => {
+                video.classList.remove('screen-share');
+            });
+
+            if (videos.length === 1) {
+                videos[0].style.width = '100%';
+            } else if (videos.length === 2) {
+                videos.forEach(video => video.style.width = '48%');
+            } else {
+                videos.forEach(video => video.style.width = '30%');
+            }
+        }
+
+        // Share screen
+        document.getElementById('shareScreen').addEventListener('click', async () => {
+            try {
+                const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                addVideoStream(screenStream, true);
+
+                Object.values(peers).forEach(peer => {
+                    const sender = peer._pc.getSenders().find(s => s.track.kind === 'video');
+                    sender.replaceTrack(screenStream.getVideoTracks()[0]);
+                });
+
+                screenStream.getTracks()[0].onended = () => {
+                    switchToCamera();
+                };
+            } catch (err) {
+                console.error("Error sharing screen:", err);
+            }
+        });
+
+        // Switch back to camera
+        async function switchToCamera() {
+            try {
+                const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                addVideoStream(cameraStream, true);
+
+                Object.values(peers).forEach(peer => {
+                    const sender = peer._pc.getSenders().find(s => s.track.kind === 'video');
+                    sender.replaceTrack(cameraStream.getVideoTracks()[0]);
+                });
+
+                adjustVideoLayout();
+            } catch (err) {
+                console.error("Error switching to camera:", err);
+            }
+        }
+
+        // Leave call
+        document.getElementById('leaveCall').addEventListener('click', () => {
+            Object.values(peers).forEach(peer => peer.destroy());
+            socket.disconnect();
+
+            const userDetails = JSON.parse(sessionStorage.getItem('videoCallUserDetails'));
+            if (userDetails) {
+                if (userDetails.Tutor_Name) {
+                    window.location.href = '/tutor_dashboard.html';
+                } else if (userDetails.Student_Name) {
+                    window.location.href = '/student_dashboard.html';
+                } else {
+                    window.location.href = '/';
+                }
+            } else {
+                window.location.href = '/';
+            }
+        });
+
+    </script>
+
+</body>
+
+</html>
