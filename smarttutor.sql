@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 05, 2025 at 04:48 PM
+-- Generation Time: Mar 09, 2025 at 10:42 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -60,7 +60,8 @@ CREATE TABLE `assigned_tutors_record_table` (
 
 INSERT INTO `assigned_tutors_record_table` (`record_ID`, `Student_ID`, `Parent_ID`, `Tutor_ID`) VALUES
 (14, 31, 31, 47),
-(15, 32, 32, 47);
+(15, 32, 32, 47),
+(16, 32, 32, 48);
 
 -- --------------------------------------------------------
 
@@ -173,8 +174,8 @@ CREATE TABLE `meeting_details` (
 --
 
 INSERT INTO `meeting_details` (`Meeting_ID`, `Tutor_ID`, `Student_ID`, `Session_ID`, `Session_Start_Date`, `Session_Start_Time`, `Session_End_Time`) VALUES
-(8, 47, 31, 'D59M5U0TTL', '2025-03-03', '02:50:00', '05:55:00'),
-(9, 47, 31, '9TZV4XBFUN', '2025-03-03', '09:03:00', '10:03:00');
+(21, 47, 31, '9NDX5YX0ZN', '2025-03-09', '02:28:00', '04:28:00'),
+(22, 47, 32, '9NDX5YX0ZN', '2025-03-09', '02:28:00', '04:28:00');
 
 -- --------------------------------------------------------
 
@@ -235,7 +236,8 @@ CREATE TABLE `student_approve_tutor_status_table` (
 
 INSERT INTO `student_approve_tutor_status_table` (`status_ID`, `Student_ID`, `student_approving_status`, `Parent_ID`, `parent_approving_status`, `Tutor_ID`, `tutor_approving_status`) VALUES
 (20, 31, 'approved', 31, 'approved', 47, 'approved'),
-(21, 32, 'approved', 32, 'approved', 47, 'approved');
+(21, 32, 'approved', 32, 'approved', 47, 'approved'),
+(22, 32, 'approved', 32, 'approved', 48, 'approved');
 
 -- --------------------------------------------------------
 
@@ -466,7 +468,7 @@ ALTER TABLE `admin_table`
 -- AUTO_INCREMENT for table `assigned_tutors_record_table`
 --
 ALTER TABLE `assigned_tutors_record_table`
-  MODIFY `record_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `record_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `communities`
@@ -496,7 +498,7 @@ ALTER TABLE `community_members`
 -- AUTO_INCREMENT for table `meeting_details`
 --
 ALTER TABLE `meeting_details`
-  MODIFY `Meeting_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `Meeting_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `otp_table`
@@ -514,7 +516,7 @@ ALTER TABLE `parent_table`
 -- AUTO_INCREMENT for table `student_approve_tutor_status_table`
 --
 ALTER TABLE `student_approve_tutor_status_table`
-  MODIFY `status_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `status_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `student_table`
