@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tutor Chat</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f0f2f5;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        justify-content: center;
+      }
+      .file-preview {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 5px;
+      }
+      .chat-container {
+        width: 400px;
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+      }
+      .chat-box {
+        height: 300px;
+        overflow-y: auto;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 10px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+      }
+      .message {
+        padding: 10px;
+        margin: 5px;
+        border-radius: 10px;
+        max-width: 80%;
+        word-wrap: break-word;
+        text-align: left;
+      }
+      /* Tutor messages (Right-aligned) */
+      .message.tutor {
+        align-self: flex-end;
+        background: #e6e6e6;
+        color: black;
+      }
+      /* Parent messages (Left-aligned) */
+      .message.parent {
+        align-self: flex-start;
+        background: #e6e6e6;
+        color: black;
+      }
+      .input-box {
+        display: flex;
+        align-items: center;
+      }
+      input[type="text"],
+      input[type="file"] {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      button {
+        padding: 10px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 5px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chat-container">
+      <h2 id="chatHeader">Loading...</h2>
+      <div class="chat-box" id="chat-box"></div>
+      <div class="input-box">
+        <input type="text" id="messageInput" placeholder="Type a message" />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+      <div class="input-box">
+        <input type="file" id="fileInput" />
+        <button onclick="uploadFile()">Upload</button>
+      </div>
+    </div>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      let chatId = urlParams.get("roomId");
+      const parentId = urlParams.get("parentId");
+      const userRole = "tutor"; // Assuming tutor is logged in
+      const tutorData = sessionStorage.getItem("tutorDetails");
+      let tutorId = null;
+
+      if (tutorData) {
+        const parsedData = JSON.parse(tutorData);
+        tutorId = parsedData.Tutor_ID; // Extract Tutor_ID
+      } else {
+        console.error("Tutor data not found in sessionStorage");
+      }
+
+      if (!chatId || !parentId || !tutorId) {
+        console.error("Missing chatId, parentId, or tutorId");
+      }
+
+      // Get or Create Chat Room
+      async function getChatRoom() {
+        if (!tutorId || !parentId) {
+          console.error("Missing tutorId or parentId");
+          return;
+        }
+
+        try {
+          // Fetch student name based on parentId
+          const studentResponse = await fetch(`/api/chat/student/${parentId}`);
+          const studentData = await studentResponse.json();
+          const studentName = studentData.studentName || "Unknown Student";
+
+          // Fetch chat room details
+          const response = await fetch("/api/chat/getRoom", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ parentId, tutorId }),
+          });
+          const data = await response.json();
+          chatId = data.chatId;
+
+          if (data.chatName) {
+            document.getElementById(
+              "chatHeader"
+            ).innerText = `Parent of ${studentName} (ID: ${parentId})`;
+          } else {
+            document.getElementById("chatHeader").innerText = "Unknown Parent";
+          }
+
+          loadMessages();
+        } catch (error) {
+          console.error("Error getting chat room:", error);
+        }
+      }
+
+      getChatRoom();
+
+      let firstLoad = true; // Track first load
+
+      let lastMessageCount = 0; // Track the number of messages
+
+      async function loadMessages() {
+        const chatBox = document.getElementById("chat-box");
+        const prevScrollHeight = chatBox.scrollHeight; // Store previous height
+        const prevScrollTop = chatBox.scrollTop; // Store previous scroll position
+
+        const response = await fetch(`/api/chat/messages/${chatId}`);
+        const messages = await response.json();
+
+        // If there are new messages, determine whether to scroll
+        const newMessageArrived = messages.length > lastMessageCount;
+        lastMessageCount = messages.length; // Update message count
+
+        chatBox.innerHTML = ""; // Clear chat box
+
+        messages.forEach((msg) => {
+          const msgDiv = document.createElement("div");
+          msgDiv.classList.add("message");
+
+          if (msg.user_role === "tutor") {
+            msgDiv.classList.add("tutor");
+          } else if (msg.user_role === "parent") {
+            msgDiv.classList.add("parent");
+          }
+
+          if (msg.file_url) {
+            if (msg.file_type === "image") {
+              msgDiv.innerHTML = `<strong>${msg.user_role}:</strong> <br><img src="${msg.file_url}" class="file-preview">`;
+            } else if (msg.file_type === "video") {
+              msgDiv.innerHTML = `<strong>${msg.user_role}:</strong> <br><video controls class="file-preview"><source src="${msg.file_url}" type="video/mp4"></video>`;
+            } else {
+              msgDiv.innerHTML = `<strong>${msg.user_role}:</strong> <br><a href="${msg.file_url}" target="_blank">View File</a>`;
+            }
+          } else {
+            msgDiv.innerHTML = `<strong>${msg.user_role}:</strong> ${msg.message}`;
+          }
+
+          chatBox.appendChild(msgDiv);
+        });
+
+        // Auto-scroll only when a new message is added
+        if (newMessageArrived) {
+          setTimeout(() => {
+            chatBox.scrollTop = chatBox.scrollHeight;
+          }, 50);
+        } else {
+          // Maintain the user's scroll position if they are scrolling up
+          chatBox.scrollTop =
+            prevScrollTop + (chatBox.scrollHeight - prevScrollHeight);
+        }
+      }
+
+      // Refresh messages every 2 seconds
+      setInterval(loadMessages, 1000);
+      loadMessages();
+
+      document
+        .getElementById("messageInput")
+        .addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            document.querySelector("button[onclick='sendMessage()']").click(); // Click the send button
+          }
+        });
+
+      async function sendMessage() {
+        if (!chatId || !tutorId) {
+          alert("Chat room or tutor ID not found.");
+          return;
+        }
+
+        const messageInput = document.getElementById("messageInput");
+        const message = messageInput.value.trim();
+        if (!message) return;
+
+        await fetch("/api/chat/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chatId,
+            senderId: tutorId,
+            userRole,
+            message,
+          }),
+        });
+
+        messageInput.value = "";
+        loadMessages();
+      }
+
+      async function uploadFile() {
+        if (!chatId || !tutorId) {
+          alert("Chat room or tutor ID not found.");
+          return;
+        }
+
+        const fileInput = document.getElementById("fileInput");
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("chatId", chatId);
+        formData.append("senderId", tutorId);
+        formData.append("userRole", userRole);
+
+        await fetch("/api/chat/upload", { method: "POST", body: formData });
+
+        fileInput.value = "";
+        loadMessages();
+      }
+    </script>
+  </body>
+</html>

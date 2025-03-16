@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel= "stylesheet" href= "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" >
+  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>Approve Communities</title>
+  <!-- <link rel="stylesheet" href="style.css"> -->
+   <style>
+    /* Section Title Styling */
+    *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        list-style-type: none;
+        text-decoration: none;
+        font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+    }
+    .logo {
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+    font-family: "Montserrat";
+    color: #000000;
+    text-decoration: none;
+    color: inherit;
+}
+.logo span{
+    color: #f4f4f4;
+}
+    .sidebar{
+        width: 345px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background: #2C98F0;
+        z-index: 100;
+        transition: width 300ms;
+    }
+    .sidebar-brand{
+        height: 90px;
+        padding: 1rem 0rem 1rem 2rem;
+        color: #fff;
+    }
+    .sidebar-brand span{
+        display: inline-block;
+        padding-right: 1rem;
+    }
+    .sidebar-menu{
+        margin-top: 1rem;
+    }
+    .sidebar-menu li{
+        width: 100%;
+        margin-bottom: 1.3rem;
+        padding-left: 2rem;
+
+    }
+    .sidebar-menu a{
+        padding-left: 1rem;
+        display: block;
+        color: #fff;
+        font-size: 1.1rem;
+        padding-top: 1rem;
+    }
+    .sidebar-menu a.active{
+        background: #fff;
+        padding-top: 1rem ;
+        padding-bottom: 1rem ;
+        color: #2C98F0;
+        border-radius: 30px 0px 0px 30px;
+    }
+    .sidebar-menu a:hover{
+        background: #fff;
+        padding-top: 1rem ;
+        padding-bottom: 1rem ;
+        color: #2C98F0;
+        border-radius: 30px 0px 0px 30px;
+        transition-duration: 0.5s;
+    }
+    .sidebar-menu a span :first-child{
+        font-size: 1.5rem;
+        padding-right: 1rem;
+    }
+    .menu-icon {
+    width: 33px;
+    height: 33px;
+    margin-top: -2px; /* Adjust this value to move the image down */
+    vertical-align: middle;
+    }
+    #nav-toggle{
+        display: none;
+        
+    }
+    #nav-toggle:checked + .sidebar{
+        width: 70px;  
+    }
+    #nav-toggle:checked + .sidebar .sidebar-brand ,
+    #nav-toggle:checked + .sidebar li {
+        padding-left: 1rem;
+        text-align: center;
+    }
+    #nav-toggle:checked + .sidebar li a{
+        padding-left: 0rem;
+    }
+    #nav-toggle:checked + .sidebar li a span{
+        padding-left: 0rem;
+    }
+    #nav-toggle:checked + .sidebar .sidebar-brand h2 span:last-child,
+    #nav-toggle:checked + .sidebar li a span:last-child{
+        display: none;  
+    }
+    #nav-toggle:checked ~ .main-content{
+        margin-left: 70px;  
+    }
+    #nav-toggle:checked ~ .main-content header{
+        width: calc(100% - 70px);  
+        left: 70px;
+    }
+    .main-content{
+        transition: margin-left 300ms;
+        margin-left: 345px;
+    }
+    header{
+        background: #fff;
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        position: fixed;
+        left: 345px;
+        width: calc(100% - 345px);
+        top: 0;
+        z-index: 100;
+        transition: left 300ms;
+    }
+    header h2{
+        color: #222;
+    }
+    header label span{
+        font-size: 1.7rem;
+        padding-right: 1rem;
+
+    }
+    .search-wrapper{
+        border: 1px solid #ccc;
+        /* border-radius: 25px; */
+        height: 50px;
+        display: flex;
+        align-items: center;
+        overflow-x: hidden;
+    }
+    .search-wrapper span{
+        display: inline-block;
+        padding: 0rem 1rem;
+        font-size: 1.5rem;
+    }
+    .search-wrapper input{
+        height: 100%;
+        padding: .5rem;
+
+    }
+    .user-wrapper{
+        display: flex;
+        align-items: center;
+    }
+    .user-wrapper img{
+        border-radius: 50%;
+        margin-left: 1rem;
+
+    }
+    .user-wrapper small{
+        display: inline-block;
+        color: black;
+        
+    }
+    main{
+        margin-top: 90px;
+        padding: 2rem 1.5rem;
+        width: 100%;
+        background: #f0f0f0;
+        min-height: calc(100vh - 90px);
+    }
+    .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+.section-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Table Wrapper Styling */
+.table-wrapper {
+  margin: 0 auto;
+  width: 90%;
+  overflow-x: auto;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  
+}
+
+/* Table Styling */
+#pendingCommunitiesTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 1rem;
+  text-align: left;
+}
+
+#pendingCommunitiesTable th,
+#pendingCommunitiesTable td {
+  border: 1px solid #ddd;
+  padding: 10px 15px;
+}
+
+#pendingCommunitiesTable th {
+  background-color: #2C98F0;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+#pendingCommunitiesTable tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#pendingCommunitiesTable tr:hover {
+  background-color: #f1f1f1;
+}
+
+#pendingCommunitiesTable td button {
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  background-color: #2C98F0;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#pendingCommunitiesTable td button:hover {
+  background-color: #0056b3;
+}
+/* Action Button Styling */
+.action-button {
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  color: #fff;
+}
+
+.action-button.approve {
+  background-color: #28a745; /* Green for approve */
+}
+
+.action-button.approve:hover {
+  background-color: #218838;
+}
+
+.action-button.reject {
+  background-color: #dc3545; /* Red for reject */
+}
+
+.action-button.reject:hover {
+  background-color: #c82333;
+}
+/* Custom Alert Box */
+.custom-alert {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.custom-alert-content {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+}
+
+.custom-alert-content p {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.custom-alert-content button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.custom-alert-content button:hover {
+  background-color: #0056b3;
+}
+@media only screen and (max-width: 1200px) {
+        .sidebar{
+            width: 70px;  
+        }
+
+       
+       .sidebar .sidebar-brand,
+       .sidebar li{
+            padding-left: 1rem;
+            text-align: center;
+        }
+        .sidebar li a{
+            padding-left: 0rem;
+        }
+        
+        .sidebar .sidebar-brand h2 span:last-child,
+        .sidebar li a span:last-child{
+            display: none;  
+        }
+        .main-content{
+            margin-left: 70px;  
+        }
+        .main-content header{
+            width: calc(100% - 70px);  
+            left: 70px;
+        }
+        
+        .sidebar:hover{
+            width: 345px;
+            z-index: 200;
+        }
+       .sidebar:hover .sidebar-brand,
+        .sidebar:hover li{
+            padding-left: 1rem;
+            text-align: left;
+        }
+        .sidebar:hover li a{
+            padding-left: 0rem;
+        }
+        
+        .sidebar:hover .sidebar-brand h2 span:last-child,
+        .sidebar:hover li a span:last-child{
+            display: inline;  
+        }
+    }
+@media only screen and (max-width: 960px) {
+    
+    .container {
+        grid-template-columns: repeat(3,1fr);
+    }
+}
+@media only screen and (max-width: 768px){
+    .container {
+        grid-template-columns: 100%;
+    }
+    .search-wrapper{
+        display: none;
+    }
+}
+
+
+    @media only screen and (max-width: 768px){
+        .container{
+            grid-template-columns: repeat(2,1fr);
+        }
+        .search-wrapper{
+            display:none;
+
+        }
+        .sidebar{
+            left: -100% !important;
+        }
+        header h2 label {
+            display: inline-block;
+            justify-content: center !important;
+            align-items: center;
+            background: var(#2C98F0);
+            padding-right: 0rem;
+            margin-right: 1rem;
+            height: 40px;
+            width: 40px;
+            color: #030202;
+            border-radius: 50%;
+        }
+
+        header h2{
+            font-size: 1.1rem;
+        }
+        header h2 span{
+            text-align: center;
+            padding-right: 0rem;
+        }
+        .main-content{
+            width: 100%;
+            margin-left: 0rem;
+        }
+        header{
+            width: 100% !important;
+            left: 0 !important;
+        }
+
+        #nav-toggle:checked + .sidebar{
+            left: 0 !important;
+            z-index: 100;
+            width: 345px;
+        }
+    
+        #nav-toggle:checked + .sidebar .sidebar-brand,
+        #nav-toggle:checked + .sidebar li{
+            padding-left: 1rem;
+            text-align: left;
+        }
+        #nav-toggle:checked + .sidebar li a{
+            padding-left: 1rem;
+        }
+        
+        #nav-toggle:checked + .sidebar .sidebar-brand h2 span:last-child,
+        #nav-toggle:checked + .sidebar li a span:last-child{
+            display: inline;  
+        }
+
+        #nav-toggle:checked ~ .main-content{
+            margin-left: 0rem !important;
+        }
+
+    }
+   </style>
+</head>
+<body>
+  <input type="checkbox" id="nav-toggle">
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <!-- <a href="/" class="logo"><span></span></a> -->
+      <h2><img src="src=images/Logo.png" alt=""><span >Smart Tutor</span></h2>
+    </div>
+    <div class="sidebar-menu">
+      <ul>
+        <li>
+          <a href="admin_dashboard.html" ><span class="las la-home"></span>
+          <span>Dashboard</span></a>
+        </li>
+        <li>
+          <a href="admin_handle_tutor_profile_status.html"><span class="las la-user"></span>
+          <span>Tutor Profile Status</span></a>
+        </li>
+        <li>
+            <a href="" class="active"><span class="fa-solid fa-people-group"></span>
+            <span>Approve Communities</span></a>
+          </li>
+        <li>
+          <a href="index.html"><span class="fa-solid fa-right-from-bracket"></span>
+          <span>Logout</span></a>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <header >
+        <h2 style="margin-top: 7px;">
+            <label for="nav-toggle">
+                <!-- <span img src="images/bluebar3.png"  alt=""></span> -->
+                <img src="images/bluebar2.png" alt="Menu Icon" class="menu-icon">
+            </label>
+            Dashboard
+        </h2>
+        
+        <div class="user-wrapper">
+            <img src="images/user.jpg" width="40px" height="30px" alt="">
+            <div>
+                <h4 id="userWrapperAdminName">Admin</h4> <!-- Changed ID -->
+                <small>Admin</small>
+            </div>
+        </div>
+    </header>
+    <main>
+      <div class="container">
+        <h1 class="section-title">Pending Communities</h1>
+        <div class="table-wrapper">
+          <table id="pendingCommunitiesTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Subject</th>
+                <th>Created By</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Rows will be populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>    
+  </div>
+  
+  <script>
+    async function fetchPendingCommunities() {
+  const response = await fetch('/api/community/pending');
+  const communities = await response.json();
+
+  const tableBody = document.querySelector('#pendingCommunitiesTable tbody');
+  tableBody.innerHTML = '';
+
+  communities.forEach((community) => {
+    const row = document.createElement('tr');
+
+    row.innerHTML = `
+      <td>${community.id}</td>
+      <td>${community.name}</td>
+      <td>${community.description}</td>
+      <td>${community.subject}</td>
+      <td>${community.created_by}</td>
+      <td>
+        <button class="action-button approve" onclick="updateCommunityStatus(${community.id}, 'approved')">Approve</button>
+        <button class="action-button reject" onclick="updateCommunityStatus(${community.id}, 'rejected')">Reject</button>
+      </td>
+    `;
+
+    tableBody.appendChild(row);
+  });
+}
+
+async function updateCommunityStatus(communityId, status) {
+  const response = await fetch('/api/community/approve', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ communityId, status }),
+  });
+
+  const result = await response.json();
+  showCustomAlert(result.message); // Use the custom alert
+  fetchPendingCommunities(); // Refresh the table
+}
+
+// Fetch pending communities on page load
+fetchPendingCommunities();
+
+// Custom Alert Function
+function showCustomAlert(message) {
+  const alertBox = document.createElement('div');
+  alertBox.innerHTML = `
+    <div class="custom-alert">
+      <div class="custom-alert-content">
+        <p>${message}</p>
+        <button onclick="closeCustomAlert()">OK</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(alertBox);
+}
+
+function closeCustomAlert() {
+  const alertBox = document.querySelector('.custom-alert');
+  if (alertBox) alertBox.remove();
+}
+
+  </script>
+</body>
+</html>

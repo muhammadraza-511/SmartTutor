@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assigned Students</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        text-align: center;
+      }
+      .container {
+        width: 50%;
+        margin: 20px auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        margin-bottom: 20px;
+      }
+      .student-list {
+        list-style: none;
+        padding: 0;
+      }
+      .student-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #e6e6e6;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+      .chat-button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      .chat-button:hover {
+        background: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Assigned Students</h2>
+      <ul class="student-list" id="studentList"></ul>
+    </div>
+
+    <script>
+      const tutorData = sessionStorage.getItem("tutorDetails");
+      let tutorId = null;
+
+      if (tutorData) {
+        const parsedData = JSON.parse(tutorData);
+        tutorId = parsedData.Tutor_ID;
+      } else {
+        console.error("Tutor data not found in sessionStorage");
+      }
+
+      async function fetchAssignedStudents() {
+        if (!tutorId) {
+          console.error("Tutor ID not found");
+          return;
+        }
+
+        const response = await fetch(`/api/tutor/assigned-students/${tutorId}`);
+        const students = await response.json();
+
+        const studentList = document.getElementById("studentList");
+        studentList.innerHTML = "";
+
+        students.forEach((student) => {
+          const li = document.createElement("li");
+          li.classList.add("student-item");
+
+          li.innerHTML = `
+            <span>${student.Student_Name} (ID: ${student.Student_ID})</span>
+            <button class="chat-button" onclick="startChat(${student.Student_ID}, ${tutorId})">Chat</button>
+        `;
+
+          studentList.appendChild(li);
+        });
+      }
+
+      fetchAssignedStudents();
+
+      async function startChat(studentId, tutorId) {
+        try {
+          const response = await fetch("/api/student-tutor-chat/getRoom", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ studentId, tutorId }),
+          });
+
+          const data = await response.json();
+          if (data.chatId) {
+            // Redirect to the chat page with chatId and studentId in URL
+            window.location.href = `/tutor_student_chat?chatId=${data.chatId}&studentId=${studentId}`;
+          } else {
+            console.error("Failed to retrieve chat room.");
+          }
+        } catch (error) {
+          console.error("Error starting chat:", error);
+        }
+      }
+    </script>
+  </body>
+</html>

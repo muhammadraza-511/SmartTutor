@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel= "stylesheet" href= "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" >
+  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>Dynamic Tutor Search</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+      background-color: #f9f9f9;
+      /* display: flex; */
+      height: 100vh;
+    }
+    header {
+            background: #fff;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ccc;
+            
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 30px;
+            font-weight: bold;
+            font-style: italic;
+            font-family: "Montserrat";
+            color: #000000;
+            text-decoration: none;
+            color: inherit;
+        }
+        .logo span{
+            color: #2C98F0;
+        }
+        .auth-buttons {
+            display: flex;
+        }
+
+        .auth-buttons a {
+             margin-left: 10px;
+            padding: 5px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+        }
+        .dashboard {
+            background-color: #2C98F0;
+            transition: background-color 0.3s ease;
+        }
+
+        .dashboard:hover {
+            background-color: #00457e;
+        }
+        .logout {
+            background-color: #FFAB40;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout:hover {
+        background-color: #bc7314;
+        }
+        
+
+    .container {
+      display: flex;
+      width: 100%;
+      height: 80rex;
+    }
+
+    .search-section {
+      width: 50%;
+      padding: 40px;
+      background-color: #fff;
+    }
+
+    .image-section {
+      width: 50%;
+      background-color: #e8f4fd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative; /* Required for positioning */
+    }
+
+    .image-section img {
+      width: 60%;
+      border-radius: 8px;
+    }
+    .back-arrow,
+    .exit {
+      position: absolute;
+      top: 20px; /* Adjust position for both icons */
+      font-size: 24px;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .back-arrow {
+      left: 20px; /* Position back arrow on the left */
+    }
+
+    .exit {
+      right: 20px; /* Position exit icon on the right */
+    }
+
+    .back-arrow:hover,
+    .exit:hover {
+      color: #0056b3; /* Change color on hover */
+    }
+
+    h1, h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .step-container {
+      /* margin: 20px 0; */
+      margin-top: 170px;
+      margin-left: 50px;
+      width: 100%;
+    }
+
+    .field-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    label {
+      font-weight: bold;
+      font-size: 26px;
+      margin-bottom: 10px;
+    }
+
+/* Style for labels in the final search stage with smaller font */
+.final-stage label {
+  font-size: 16px; /* Smaller font for the final search stage */
+}
+
+    input, select, button {
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+      width: 90%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+     
+      cursor: pointer;
+      background-color: #2c98f0;
+      color: white;
+      border: none;
+    }
+
+    button:hover {
+      background-color: #004494;
+    }
+
+    .results {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .tutor-profile {
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .tutor-profile button {
+      margin-top: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #finalSearchFields {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #finalSearchFields .field-container {
+      flex-direction: column;
+      min-width: 200px;
+      flex: 1;
+    }
+
+    /* Full-page style for Final Search Section */
+    .container.full-page {
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+      width: 100%;
+      height: 100vh;
+      overflow: auto;
+    }
+
+    .container.full-page .search-section {
+      width: 100%;
+      padding: 20px;
+      background-color: #fff;
+    }
+
+    .container.full-page .image-section {
+      display: none;
+    }
+    .tutor-profile {
+  display: flex;
+  /* align-items: flex-start; */
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  position: relative;
+  font-size: 1.1em;
+  width: 80%;
+  margin-left: 130px;
+  /* max-width: 1000px; */
+  margin-bottom: 20px;
+}
+.tutor-profile:hover{
+  border-color: #000000;
+}
+
+.tutor-profile img {
+  width: 170px; /* Fixed width */
+  height: 170px; /* Fixed height */
+  border-radius: 10%; /* Rounded corners */
+  object-fit: cover; /* Ensures the image fills the box without distortion */
+  margin-right: 10px; /* Adds space between the image and the text */
+}
+
+.tutor-details {
+  flex-grow: 1;
+  margin-left: 20px;
+  margin-right: 40px;
+}
+
+.tutor-details h3 {
+  font-size: 1.3em;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.tutor-details p {
+  margin-bottom: 8px;
+  margin-right: 40px;
+}
+
+.tutor-fee {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #2c98f0;
+}
+.introduction-box {
+  border: 1px solid #74C0FC; /* Add a border around the box */
+  padding: 10px;            /* Add some padding for spacing */
+  border-radius: 5px;       /* Slightly round the corners */
+  background-color: #f9f9f9; /* Light background color */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for a subtle effect */
+  margin-top: 5px;          /* Add spacing above */
+  margin-right: 40px;
+}
+.hidden-details {
+  display: none;
+  font-size: 0.9em;
+  margin-top: 8px;
+  
+}
+.hidden-details h3{
+  color: #000000;
+  margin-top: 6px;
+}
+
+.read-more {
+  color: #ffffff;
+  background-color: #FFAB40;
+  border: 1px solid #FFAB40;
+  border-radius: 4px; /* Adds rounded corners */
+  cursor: pointer;
+  text-decoration: none; /* Removes underline */
+  font-size: 0.95em;
+  padding: 5px 10px; /* Adds padding for a button-like feel */
+  display: inline-block; /* Ensures the button looks like a box */
+  text-align: center; /* Centers text inside the button */
+}
+
+.read-more:hover {
+  background-color: #bc7314; /* Darkens the background on hover */
+  border-color: #bc7314; /* Matches border color on hover */
+}
+.availability-days {
+  display: flex;
+  gap: 10px; /* Adds spacing between days */
+  flex-wrap: wrap; /* Ensures wrapping if days exceed container width */
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.availability-day {
+  background-color: #2c98f0; /* Button-like background */
+  color: #ffffff; /* White text color */
+  padding: 5px 10px; /* Adds padding for a button-like feel */
+  border-radius: 4px; /* Rounds the corners */
+  font-size: 1em; /* Slightly smaller font */
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+}
+button.approve-tutor {
+  background-color: #2c98f0;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button.approve-tutor:hover {
+  background-color: #0056b3;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="" class="logo"><span>Smart</span>Tutor</a>
+      <div class="auth-buttons">
+        <a onclick="redirectToDashboard()" class="dashboard">Dashboard</a>
+        <a href="loginpage.html" class="logout">Logout</a>
+        <!-- Profile Icon -->
+        <div class="profile-icon"></div>
+      </div>
+    </nav>
+</header>
+  <div class="container">
+    
+    <!-- Left section for search -->
+    <div class="search-section">
+
+      <!-- <h1>Dynamic Tutor Search</h1> -->
+      <div id="studentDetails" style="display: none;">
+        <h2>Logged-In Student Details</h2>
+        <p><strong>Student ID:</strong> <span id="studentID">Loading...</span></p>
+      </div>
+      <div class="step-container">
+        <!-- <h2 id="currentStepTitle">Enter Search Criteria</h2> -->
+        <div class="field-container">
+          <label id="currentStepLabel" for="currentInput">Subject</label>
+          <input type="text" id="currentInput" placeholder="Enter subject (e.g., Math)">
+        </div>
+        <button id="nextStepButton">Next</button>
+      </div>
+
+      <!-- Final Search Section -->
+      <div id="finalSearchSection" style="display: none;">
+        <h2>Review and Update Search</h2>
+        <div id="finalSearchFields"></div>
+        <button id="searchButton">Search</button>
+      </div>
+
+      <!-- Search Results Section -->
+      <div id="searchResults" class="results" style="display: none;">
+        <h2>Search Results</h2>
+        <div id="resultsContainer"></div>
+      </div>
+    </div>
+
+    <!-- Right section for the image -->
+    <div class="image-section" id="imageSection">
+      
+      <span class="back-arrow" onclick="goBack()">
+        <i class="fa-solid fa-arrow-left"></i>
+      </span>
+      <span class="exit" onclick="redirectToDashboard()">
+        <i class="fa-solid fa-right-to-bracket"></i>
+      </span>
+      <img src="images/kid.jpg" alt="Step Illustration" id="stepImage">
+    </div>
+  </div>
+  
+
+  <script>
+    const searchFields = [
+      { label: "What do you want to Study", id: "subject", type: "text", placeholder: "Enter subject (e.g., Math)" },
+      { label: "Maximum Price", id: "price", type: "number", placeholder: "Enter maximum price (optional)" },
+      { label: "Country", id: "country", type: "text", placeholder: "Enter country (optional)" },
+      { label: "Tutor Name", id: "tutorName", type: "text", placeholder: "Enter tutor name (optional)" },
+      { label: "Language", id: "language", type: "text", placeholder: "Enter language (e.g., English)" },
+      { label: "Grade", id: "grade", type: "number", placeholder: "Enter grade (e.g., 9)" },
+      { label: "Availability", id: "availability", type: "select", options: ["Anytime", "Morning", "Afternoon", "Evening", "Midnight"] }
+    ];
+
+    const stepImages = [
+      "images/kid.jpg",
+      "images/search1.jpg",
+      "images/globe.jpg",
+      "images/search2.jpg",
+      "images/stu1.png",
+      "images/online.jpeg",
+      "images/day.jpg"
+    ];
+
+    function redirectToDashboard() {
+      window.location.href = "student_dashboard.html"; // Redirects to the dashboard page
+    }
+    let currentStep = 0;
+    const searchCriteria = {};
+    function goBack() {
+      if (currentStep === 0) return;
+      currentStep--;
+      updateStep();
+    }
+    // Load student ID dynamically from sessionStorage
+    document.addEventListener("DOMContentLoaded", () => {
+      const storedData = sessionStorage.getItem("studentData");
+      if (storedData) {
+        const user = JSON.parse(storedData);
+        document.getElementById("studentID").textContent = user.Student_ID || "N/A";
+      } else {
+        document.getElementById("studentDetails").innerHTML = `
+          <p>No student details found. Please log in again.</p>
+        `;
+      }
+    });
+
+    const updateStep = () => {
+  const currentField = searchFields[currentStep];
+  const imageSection = document.getElementById("imageSection");
+  if (!currentField) return;
+
+  const stepLabel = document.getElementById("currentStepLabel");
+  const stepInput = document.getElementById("currentInput");
+  const stepTitle = document.getElementById("currentStepTitle");
+  const stepImage = document.getElementById("stepImage");
+
+  stepLabel.textContent = currentField.label;
+  stepInput.type = currentField.type || "text";
+  stepInput.value = searchCriteria[currentField.id] || "";
+  stepInput.placeholder = currentField.placeholder || "";
+  stepInput.style.display = currentField.type === "select" ? "none" : "block";
+
+  if (currentField.type === "select") {
+    const selectElement = document.createElement("select");
+    selectElement.id = "currentInput";
+    selectElement.innerHTML = currentField.options
+      .map((option) => `<option value="${option}">${option}</option>`)
+      .join("");
+    stepInput.replaceWith(selectElement);
+  }
+
+  // Update the image for the step
+  stepImage.src = stepImages[currentStep % stepImages.length];
+  stepImage.alt = `Illustration for Step ${currentStep + 1}`;
+
+  // Add the class for the final search stage
+  if (currentStep >= searchFields.length) {
+    document.querySelector(".container").classList.add("full-page");
+    document.querySelector(".search-section").classList.add("final-stage");
+  } else {
+    document.querySelector(".container").classList.remove("full-page");
+    document.querySelector(".search-section").classList.remove("final-stage");
+  }
+};
+
+const showFinalSearch = () => {
+  document.querySelector(".step-container").style.display = "none";
+  document.getElementById("finalSearchSection").style.display = "block";
+  document.querySelector(".container").classList.add("full-page");
+  document.querySelector(".search-section").classList.add("final-stage"); // Add the class for final stage
+
+  const finalSearchFieldsContainer = document.getElementById("finalSearchFields");
+  finalSearchFieldsContainer.innerHTML = searchFields.map((field) => `
+    <div class="field-container">
+      <label for="${field.id}">${field.label}</label>
+      ${field.type === "select" ? `
+        <select id="${field.id}">
+          ${field.options.map(option => `
+            <option value="${option}" ${searchCriteria[field.id] === option ? "selected" : ""}>${option}</option>
+          `).join("")}
+        </select>
+      ` : `
+        <input type="${field.type}" id="${field.id}" value="${searchCriteria[field.id] || ""}" placeholder="${field.placeholder}">
+      `}
+    </div>
+  `).join("");
+};
+    const searchTutors = () => {
+      const finalSearchData = {};
+      searchFields.forEach((field) => {
+        const input = document.getElementById(field.id);
+        finalSearchData[field.id] = input.value || null;
+      });
+
+      document.getElementById("searchResults").style.display = "block";
+      const resultsContainer = document.getElementById("resultsContainer");
+      resultsContainer.innerHTML = "<p>Searching...</p>";
+
+      const studentID = document.getElementById("studentID").textContent; // Use dynamic student ID
+      finalSearchData.studentID = studentID;
+
+      fetch("/student_search_for_tutor", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(finalSearchData),
+})
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error("No tutors found for the given criteria.");
+    }
+    return response.json();
+  })
+  .then((data) => {
+  if (data.tutors && data.tutors.length > 0) {
+    resultsContainer.innerHTML = data.tutors
+      .map(
+        (tutor) => `
+          <div class="tutor-profile">
+            <div class="tutor-fee">Rs.${tutor.tutor_teaching_fee}/hour</div>
+            <img src="${tutor.imagePath}" alt="${tutor.Tutor_Name}" />
+            <div class="tutor-details">
+              <h3>${tutor.Tutor_Name}</h3>
+              <p><span class="icon"><i class="fa-solid fa-book" style="color: #74C0FC;"></i></span><strong>  Subjects:</strong> ${tutor.tutor_teaches_subject}</p>
+          
+              <p>
+                <strong> Experience</strong>
+                <div class="introduction-box">
+                  ${tutor.tutor_experience}
+                </div>
+              </p>
+              <p><span class="icon"><i class="fa-solid fa-earth-americas" style="color: #74C0FC;"></i></span> <strong> Languages:</strong> ${tutor.tutor_language}</p>
+              <div class="hidden-details" id="details-${tutor.Tutor_ID}">
+                <p><span class="icon"><i class="fa-solid fa-phone" style="color: #74C0FC;"></i></span> ${tutor.Tutor_Number}</p>
+                <p><span class="icon"><i class="fa-solid fa-envelope" style="color: #74C0FC;"></i></span> ${tutor.Tutor_Email}</p>
+                
+                <p>
+                  <h3><strong>Introduction:</strong></h3>
+                  <div class="introduction-box">
+                    ${tutor.tutor_introduction}
+                  </div>
+                </p>
+                <p><span class="icon"><i class="fa-solid fa-clock" style="color: #74C0FC;"></i></span> <strong>Availability Time:</strong> ${tutor.tutor_availability_time}</p>
+                <p><span class="icon"><i class="fa-solid fa-calendar-days" style="color: #74C0FC;"></i></span> <strong> Availability Days:</strong></p>
+                <div class="availability-days">
+                  ${tutor.tutor_availability_days
+                    .split(",")
+                    .map((day) => `<span class="availability-day">${day.trim()}</span>`)
+                    .join("")}
+                </div>
+                
+              </div>
+              <span class="read-more" onclick="toggleDetails('${tutor.Tutor_ID}')">Read More</span><br>
+              <button class="approve-tutor" data-tutor-id="${tutor.Tutor_ID}">Approve Tutor</button>
+            </div>
+          </div>
+        `
+      )
+      .join("");
+
+      document.querySelectorAll(".approve-tutor").forEach((button) => {
+        button.addEventListener("click", (e) => {
+          const tutorID = e.target.getAttribute("data-tutor-id");
+
+          fetch("/approve_tutor", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ tutorID, studentID }),
+          })
+            .then((response) => response.json())
+            .then((result) => {
+              alert(result.message);
+            })
+            .catch((error) => console.error("Error approving tutor:", error));
+        });
+      });
+    } else {
+      resultsContainer.innerHTML = "<p>No tutors found.</p>";
+    }
+  })
+    .catch((error) => {
+      console.error("Error:", error);
+      resultsContainer.innerHTML = `<p>${error.message}</p>`;
+    });
+  };
+    function toggleDetails(tutorID) {
+      const details = document.getElementById(`details-${tutorID}`);
+      const readMoreLink = details.nextElementSibling;
+
+      if (details.style.display === "none" || details.style.display === "") {
+        details.style.display = "block";
+        readMoreLink.innerText = "Show Less";
+      } else {
+        details.style.display = "none";
+        readMoreLink.innerText = "Read More";
+      }
+    }
+
+    document.getElementById("nextStepButton").addEventListener("click", () => {
+      const currentField = searchFields[currentStep];
+      const input = document.getElementById("currentInput");
+      searchCriteria[currentField.id] = input.value;
+      currentStep++;
+      if (currentStep >= searchFields.length) {
+        showFinalSearch();
+      } else {
+        updateStep();
+      }
+    });
+
+    document.getElementById("searchButton").addEventListener("click", searchTutors);
+
+    // Initialize first step
+    updateStep();
+  </script>
+</body>
+</html>

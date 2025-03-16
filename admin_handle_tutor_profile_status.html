@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel= "stylesheet" href= "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" >
+    <link rel= "stylesheet" href= "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" >
+  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Pending Tutor Profiles</title>
+    <style>
+        *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        list-style-type: none;
+        text-decoration: none;
+        font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+        }
+        .logo {
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+    font-family: "Montserrat";
+    color: #000000;
+    text-decoration: none;
+    color: inherit;
+}
+.logo span{
+    color: #f4f4f4;
+}
+    .sidebar{
+        width: 345px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background: #2C98F0;
+        z-index: 100;
+        transition: width 300ms;
+    }
+    .sidebar-brand{
+        height: 90px;
+        padding: 1rem 0rem 1rem 2rem;
+        color: #fff;
+    }
+    .sidebar-brand span{
+        display: inline-block;
+        padding-right: 1rem;
+    }
+    .sidebar-menu{
+        margin-top: 1rem;
+    }
+    .sidebar-menu li{
+        width: 100%;
+        margin-bottom: 1.3rem;
+        padding-left: 2rem;
+
+    }
+    .sidebar-menu a{
+        padding-left: 1rem;
+        display: block;
+        color: #fff;
+        font-size: 1.1rem;
+        padding-top: 1rem;
+    }
+    .sidebar-menu a.active{
+        background: #fff;
+        padding-top: 1rem ;
+        padding-bottom: 1rem ;
+        color: #2C98F0;
+        border-radius: 30px 0px 0px 30px;
+    }
+    .sidebar-menu a:hover{
+        background: #fff;
+        padding-top: 1rem ;
+        padding-bottom: 1rem ;
+        color: #2C98F0;
+        border-radius: 30px 0px 0px 30px;
+        transition-duration: 0.5s;
+    }
+    .sidebar-menu a span :first-child{
+        font-size: 1.5rem;
+        padding-right: 1rem;
+    }
+    .menu-icon {
+    width: 33px;
+    height: 33px;
+    margin-top: -2px; /* Adjust this value to move the image down */
+    vertical-align: middle;
+    }
+    #nav-toggle{
+        display: none;
+        
+    }
+    #nav-toggle:checked + .sidebar{
+        width: 70px;  
+    }
+    #nav-toggle:checked + .sidebar .sidebar-brand ,
+    #nav-toggle:checked + .sidebar li {
+        padding-left: 1rem;
+        text-align: center;
+    }
+    #nav-toggle:checked + .sidebar li a{
+        padding-left: 0rem;
+    }
+    #nav-toggle:checked + .sidebar li a span{
+        padding-left: 0rem;
+    }
+    #nav-toggle:checked + .sidebar .sidebar-brand h2 span:last-child,
+    #nav-toggle:checked + .sidebar li a span:last-child{
+        display: none;  
+    }
+    #nav-toggle:checked ~ .main-content{
+        margin-left: 70px;  
+    }
+    #nav-toggle:checked ~ .main-content header{
+        width: calc(100% - 70px);  
+        left: 70px;
+    }
+    .main-content{
+        transition: margin-left 300ms;
+        margin-left: 345px;
+    }
+    header{
+        background: #fff;
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        position: fixed;
+        left: 345px;
+        width: calc(100% - 345px);
+        top: 0;
+        z-index: 100;
+        transition: left 300ms;
+    }
+    header h2{
+        color: #222;
+    }
+    header label span{
+        font-size: 1.7rem;
+        padding-right: 1rem;
+
+    }
+    .search-wrapper{
+        border: 1px solid #ccc;
+        /* border-radius: 25px; */
+        height: 50px;
+        display: flex;
+        align-items: center;
+        overflow-x: hidden;
+    }
+    .search-wrapper span{
+        display: inline-block;
+        padding: 0rem 1rem;
+        font-size: 1.5rem;
+    }
+    .search-wrapper input{
+        height: 100%;
+        padding: .5rem;
+
+    }
+    .user-wrapper{
+        display: flex;
+        align-items: center;
+    }
+    .user-wrapper img{
+        border-radius: 50%;
+        margin-left: 1rem;
+
+    }
+    .user-wrapper small{
+        display: inline-block;
+        color: black;
+        
+    }
+    main{
+        margin-top: 90px;
+        padding: 2rem 1.5rem;
+        width: 100%;
+        background: #f0f0f0;
+        min-height: calc(100vh - 90px);
+    }
+    .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .profile-header img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            margin-right: 20px;
+        }
+        .profile-header div {
+            flex-grow: 1;
+        }
+        .profile-header h2 {
+            color: #030202;
+            margin: 0;
+            font-size: 24px;
+        }
+        .profile-header p {
+            color: #666;
+        }
+        .profile-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .profile-details label {
+            display: block;
+            color: #999;
+            margin-bottom: 5px;
+        }
+        .profile-details .info {
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+
+    @media only screen and (max-width: 1200px) {
+        .sidebar{
+            width: 70px;  
+        }
+
+       
+       .sidebar .sidebar-brand,
+       .sidebar li{
+            padding-left: 1rem;
+            text-align: center;
+        }
+        .sidebar li a{
+            padding-left: 0rem;
+        }
+        
+        .sidebar .sidebar-brand h2 span:last-child,
+        .sidebar li a span:last-child{
+            display: none;  
+        }
+        .main-content{
+            margin-left: 70px;  
+        }
+        .main-content header{
+            width: calc(100% - 70px);  
+            left: 70px;
+        }
+        
+        .sidebar:hover{
+            width: 345px;
+            z-index: 200;
+        }
+       .sidebar:hover .sidebar-brand,
+        .sidebar:hover li{
+            padding-left: 1rem;
+            text-align: left;
+        }
+        .sidebar:hover li a{
+            padding-left: 0rem;
+        }
+        
+        .sidebar:hover .sidebar-brand h2 span:last-child,
+        .sidebar:hover li a span:last-child{
+            display: inline;  
+        }
+    }
+@media only screen and (max-width: 960px) {
+    
+    .container {
+        grid-template-columns: repeat(3,1fr);
+    }
+}
+@media only screen and (max-width: 768px){
+    .container {
+        grid-template-columns: 100%;
+    }
+    .search-wrapper{
+        display: none;
+    }
+}
+
+
+    @media only screen and (max-width: 768px){
+        .container{
+            grid-template-columns: repeat(2,1fr);
+        }
+        .search-wrapper{
+            display:none;
+
+        }
+        .sidebar{
+            left: -100% !important;
+        }
+        header h2 label {
+            display: inline-block;
+            justify-content: center !important;
+            align-items: center;
+            background: var(#2C98F0);
+            padding-right: 0rem;
+            margin-right: 1rem;
+            height: 40px;
+            width: 40px;
+            color: #030202;
+            border-radius: 50%;
+        }
+
+        header h2{
+            font-size: 1.1rem;
+        }
+        header h2 span{
+            text-align: center;
+            padding-right: 0rem;
+        }
+        .main-content{
+            width: 100%;
+            margin-left: 0rem;
+        }
+        header{
+            width: 100% !important;
+            left: 0 !important;
+        }
+
+        #nav-toggle:checked + .sidebar{
+            left: 0 !important;
+            z-index: 100;
+            width: 345px;
+        }
+    
+        #nav-toggle:checked + .sidebar .sidebar-brand,
+        #nav-toggle:checked + .sidebar li{
+            padding-left: 1rem;
+            text-align: left;
+        }
+        #nav-toggle:checked + .sidebar li a{
+            padding-left: 1rem;
+        }
+        
+        #nav-toggle:checked + .sidebar .sidebar-brand h2 span:last-child,
+        #nav-toggle:checked + .sidebar li a span:last-child{
+            display: inline;  
+        }
+
+        #nav-toggle:checked ~ .main-content{
+            margin-left: 0rem !important;
+        }
+
+    }   
+        /* profile */
+
+/* Parent container for profiles */
+#tutor-cards {
+    display: flex;
+    flex-direction: column; /* Arrange profiles vertically */
+    gap: 20px; /* Space between rows */
+    padding: 10px;
+    margin-top: 20px;
+}
+
+/* Styling each card */
+.v-card {
+    width: 100%; /* Card spans full width */
+    max-width: 800px; /* Optional: Limit card width for readability */
+    margin: 0 auto; /* Center-align the cards */
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.v-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Profile picture */
+.v-card img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 2px solid #f0f0f0;
+}
+
+/* Card content */
+.v-card-content {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.v-card-content h3 {
+    margin: 0;
+    font-size: 1.25em;
+    color: #333;
+}
+
+.v-card-content p {
+    margin: 5px 0;
+    color: #555;
+    font-size: 0.95em;
+}
+
+/* Expandable content */
+.expandable {
+    text-align: left;
+    margin-top: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    display: none; /* Hidden by default */
+}
+
+.expandable p {
+    margin: 5px 0;
+    color: #555;
+    font-size: 0.9em;
+}
+
+/* Button for read more/less */
+.read-more {
+    color: #ffffff;
+  background-color: #2c98f0;
+  border: 1px solid #2c98f0;
+  border-radius: 4px; /* Adds rounded corners */
+  cursor: pointer;
+  text-decoration: none; /* Removes underline */
+  font-size: 0.95em;
+  padding: 5px 10px; /* Adds padding for a button-like feel */
+  display: inline-block; /* Ensures the button looks like a box */
+  text-align: center;
+}
+
+.read-more:hover {
+    background-color: #0056b3;
+}
+
+/* Button container */
+.btn-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    width: 100%;
+}
+
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.95em;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.accept-btn {
+    background: #28a745;
+    color: #fff;
+}
+
+.accept-btn:hover {
+    background: #218838;
+}
+
+.reject-btn {
+    background: #dc3545;
+    color: #fff;
+}
+
+.reject-btn:hover {
+    background: #c82333;
+}
+
+/* Centered alert box */
+.alert-box {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    z-index: 1000;
+}
+
+.alert-box p {
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.alert-box button {
+    padding: 10px 20px;
+    font-size: 14px;
+    background: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.alert-box button:hover {
+    opacity: 0.8;
+}
+
+.alert-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+    </style>
+</head>
+<body>
+    <input type="checkbox" id="nav-toggle">
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h2><span>Smart Tutor</span></h2>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li>
+                    <a href="admin_dashboard.html"><span class="las la-home"></span>
+                    <span>Dashboard</span></a>
+                </li>
+                <li>
+                    <a href="" class="active"><span class="las la-user"></span>
+                    <span>Tutor Profile Status</span></a>
+                </li>
+                <li>
+                    <a href="admin_approve_community.html"><span class="fa-solid fa-people-group"></span>
+                    <span>Approve Communities</span></a>
+                  </li>
+                <li>
+                <li>
+                    <a href="index.html"><span class="fa-solid fa-right-from-bracket"></span>
+                    <span>Logout</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h2 style="margin-top: 7px;">
+                <label for="nav-toggle">
+                    <img src="images/bluebar2.png" alt="Menu Icon" class="menu-icon">
+                </label>
+                Dashboard
+            </h2>
+            <div class="search-wrapper">
+                <span class="las la-search"></span>
+                <input type="search" placeholder="Search here" />
+            </div>
+            <div class="user-wrapper">
+                <img src="images/user.jpg" width="40px" height="30px" alt="">
+                <div>
+                    <h4 id="userWrapperAdminName">Admin</h4>
+                    <small>Admin</small>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <!-- Card Container -->
+            <div class="card-container" id="tutor-cards"></div>
+        </main>
+        <div class="alert-overlay"></div>
+<div class="alert-box">
+    <p></p>
+    <button onclick="hideAlert()">OK</button>
+</div>
+    </div>
+    <script>
+function showAlert(message) {
+    const overlay = document.querySelector('.alert-overlay');
+    const alertBox = document.querySelector('.alert-box');
+    alertBox.querySelector('p').textContent = message;
+    overlay.style.display = 'block';
+    alertBox.style.display = 'block';
+}
+
+// Hide alert box
+function hideAlert() {
+    const overlay = document.querySelector('.alert-overlay');
+    const alertBox = document.querySelector('.alert-box');
+    overlay.style.display = 'none';
+    alertBox.style.display = 'none';
+}
+
+fetch('/api/admin_handle_tutor_status')
+    .then(response => response.json())
+    .then(data => {
+        const container = document.getElementById('tutor-cards');
+        data.forEach(tutor => {
+            const card = document.createElement('div');
+            card.className = 'v-card';
+            card.dataset.tutorId = tutor.Tutor_ID;
+
+            // Profile picture
+            const profilePic = document.createElement('img');
+            profilePic.src = tutor.tutor_profile_pic ? tutor.tutor_profile_pic : '/default-profile.png';
+            profilePic.alt = `${tutor.Tutor_Name} Profile Picture`;
+            card.appendChild(profilePic);
+
+            // Basic tutor details
+            const cardContent = document.createElement('div');
+            cardContent.className = 'v-card-content';
+            cardContent.innerHTML = `
+                <h3>${tutor.Tutor_Name}</h3>
+                <p><strong>Email:</strong> ${tutor.tutor_email}</p>
+                <p><strong>Country:</strong> ${tutor.tutor_country}</p>
+                <p><strong>City:</strong> ${tutor.tutor_city}</p>
+                <p><strong>Teaching Fee:</strong> $${tutor.tutor_teaching_fee}</p>
+            `;
+            card.appendChild(cardContent);
+
+            // Read More Link
+            const readMore = document.createElement('p');
+            readMore.innerHTML = `<a href="#" class="read-more">Show More</a>`;
+            readMore.style.cursor = 'pointer';
+            card.appendChild(readMore);
+
+            // Expanded details container
+            const expandableContent = document.createElement('div');
+            expandableContent.className = 'expandable';
+            expandableContent.innerHTML = `
+                <p><strong>Roll Number:</strong> ${tutor.tutor_rollno}</p>
+                <p><strong>Language:</strong> ${tutor.tutor_language}</p>
+                <p><strong>University:</strong> ${tutor.tutor_university}</p>
+                <p><strong>Degree:</strong> ${tutor.tutor_degree_name} (${tutor.tutor_degree_type})</p>
+                <p><strong>Specialization:</strong> ${tutor.tutor_specialization}</p>
+                <p><strong>Start Year:</strong> ${tutor.tutor_starting_year}</p>
+                <p><strong>End Year:</strong> ${tutor.tutor_ending_year}</p>
+                <p><strong>Degree Document:</strong> <a href="${tutor.tutor_degree_link}" target="_blank">View Degree</a></p>
+                <p><strong>Subject:</strong> ${tutor.tutor_teaches_subject}</p>
+                <p><strong>Teaches To:</strong> ${tutor.tutor_teaches_to_grade}</p>
+                <p><strong>Preferred Session:</strong> ${tutor.tutor_preferable_session}</p>
+                <p><strong>Introduction:</strong> ${tutor.tutor_introduction}</p>
+                <p><strong>Experience:</strong> ${tutor.tutor_experience}</p>
+                <p><strong>Availability Days:</strong> ${tutor.tutor_availability_days}</p>
+                <p><strong>Availability Time:</strong> ${tutor.tutor_availability_time}</p>
+            `;
+            expandableContent.style.display = 'none'; // Initially hidden
+            card.appendChild(expandableContent);
+
+            // Toggle expandable content on "Show More" click
+            readMore.addEventListener('click', (event) => {
+                event.preventDefault();
+                if (expandableContent.style.display === 'none') {
+                    expandableContent.style.display = 'block';
+                    readMore.innerHTML = `<a href="#" class="read-more" >Show Less</a>`;
+                } else {
+                    expandableContent.style.display = 'none';
+                    readMore.innerHTML = `<a href="#" class="read-more" >Show More</a>`;
+                }
+            });
+
+            // Button Container for Accept and Reject
+            const btnContainer = document.createElement('div');
+            btnContainer.className = 'btn-container';
+            const acceptBtn = document.createElement('button');
+            acceptBtn.className = 'btn accept-btn';
+            acceptBtn.textContent = 'Accept';
+            const rejectBtn = document.createElement('button');
+            rejectBtn.className = 'btn reject-btn';
+            rejectBtn.textContent = 'Reject';
+
+            acceptBtn.addEventListener('click', () => {
+                changeProfileStatus(tutor.Tutor_ID, 'accepted');
+            });
+
+            rejectBtn.addEventListener('click', () => {
+                changeProfileStatus(tutor.Tutor_ID, 'rejected');
+            });
+
+            btnContainer.appendChild(acceptBtn);
+            btnContainer.appendChild(rejectBtn);
+
+            card.appendChild(btnContainer);
+
+            container.appendChild(card);
+        });
+    })
+    .catch(error => console.error('Error:', error));
+
+    function changeProfileStatus(tutorId, status) {
+    fetch(`/api/update_tutor_profile_status/${tutorId}/${status}`, {
+        method: 'POST',
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Show the alert
+        showAlert(`Tutor profile status updated to ${status}`);
+
+        // Add event listener to remove the profile card after clicking "OK"
+        document.querySelector('.alert-box button').addEventListener('click', () => {
+            hideAlert();
+            // Find the card element by its data attribute and remove it
+            const card = document.querySelector(`.v-card[data-tutor-id='${tutorId}']`);
+            if (card) {
+                card.remove();
+            }
+        });
+    })
+    .catch(error => {
+        showAlert('Failed to update profile status');
+        document.querySelector('.alert-box button').addEventListener('click', hideAlert);
+    });
+}
+    </script>
+</body>
+</html>

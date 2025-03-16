@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Online Session</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Add your CSS file -->
+</head>
+<body>
+    <h2>Create Online Session</h2>
+    <div id="tutorDetails">
+        <h3>Tutor Details</h3>
+        <p><strong>ID:</strong> <span id="tutorId"></span></p>
+        <p><strong>Name:</strong> <span id="tutorName"></span></p>
+        <p><strong>Email:</strong> <span id="tutorEmail"></span></p>
+        <p><strong>Roll No:</strong> <span id="tutorRollNo"></span></p>
+        <p><strong>Number:</strong> <span id="tutorNumber"></span></p>
+    </div>
+    
+    <label for="startTime"><strong>Start Time:</strong></label>
+    <input type="time" id="startTime" required>
+    
+    <label for="endTime"><strong>End Time:</strong></label>
+    <input type="time" id="endTime" required>
+    
+    <button id="generateSessionId">Generate Session ID</button>
+    <p><strong>Session ID:</strong> <span id="sessionId">Not Generated</span></p>
+    
+    <h3>Assigned Students</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Student Name</th>
+                <th>Student Roll Number</th>
+            </tr>
+        </thead>
+        <tbody id="studentList">
+            <!-- Assigned students will be displayed here -->
+        </tbody>
+    </table>
+
+    <button id="startSession">Create Session</button>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const tutorDetails = JSON.parse(sessionStorage.getItem("tutorDetails"));
+            const existingSessionId = sessionStorage.getItem("sessionId");
+            if (existingSessionId) {
+                document.getElementById("sessionId").textContent = existingSessionId;
+            }
+
+            if (!tutorDetails) {
+                alert("Tutor details not found. Please log in again.");
+                window.location.href = "loginpage.html";
+                return;
+            }
+
+            document.getElementById("tutorId").textContent = tutorDetails.Tutor_ID;
+            document.getElementById("tutorName").textContent = tutorDetails.Tutor_Name;
+            document.getElementById("tutorEmail").textContent = tutorDetails.Tutor_Email;
+            document.getElementById("tutorRollNo").textContent = tutorDetails.Tutor_Roll_No;
+            document.getElementById("tutorNumber").textContent = tutorDetails.Tutor_Number;
+
+            fetch(`/assigned-students?tutorId=${tutorDetails.Tutor_ID}`)
+                .then(response => response.json())
+                .then(data => {
+                    const studentList = document.getElementById("studentList");
+                    studentList.innerHTML = "";
+                    if (data.length === 0) {
+                        studentList.innerHTML = "<tr><td colspan='3'>No assigned students found.</td></tr>";
+                    } else {
+                        data.forEach(student => {
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                                <td><input type="checkbox" class="studentCheckbox" value="${student.Student_ID}"></td>
+                                <td>${student.Student_Name}</td>
+                                <td>${student.Student_roll_No}</td>
+                            `;
+                            studentList.appendChild(row);
+                        });
+                    }
+                })
+                .catch(error => console.error("Error fetching assigned students:", error));
+
+            sessionStorage.removeItem("sessionId");
+        });
+
+        document.getElementById("generateSessionId").addEventListener("click", function() {
+            let sessionId = sessionStorage.getItem("sessionId");
+            if (!sessionId) {  // Generate only if sessionId is not already set
+                sessionId = Math.random().toString(36).substr(2, 10).toUpperCase();
+                sessionStorage.setItem("sessionId", sessionId);
+            }
+            document.getElementById("sessionId").textContent = sessionId;
+        });
+        
+        document.getElementById("startSession").addEventListener("click", function() {
+            const tutorId = document.getElementById("tutorId").textContent;
+            const sessionId = sessionStorage.getItem("sessionId");
+            const startTime = document.getElementById("startTime").value;
+            const endTime = document.getElementById("endTime").value;
+            const selectedStudents = [...document.querySelectorAll(".studentCheckbox:checked")].map(cb => cb.value);
+        
+            if (!sessionId) {
+                alert("Please generate a session ID first.");
+                return;
+            }
+            if (!startTime || !endTime) {
+                alert("Please enter start and end times.");
+                return;
+            }
+            if (selectedStudents.length === 0) {
+                alert("Please select at least one student.");
+                return;
+            }
+        
+            const sessionData = {
+                tutorId,
+                sessionId,
+                startTime,
+                endTime,
+                selectedStudents
+            };
+        
+            fetch("/create-session", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(sessionData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    alert("Session created successfully!");
+                    console.log("Session Created:", data);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
+</body>
+</html>
