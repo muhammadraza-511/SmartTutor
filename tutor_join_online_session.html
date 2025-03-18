@@ -4,26 +4,534 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel= "stylesheet" href= "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" >
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>Start Online Session</title>
+    
+    <style>
+        *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        list-style-type: none;
+        text-decoration: none;
+        font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+    }
+    .logo {
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+    font-family: "Montserrat";
+    color: #000000;
+    text-decoration: none;
+    color: inherit;
+}
+.logo span{
+    color: #f4f4f4;
+}
+    .sidebar{
+        width: 345px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background: #2C98F0;
+        z-index: 100;
+        transition: width 300ms;
+    }
+    .sidebar-brand{
+        height: 90px;
+        padding: 1rem 0rem 1rem 2rem;
+        color: #fff;
+    }
+    .sidebar-brand h2{
+        text-align: left;
+    }
+    .sidebar-brand span{
+        display: inline-block;
+        padding-right: 1rem;
+        color: #fff
+    }
+    .sidebar-menu{
+        margin-top: 1rem;
+    }
+    .sidebar-menu li{
+        width: 100%;
+        margin-bottom: 1.3rem;
+        padding-left: 2rem;
+
+    }
+    .sidebar-menu a{
+        padding-left: 1rem;
+        display: block;
+        color: #fff;
+        font-size: 1.1rem;
+        padding-top: 1rem;
+    }
+    .sidebar-menu a.active{
+        background: #fff;
+        padding-top: 1rem ;
+        padding-bottom: 1rem ;
+        color: #2C98F0;
+        border-radius: 30px 0px 0px 30px;
+    }
+    .sidebar-menu a:hover{
+        background: #fff;
+        padding-top: 1rem ;
+        padding-bottom: 1rem ;
+        color: #2C98F0;
+        border-radius: 30px 0px 0px 30px;
+        transition-duration: 0.5s;
+    }
+    .sidebar-menu a span :first-child{
+        font-size: 1.5rem;
+        padding-right: 1rem;
+    }
+    .menu-icon {
+    width: 33px;
+    height: 33px;
+    margin-top: -2px; /* Adjust this value to move the image down */
+    vertical-align: middle;
+    }
+    #nav-toggle{
+        display: none;
+        
+    }
+    #nav-toggle:checked + .sidebar{
+        width: 70px;  
+    }
+    #nav-toggle:checked + .sidebar .sidebar-brand ,
+    #nav-toggle:checked + .sidebar li {
+        padding-left: 1rem;
+        text-align: center;
+    }
+    #nav-toggle:checked + .sidebar li a{
+        padding-left: 0rem;
+    }
+    #nav-toggle:checked + .sidebar li a span{
+        padding-left: 0rem;
+    }
+    #nav-toggle:checked + .sidebar .sidebar-brand h2 span:last-child,
+    #nav-toggle:checked + .sidebar li a span:last-child{
+        display: none;  
+    }
+    #nav-toggle:checked ~ .main-content{
+        margin-left: 70px;  
+    }
+    #nav-toggle:checked ~ .main-content header{
+        width: calc(100% - 70px);  
+        left: 70px;
+    }
+    .main-content{
+        transition: margin-left 300ms;
+        margin-left: 345px;
+    }
+    header{
+        background: #fff;
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        position: fixed;
+        left: 345px;
+        width: calc(100% - 345px);
+        top: 0;
+        z-index: 100;
+        transition: left 300ms;
+    }
+    header h2{
+        color: #222;
+    }
+    header label span{
+        font-size: 1.7rem;
+        padding-right: 1rem;
+
+    }
+    .search-wrapper{
+        border: 1px solid #ccc;
+        /* border-radius: 25px; */
+        height: 50px;
+        display: flex;
+        align-items: center;
+        overflow-x: hidden;
+    }
+    .search-wrapper span{
+        display: inline-block;
+        padding: 0rem 1rem;
+        font-size: 1.5rem;
+    }
+    .search-wrapper input{
+        height: 100%;
+        padding: .5rem;
+
+    }
+    .user-wrapper{
+        display: flex;
+        align-items: center;
+    }
+    .user-wrapper img{
+        border-radius: 50%;
+        margin-left: 1rem;
+
+    }
+    .user-wrapper small{
+        display: inline-block;
+        color: black;
+        
+    }
+    main {
+        margin-top: 70px;
+        padding: 2rem 1.5rem;
+        width: 100%;
+        line-height: 1.6;
+        color: #333;
+        background-image: url('images/background1.png');
+        /* background-size: cover; */
+        background-position: center; 
+        background-repeat: repeat;
+        min-height: calc(100vh - 0px);
+    }
+    main h2{
+        color: #2C98F0;
+    }
+
+    h2 {
+            color: #ffffff;
+            text-align: center;
+        }
+     h3 {
+            color: #060606;
+            text-align: center;
+        }
+    
+
+    .tutor-info {
+        background: #2C98F0;
+        padding: 20px;
+        border-radius: 12px;
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .tutor-info h3 {
+        margin-bottom: 15px;
+        font-size: 1.8rem;
+        color: white;
+    }
+
+    .tutor-info p {
+        font-size: 1.1rem;
+        margin: 8px 0;
+    }
+
+    #sessionList {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 10px;
+    }
+
+    #sessionList div {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #sessionList div:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    #sessionList p {
+        margin: 10px 0;
+        color: #333;
+    }
+
+    .btn {
+        margin-top: 10px;
+        padding: 10px 20px;
+        background: #2C98F0;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+        background: #024ea2;
+    }
+        /* Modal Styles */
+    .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            text-align: center;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .modal-content p {
+            margin: 0;
+            color: #333;
+        }
+        .modal-content button {
+            margin-top: 15px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            background-color: #0366d6;
+            color: white;
+            cursor: pointer;
+        }
+        .modal-content button:hover {
+            background-color: #024ea2;
+        }
+        @media only screen and (max-width: 1200px) {
+        .sidebar{
+            width: 70px;  
+        }
+
+       
+       .sidebar .sidebar-brand,
+       .sidebar li{
+            padding-left: 1rem;
+            text-align: center;
+        }
+        .sidebar li a{
+            padding-left: 0rem;
+        }
+        
+        .sidebar .sidebar-brand h2 span:last-child,
+        .sidebar li a span:last-child{
+            display: none;  
+        }
+        .main-content{
+            margin-left: 70px;  
+        }
+        .main-content header{
+            width: calc(100% - 70px);  
+            left: 70px;
+        }
+        
+        .sidebar:hover{
+            width: 345px;
+            z-index: 200;
+        }
+       .sidebar:hover .sidebar-brand,
+        .sidebar:hover li{
+            padding-left: 1rem;
+            text-align: left;
+        }
+        .sidebar:hover li a{
+            padding-left: 0rem;
+        }
+        
+        .sidebar:hover .sidebar-brand h2 span:last-child,
+        .sidebar:hover li a span:last-child{
+            display: inline;  
+        }
+    }
+@media only screen and (max-width: 960px) {
+    
+    .container {
+        grid-template-columns: repeat(3,1fr);
+    }
+}
+@media only screen and (max-width: 768px){
+    .container {
+        grid-template-columns: 100%;
+    }
+    .search-wrapper{
+        display: none;
+    }
+}
+
+
+    @media only screen and (max-width: 768px){
+        .container{
+            grid-template-columns: repeat(2,1fr);
+        }
+        .search-wrapper{
+            display:none;
+
+        }
+        .sidebar{
+            left: -100% !important;
+        }
+        header h2 label {
+            display: inline-block;
+            justify-content: center !important;
+            align-items: center;
+            background: var(#2C98F0);
+            padding-right: 0rem;
+            margin-right: 1rem;
+            height: 40px;
+            width: 40px;
+            color: #030202;
+            border-radius: 50%;
+        }
+
+        header h2{
+            font-size: 1.1rem;
+        }
+        header h2 span{
+            text-align: center;
+            padding-right: 0rem;
+        }
+        .main-content{
+            width: 100%;
+            margin-left: 0rem;
+        }
+        header{
+            width: 100% !important;
+            left: 0 !important;
+        }
+
+        #nav-toggle:checked + .sidebar{
+            left: 0 !important;
+            z-index: 100;
+            width: 345px;
+        }
+    
+        #nav-toggle:checked + .sidebar .sidebar-brand,
+        #nav-toggle:checked + .sidebar li{
+            padding-left: 1rem;
+            text-align: left;
+        }
+        #nav-toggle:checked + .sidebar li a{
+            padding-left: 1rem;
+        }
+        
+        #nav-toggle:checked + .sidebar .sidebar-brand h2 span:last-child,
+        #nav-toggle:checked + .sidebar li a span:last-child{
+            display: inline;  
+        }
+
+        #nav-toggle:checked ~ .main-content{
+            margin-left: 0rem !important;
+        }
+
+    }
+       
+    </style>
 </head>
 
 <body>
-    <h2>Start Your Online Session</h2>
+    <input type="checkbox" id="nav-toggle">
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h2><img src="src=images/Logo.png" alt=""><span>Smart Tutor</span></h2>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li>
+                    <a href="tutor_dashboard.html" ><span class="las la-home"></span>
+                    <span>Dashboard</span></a>
+                </li>
+                <li>
+                    <a href="tutor_manage_student_requests.html"><span class="las la-user"></span>
+                    <span>Manage Student Requests</span></a>
+                </li>
+                <li>
+                    <a href="parentlist.html"><span class="fa-solid fa-user-group"></span>
+                    <span>Parents of Assigned Students</span></a>
+                </li>
+                <li>
+                    <a href="Assigned_Students.html"><span class="fa-solid fa-user-tie"></span>
+                    <span>  Assigned Students</span></a>
+                </li>
+                <li>
+                    <a href="created_communities.html"><span class="fa-solid fa-people-group"></span>
+                    <span>Created Communities</span></a>
+                </li>
+                <li>
+                    <a href="tutor_create_community.html"><span class="fa-solid fa-people-roof"></span>
+                    <span>Create New Community</span></a>
+                </li>
+                <li>
+                    <a href="tutor_start_online_session.html" onclick="saveUserToSession()">
+                        <span class="fa-solid fa-video"></span>
+                        <span>Create a Session</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="" class="active" onclick="saveUserToSession()">
+                        <span class="fa-solid fa-video"></span>
+                        <span>Join a Session</span>
+                    </a>
+                </li>
 
-    <div class="tutor-info">
-        <h3 id="tutorName"></h3>
-        <p><strong>Roll Number:</strong> <span id="tutorRollNo"></span></p>
-        <p><strong>Email:</strong> <span id="tutorEmail"></span></p>
-        <p><strong>Contact:</strong> <span id="tutorContact"></span></p>
+                <li>
+                    <a href="loginpage.html"><span class="fa-solid fa-right-from-bracket"></span>
+                    <span>Logout</span></a>
+                </li>
+            </ul>
+        </div>
     </div>
+    <div class="main-content">
+        <header>
+            <h2 style="margin-top: 7px;">
+                <label for="nav-toggle">
+                    <img src="images/bluebar2.png" alt="Menu Icon" class="menu-icon">
+                </label>
+                Dashboard
+            </h2>
+    
+            <div class="user-wrapper">
+                <div>
+                    <h4 id="userWrapperTutorName">Tutor</h4>
+                    <small>Tutor</small>
+                </div>
+            </div>
+        </header>
+        
+        <main>
+            <h2>Start Your Online Session</h2>
 
-    <h3>Upcoming or Ongoing Sessions</h3>
-    <div id="sessionList"></div>
+            <div class="tutor-info">
+                <h3 id="tutorName">Tutor Name</h3>
+                <p><strong>Roll Number:</strong> <span id="tutorRollNo">12345</span></p>
+                <p><strong>Email:</strong> <span id="tutorEmail">tutor@example.com</span></p>
+                <p><strong>Contact:</strong> <span id="tutorContact">123-456-7890</span></p>
+            </div>
 
-    <button onclick="moveToDashboard()">Move to Dashboard</button>
-
+            <h3>Upcoming or Ongoing Sessions</h3>
+            <div id="sessionList">
+                <p>No sessions available at the moment.</p>
+            </div>
+        </main>
+    </div>
+    <div class="modal" id="alertModal">
+        <div class="modal-content">
+            <p id="alertMessage"></p>
+            <button onclick="closeAlert()">OK</button>
+        </div>
+    </div>
     <script>
+        function showAlert(message) {
+            document.getElementById("alertMessage").textContent = message;
+            document.getElementById("alertModal").style.display = "flex";
+        }
 
+        function closeAlert() {
+            document.getElementById("alertModal").style.display = "none";
+        }
         document.addEventListener("DOMContentLoaded", function () {
             const userDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
 
@@ -35,39 +543,40 @@
                 
                 fetchTutorSessions(userDetails.Tutor_Roll_No);
             } else {
-                alert("User details not found! Please log in again.");
+                showAlert("User details not found! Please log in again.");
                 window.location.href = "tutor_dashboard.html";
             }
         });
 
         function fetchTutorSessions(rollNo) {
-            fetch('/getTutorSessions', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tutorRollNo: rollNo })
-            })
-            .then(response => response.json())
-            .then(data => {
-                const sessionList = document.getElementById('sessionList');
-                if (data.length === 0) {
-                    sessionList.innerHTML = '<p>No upcoming or ongoing sessions available.</p>';
-                } else {
-                    data.forEach(session => {
-                        const sessionItem = document.createElement('div');
-                        sessionItem.innerHTML = `
-                            <p><strong>Session ID:</strong> ${session.Session_ID}</p>
-                            <p><strong>Date:</strong> ${new Date(session.Session_Start_Date).toLocaleDateString()}</p>
-                            <p><strong>Start Time:</strong> ${session.Session_Start_Time}</p>
-                            <p><strong>End Time:</strong> ${session.Session_End_Time}</p>
-                            <button onclick="startSession('${session.Session_ID}', '${session.Session_Start_Time}', '${session.Session_End_Time}')">Start Session</button>
-                            <hr>
-                        `;
-                        sessionList.appendChild(sessionItem);
-                    });
-                }
-            })
-            .catch(error => console.error('Error fetching tutor sessions:', error));
+    fetch('/getTutorSessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tutorRollNo: rollNo })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const sessionList = document.getElementById('sessionList');
+        sessionList.innerHTML = '';
+
+        if (data.length === 0) {
+            sessionList.innerHTML = '<p>No upcoming or ongoing sessions available.</p>';
+        } else {
+            data.forEach(session => {
+                const sessionItem = document.createElement('div');
+                sessionItem.innerHTML = `
+                    <p><strong>Session ID:</strong> ${session.Session_ID}</p>
+                    <p><strong>Date:</strong> ${new Date(session.Session_Start_Date).toLocaleDateString()}</p>
+                    <p><strong>Start Time:</strong> ${session.Session_Start_Time}</p>
+                    <p><strong>End Time:</strong> ${session.Session_End_Time}</p>
+                    <button class="btn" onclick="startSession('${session.Session_ID}', '${session.Session_Start_Time}', '${session.Session_End_Time}')">Start Session</button>
+                `;
+                sessionList.appendChild(sessionItem);
+            });
         }
+    })
+    .catch(error => console.error('Error fetching tutor sessions:', error));
+}
 
         function startSession(sessionId, startTime, endTime) {
             const currentTime = new Date().toTimeString().split(' ')[0]; // HH:MM:SS
@@ -80,22 +589,15 @@
 
             // Allow starting only if the session time is valid
             if (currentTime >= startTime && currentTime <= endTime) {
-                alert(`Starting session: ${sessionId}`);
+                showAlert(`Starting session: ${sessionId}`);
                 window.location.href = `/video_call.html?sessionId=${sessionId}&userType=tutor`;
             
             } else {
-                alert('You can start this session once the scheduled time arrives.');
+                showAlert('You can start this session once the scheduled time arrives.');
 
             }
         }
-
-
-
         
-
-        function moveToDashboard() {
-            window.location.href = "tutor_dashboard.html";
-        }
     </script>
 
 </body>

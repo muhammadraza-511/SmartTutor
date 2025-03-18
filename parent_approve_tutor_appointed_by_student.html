@@ -177,11 +177,14 @@
         
     }
     main{
-        margin-top: 90px;
-        padding: 2rem 1.5rem;
         width: 100%;
-        background: #ffffff;
-        min-height: calc(100vh - 90px);
+        background-image: url('images/background1.png');
+        /* background-size: cover; */
+        background-position: center; 
+        background-repeat: repeat;
+        margin-top: 70px;
+        padding: 2rem 1.5rem;
+        min-height: calc(100vh - 70px);
     }
         .v-card {
             display: flex;
@@ -228,20 +231,23 @@
         </div>
         <div class="sidebar-menu">
             <ul>
-              <li>
-                <a href="parent_dashboard.html" ><span class="las la-home"></span>
-                <span>Dashboard</span></a>
-              </li>
-              <li>
-                <a href="" class="active"><span class="las la-user"></span>
-                <span>Approve Tutor</span></a>
-              </li>
-              <li>
-                <a href="index.html"><span class="las la-calendar"></span>
-                <span>Logout</span></a>
-              </li>
-      
-            </ul>
+                <li>
+                  <a href="parent_dashboard.html" ><span class="las la-home"></span>
+                  <span>Dashboard</span></a>
+                </li>
+                <li>
+                  <a href="" class="active"><span class="las la-user"></span>
+                  <span>Approve Tutor</span></a>
+                </li>
+                <li>
+                    <a href="tutorlist.html"><span class="las la-user"></span>
+                    <span>Assigned Tutors List</span></a>
+                </li>
+                <li>
+                  <a href="index.html"><span class="las la-calendar"></span>
+                  <span>Logout</span></a>
+                </li>
+              </ul>
           </div>
     </div>
     <div class="main-content">
@@ -254,7 +260,6 @@
             </h2>
     
             <div class="user-wrapper">
-                <img src="images/user.jpg" width="40px" height="30px" alt="">
                 <div>
                     <h4 id="userWrapperAdminName">Admin</h4> <!-- Changed ID -->
                     <small>Parent</small>

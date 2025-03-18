@@ -183,7 +183,12 @@
         margin-top: 90px;
         padding: 2rem 1.5rem;
         width: 100%;
-        background: #ffffff;
+        line-height: 1.6;
+        color: #333;
+        background-image: url('images/background1.png');
+        /* background-size: cover; */
+        background-position: center; 
+        background-repeat: repeat;
         min-height: calc(100vh - 90px);
       }
       /* Community Form Styling */
@@ -274,37 +279,47 @@
       <div class="sidebar-menu">
         <ul>
           <li>
-            <a href="tutor_dashboard.html"
-              ><span class="las la-home"></span> <span>Dashboard</span></a
-            >
+              <a href="tutor_dashboard.html" ><span class="las la-home"></span>
+              <span>Dashboard</span></a>
           </li>
           <li>
-            <a
-              href="tutor_manage_student_requests.html"
-              onclick="saveUserToSession()"
-              ><span class="las la-user"></span>
-              <span>Manage student requests</span></a
-            >
+              <a href="tutor_manage_student_requests.html"><span class="las la-user"></span>
+              <span>Manage Student Requests</span></a>
           </li>
           <li>
-            <a href="created_communities.html"
-              ><span class="fa-solid fa-people-group"></span>
-              <span>Created Communities</span></a
-            >
+              <a href="parentlist.html"><span class="fa-solid fa-user-group"></span>
+              <span>Parents of Assigned Students</span></a>
           </li>
           <li>
-            <a href="" class="active"
-              ><span class="fa-solid fa-people-roof"></span>
-              <span>Create New Community</span></a
-            >
+              <a href="Assigned_Students.html"><span class="fa-solid fa-user-tie"></span>
+              <span>  Assigned Students</span></a>
           </li>
           <li>
-            <a href="loginpage.html"
-              ><span class="fa-solid fa-right-from-bracket"></span>
-              <span>Logout</span></a
-            >
+              <a href="created_communities.html"><span class="fa-solid fa-people-group"></span>
+              <span>Created Communities</span></a>
           </li>
-        </ul>
+          <li>
+              <a href="" class="active"><span class="fa-solid fa-people-roof"></span>
+              <span>Create New Community</span></a>
+          </li>
+          <li>
+              <a href="tutor_start_online_session.html" onclick="saveUserToSession()">
+                  <span class="fa-solid fa-video"></span>
+                  <span>Create a Session</span>
+              </a>
+          </li>
+          <li>
+              <a href="tutor_join_online_session.html" onclick="saveUserToSession()">
+                  <span class="fa-solid fa-video"></span>
+                  <span>Join a Session</span>
+              </a>
+          </li>
+
+          <li>
+              <a href="loginpage.html"><span class="fa-solid fa-right-from-bracket"></span>
+              <span>Logout</span></a>
+          </li>
+      </ul>
       </div>
     </div>
     <div class="main-content">

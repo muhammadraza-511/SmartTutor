@@ -173,16 +173,20 @@
         
     }
     main{
-        margin-top: 90px;
+        margin-top: 70px;
         padding: 2rem 1.5rem;
         width: 100%;
-        background: #f0f0f0;
-        min-height: calc(100vh - 90px);
+        background-image: url('images/background1.png');
+        /* background-size: cover; */
+        background-position: center; 
+        background-repeat: repeat;
+        padding: 2rem 1.5rem;
+        min-height: calc(100vh - 70px);
     }
     .container {
             max-width: 800px;
             margin: 50px auto;
-            background: #fff;
+            background: #2C98F0;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
@@ -202,12 +206,16 @@
             flex-grow: 1;
         }
         .profile-header h2 {
-            color: #030202;
+            color: #fff;
             margin: 0;
             font-size: 24px;
         }
+        .profile-header h3 {
+            color: #fff;
+            
+        }
         .profile-header p {
-            color: #666;
+            color: #fff;
         }
         .profile-details {
             display: grid;
@@ -216,12 +224,12 @@
         }
         .profile-details label {
             display: block;
-            color: #999;
+            color: #fff;
             margin-bottom: 5px;
         }
         .profile-details .info {
             padding: 10px;
-            background: #f0f0f0;
+            background: #fff;
             border-radius: 5px;
         }
 
@@ -383,7 +391,6 @@
           <a href="index.html"><span class="las la-calendar"></span>
           <span>Logout</span></a>
         </li>
-
       </ul>
     </div>
   </div>
@@ -396,12 +403,8 @@
             </label>
             Dashboard
         </h2>
-        <div class="search-wrapper">
-            <span class="las la-search"></span>
-            <input type="search" placeholder="Search here" />
-        </div>
         <div class="user-wrapper">
-            <img src="images/user.jpg" width="40px" height="30px" alt="">
+            <!-- <img src="images/user.jpg" width="40px" height="30px" alt=""> -->
             <div>
                 <h4 id="userWrapperAdminName">Admin</h4> <!-- Changed ID -->
                 <small>Parent</small>
@@ -411,7 +414,7 @@
     <main>
         <div class="container">
             <div class="profile-header">
-                <img src="user-photo.jpg" alt="User Photo">
+                <!-- <img src="user-photo.jpg" alt="User Photo"> -->
                 <div>
                     <h3 id="profileHeaderTutorName"> </h3> 
                 </div>

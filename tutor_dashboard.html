@@ -15,7 +15,9 @@
         list-style-type: none;
         text-decoration: none;
         font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+        
     }
+   
     .logo {
     font-size: 30px;
     font-weight: bold;
@@ -119,6 +121,7 @@
     }
     .main-content{
         transition: margin-left 300ms;
+        line-height: 1.6;
         margin-left: 345px;
     }
     header{
@@ -175,16 +178,22 @@
         
     }
     main{
-        margin-top: 90px;
+        line-height: 1.6;
+        color: #333;
+        background-image: url('images/background1.png');
+        /* background-size: cover; */
+        background-position: center; 
+        background-repeat: repeat;
+        margin-top: 70px;
         padding: 2rem 1.5rem;
         width: 100%;
-        background: #f0f0f0;
-        min-height: calc(100vh - 90px);
+        /* background: #fff; */
+        min-height: calc(100vh - 70px);
     }
     .container {
             max-width: 800px;
             margin: 50px auto;
-            background: #fff;
+            background: #2C98F0;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
@@ -196,20 +205,23 @@
         }
         .profile-header img {
             border-radius: 50%;
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             margin-right: 20px;
         }
         .profile-header div {
             flex-grow: 1;
         }
         .profile-header h2 {
-            color: #030202;
+            color: #fff;
             margin: 0;
             font-size: 24px;
         }
+        .profile-header h3 {
+            color: #fff;
+        }
         .profile-header p {
-            color: #666;
+            color: #fff;
         }
         .profile-details {
             display: grid;
@@ -218,12 +230,12 @@
         }
         .profile-details label {
             display: block;
-            color: #999;
+            color: #fff;
             margin-bottom: 5px;
         }
         .profile-details .info {
             padding: 10px;
-            background: #f0f0f0;
+            background: #fff;
             border-radius: 5px;
         }
 
@@ -382,7 +394,7 @@
                 </li>
                 <li>
                     <a href="Assigned_Students.html"><span class="fa-solid fa-user-tie"></span>
-                    <span>Assigned Students</span></a>
+                    <span>  Assigned Students</span></a>
                 </li>
                 <li>
                     <a href="created_communities.html"><span class="fa-solid fa-people-group"></span>
@@ -417,13 +429,13 @@
         <header>
             <h2 style="margin-top: 7px;">
                 <label for="nav-toggle">
-                    <img src="images/bluebar2.png" alt="Menu Icon" class="menu-icon">
+                    <img src="images/bluebar2.png" src="" alt="Menu Icon" class="menu-icon">
                 </label>
                 Dashboard
             </h2>
-          
+    
             <div class="user-wrapper">
-                <img src="images/user.jpg" width="40px" height="30px" alt="">
+                <!-- <img id="userProfileImage" src="" width="40px" height="30px" alt="User Photo"> -->
                 <div>
                     <h4 id="userWrapperTutorName">Tutor</h4>
                     <small>Tutor</small>
@@ -433,7 +445,7 @@
         <main>
             <div class="container">
                 <div class="profile-header">
-                    <img src="user-photo.jpg" alt="User Photo">
+                    <img id="profileHeaderImage" alt="User Photo">
                     <div>
                         <h3 id="profileHeaderTutorName"></h3>
                         <p id="tutorEmail"></p>
@@ -443,27 +455,32 @@
             </div>
         </main>
     </div>
-
+    
     <script>
         fetch('/dashboard')
-        .then(response => response.json())
-        .then(data => {
-            const user = data.user;
+.then(response => response.json())
+.then(data => {
+    const user = data.user;
 
-            document.getElementById('userWrapperTutorName').textContent = user.Tutor_Name;
-            document.getElementById('profileHeaderTutorName').textContent = user.Tutor_Name;
-            document.getElementById('tutorEmail').textContent = user.Tutor_Email;
+    document.getElementById('userWrapperTutorName').textContent = user.Tutor_Name;
+    document.getElementById('profileHeaderTutorName').textContent = user.Tutor_Name;
+    document.getElementById('tutorEmail').textContent = user.Tutor_Email;
 
-            document.getElementById('userDetails').innerHTML = `
-                <div><label>Full Name</label><div class="info">${user.Tutor_Name}</div></div>
-                <div><label>Roll Number</label><div class="info">${user.Tutor_Roll_No || 'N/A'}</div></div>
-                <div><label>Email</label><div class="info">${user.Tutor_Email}</div></div>
-                <div><label>Contact Number</label><div class="info">${user.Tutor_Number || 'N/A'}</div></div>
-            `;
+    // Dynamically set the user image
+    const imagePath = `/backend/tutor_pic/${user.Tutor_ID}.jpg`;
+    // document.getElementById('userProfileImage').src = imagePath;
+    document.getElementById('profileHeaderImage').src = imagePath;
 
-            sessionStorage.setItem('tutorDetails', JSON.stringify(user));
-        });
+    document.getElementById('userDetails').innerHTML = `
+        <div><label>Full Name</label><div class="info">${user.Tutor_Name}</div></div>
+        <div><label>Roll Number</label><div class="info">${user.Tutor_Roll_No || 'N/A'}</div></div>
+        <div><label>Email</label><div class="info">${user.Tutor_Email}</div></div>
+        <div><label>Contact Number</label><div class="info">${user.Tutor_Number || 'N/A'}</div></div>
+    `;
 
+    sessionStorage.setItem('tutorDetails', JSON.stringify(user));
+});
+    
         function saveUserToSession() {
             const userDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
             if (!userDetails) {
