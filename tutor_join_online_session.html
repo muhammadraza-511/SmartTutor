@@ -524,6 +524,16 @@
         </div>
     </div>
     <script>
+         const tutorDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
+    
+    // Display tutor details on the page
+    if (tutorDetails) {
+        document.getElementById('userWrapperTutorName').textContent = tutorDetails.Tutor_Name;
+    } else {
+        document.getElementById('tutorDetails').innerHTML = `
+            <p>Error: Tutor details not found. Please go back to the dashboard.</p>
+        `;
+    }
         function showAlert(message) {
             document.getElementById("alertMessage").textContent = message;
             document.getElementById("alertModal").style.display = "flex";

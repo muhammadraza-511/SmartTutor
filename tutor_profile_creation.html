@@ -288,9 +288,7 @@
         <div class="step" id="step-3">3 Description</div>
         <div class="step" id="step-4">4 Availability & Pricing</div>
     </div>
-
-
-<div class="form-wrapper">
+    <div class="form-wrapper">
     <!-- About Section -->
     <section id="about" class="form-section" style="display: block;">
         <h2>About You</h2>
@@ -302,72 +300,42 @@
             <input type="text" id="roll-number" name="roll_number" required>
 
             <label for="country">Country</label>
-            <input type="text" id="country" name="country" value="Pakistan" readonly required>
+            <input type="text" id="country" name="country" required>
 
             <label for="city">City</label>
-            <select id="city" name="city" required>
-                <option value="" disabled selected>Select your city</option>
-                <option value="Karachi">Karachi</option>
-                <option value="Lahore">Lahore</option>
-                <option value="Islamabad">Islamabad</option>
-                <option value="Rawalpindi">Rawalpindi</option>
-                <option value="Faisalabad">Faisalabad</option>
-                <option value="Multan">Multan</option>
-                <option value="Peshawar">Peshawar</option>
-                <option value="Quetta">Quetta</option>
-                <option value="Sialkot">Sialkot</option>
-                <option value="Gujranwala">Gujranwala</option>
-                <option value="Bahawalpur">Bahawalpur</option>
-                <option value="Sukkur">Sukkur</option>
-                <option value="Hyderabad">Hyderabad</option>
-                <option value="Abbottabad">Abbottabad</option>
-                <option value="Sargodha">Sargodha</option>
-            </select>
+            <input type="text" id="city" name="city" required>
 
             <label for="languages">Languages</label>
             <div id="languages-container">
                 <div class="language-field">
-                    <select name="languages[]" required>
-                        <option value="" disabled selected>Select a language</option>
-                        <option value="English">English</option>
-                        <option value="Urdu">Urdu</option>
-                        <option value="Spanish">Spanish</option>
-                        <option value="French">French</option>
-                        <option value="German">German</option>
-                        <option value="Chinese">Chinese</option>
-                        <option value="Arabic">Arabic</option>
-                        <option value="Punjabi">Punjabi</option>
-                        <option value="Sindhi">Sindhi</option>
-                        <option value="Pashto">Pashto</option>
-                        <!-- Add more languages as needed -->
-                    </select>
+                    <input type="text" name="languages[]" placeholder="Enter a language">
                     <button type="button" class="add-language" onclick="addLanguageField()">+</button>
                 </div>
             </div>
-
+            <!-- <label for="profile-picture">Upload your Picture</label>
+            <input type="file" id="profile-picture" name="profile_picture" accept=".jpg, .jpeg, .png" required> -->
             <div class="profile-photo">
                 <h3>Profile Photo</h3>
                 <p>Choose a photo that will help learners get to know you.</p>
                 <label for="profile-picture">Upload your Picture</label>
                 <input type="file" id="profile-picture" name="profile_picture" accept=".jpg, .jpeg, .png" required>
+                <!-- <button type="button" onclick="nextSection('about', 'education', 1)">Next</button> -->
             </div>
-
             <p id="profile-name"></p>
-
+            
             <div class="button-container">
-                <button type="button" onclick="nextSection('about', 'education', 1)">Next</button>
+            <button type="button" onclick="nextSection('about', 'education', 1)">Next</button>
             </div>
         </form>
-
         <div class="instruction-box">
             <h3>Instructions</h3>
-            <p><strong>Profile Photo:</strong> Upload a recent, clear photo to help students recognize you.</p>
-            <p><strong>Email:</strong> Enter a valid email address that you regularly check.</p>
-            <p><strong>Languages:</strong> Select all languages you are fluent in.</p>
+            <p><strong>Profile Photo:</strong> Upload a recent, clear photo to help students recognize you. Preferably, use a photo where you are the only one visible and avoid busy backgrounds.</p>
+            <p><strong>Email:</strong> Enter a valid email address that you regularly check, as students may use this to reach you.</p>
+            <p><strong>Languages:</strong> List all languages you are fluent in. This will help match you with students who speak these languages.</p>
         </div>
     </section>
+    
 </div>
-
     <div class="form-wrapper">
     <!-- Education Section -->
     <section id="education" class="form-section">
@@ -377,82 +345,13 @@
             <input type="text" id="university" name="university" required>
 
             <label for="degree-name">Degree Name</label>
-            <select id="degree-name" name="degree_name" required>
-                <option value="" disabled selected>Select your degree</option>
-                <option value="Computer Science">Computer Science</option>
-                <option value="Information Technology">Information Technology</option>
-                <option value="Software Engineering">Software Engineering</option>
-                <option value="Electrical Engineering">Electrical Engineering</option>
-                <option value="Business Administration">Business Administration</option>
-                <option value="Mechanical Engineering">Mechanical Engineering</option>
-                <option value="Accounting and Finance">Accounting and Finance</option>
-                <option value="Economics">Economics</option>
-                <option value="Physics">Physics</option>
-                <option value="Mathematics">Mathematics</option>
-                <option value="Biotechnology">Biotechnology</option>
-                <option value="Other">Other</option>
-            </select>
-
-            <!-- Optional: Input for custom degree name if "Other" is selected -->
-            <input type="text" id="custom-degree-name" name="custom_degree_name" placeholder="Enter your degree name" style="display:none;">
-
-            <script>
-                document.getElementById('degree-name').addEventListener('change', function() {
-                    const customInput = document.getElementById('custom-degree-name');
-                    if (this.value === 'Other') {
-                        customInput.style.display = 'block';
-                        customInput.required = true;
-                    } else {
-                        customInput.style.display = 'none';
-                        customInput.required = false;
-                    }
-                });
-            </script>
+            <input type="text" id="degree-name" name="degree_name" required>
 
             <label for="degree-type">Degree Type</label>
-            <select id="degree-type" name="degree_type" required>
-                <option value="" disabled selected>Select degree type</option>
-                <option value="Diploma">Diploma</option>
-                <option value="Bachelor">Bachelor</option>
-                <option value="Masters">Masters</option>
-                <option value="PhD">PhD</option>
-            </select>
-
+            <input type="text" id="degree-type" name="degree_type" required>
 
             <label for="specialization">Specialization</label>
-            <select id="specialization" name="specialization" required>
-                <option value="" disabled selected>Select your specialization</option>
-                <option value="Artificial Intelligence">Artificial Intelligence</option>
-                <option value="Data Science">Data Science</option>
-                <option value="Machine Learning">Machine Learning</option>
-                <option value="Software Development">Software Development</option>
-                <option value="Cybersecurity">Cybersecurity</option>
-                <option value="Network Engineering">Network Engineering</option>
-                <option value="Web Development">Web Development</option>
-                <option value="Mobile App Development">Mobile App Development</option>
-                <option value="Project Management">Project Management</option>
-                <option value="Human Resource Management">Human Resource Management</option>
-                <option value="Accounting and Finance">Accounting and Finance</option>
-                <option value="Marketing">Marketing</option>
-                <option value="Other">Other</option>
-            </select>
-
-            <!-- Optional: Input for custom specialization if "Other" is selected -->
-            <input type="text" id="custom-specialization" name="custom_specialization" placeholder="Enter your specialization" style="display:none;">
-
-            <script>
-                document.getElementById('specialization').addEventListener('change', function() {
-                    const customInput = document.getElementById('custom-specialization');
-                    if (this.value === 'Other') {
-                        customInput.style.display = 'block';
-                        customInput.required = true;
-                    } else {
-                        customInput.style.display = 'none';
-                        customInput.required = false;
-                    }
-                });
-            </script>
-
+            <input type="text" id="specialization" name="specialization" required>
 
             <!-- Start Year Dropdown -->
             <label for="start-year">Starting Year</label>
@@ -508,40 +407,21 @@
     <section id="description" class="form-section">
         <h2>Description</h2>
         <form id="description-form">
-        <!-- Subjects Section -->
-<label for="subject">Subjects You Teach</label>
-<div id="subjects-container">
-    <div class="subject-field">
-        <select name="subjects[]">
-            <option value="" disabled selected>Select a subject</option>
-            <option value="Mathematics">Mathematics</option>
-            <option value="English">English</option>
-            <option value="Physics">Physics</option>
-            <option value="Chemistry">Chemistry</option>
-            <option value="Biology">Biology</option>
-            <option value="Computer Science">Computer Science</option>
-            <option value="Urdu">Urdu</option>
-            <option value="Islamic Studies">Islamic Studies</option>
-            <option value="Pakistan Studies">Pakistan Studies</option>
-            <option value="Other">Other</option>
-        </select>
-        <button type="button" class="add-subject" onclick="addSubjectField()">+</button>
-    </div>
-</div>
+            <label for="subject">Subjects You Teach</label>
+        <div id="subjects-container">
+            <div class="subject-field">
+                <input type="text" name="subjects[]" placeholder="Enter a subject">
+                <button type="button" class="add-subject" onclick="addSubjectField()">+</button>
+            </div>
+        </div>
 
-<!-- Grades Section -->
-<label for="grade">Grades of Students You Teach</label>
-<div id="grades-container">
-    <div class="grade-field">
-        <select name="grades[]">
-            <option value="" disabled selected>Select a grade</option>
-            <option value="School">School</option>
-            <option value="Matric">Matric</option>
-            <option value="Intermediate">Intermediate</option>
-        </select>
-        <button type="button" class="add-grade" onclick="addGradeField()">+</button>
-    </div>
-</div>
+        <label for="grade">Grades of Students You Teach</label>
+        <div id="grades-container">
+            <div class="grade-field">
+                <input type="text" name="grades[]" placeholder="Enter a grade">
+                <button type="button" class="add-grade" onclick="addGradeField()">+</button>
+            </div>
+        </div>
 
 
             <label for="session-type">Session type</label>
@@ -585,24 +465,13 @@
             <label for="teaching-fee">Expected Teaching Fee (per hour)</label>
             <input type="number" id="teaching-fee" name="teaching_fee" step="0.01" required>
 
-            <!-- Availability Days Section -->
             <label for="availability-days">Availability Days</label>
-            <div id="availability-days-container">
-                <div class="availability-day-field">
-                    <select name="availability_days[]" onchange="checkAllWeek(this)">
-                        <option value="" disabled selected>Select a day</option>
-                        <option value="Monday">Monday</option>
-                        <option value="Tuesday">Tuesday</option>
-                        <option value="Wednesday">Wednesday</option>
-                        <option value="Thursday">Thursday</option>
-                        <option value="Friday">Friday</option>
-                        <option value="Saturday">Saturday</option>
-                        <option value="Sunday">Sunday</option>
-                        <option value="All Week">All Week</option>
-                    </select>
-                    <button type="button" class="add-availability-day" onclick="addAvailabilityDayField()">+</button>
-                </div>
-            </div>
+<div id="availability-days-container">
+    <div class="availability-day-field">
+        <input type="text" name="availability_days[]" placeholder="Enter a day (e.g., Monday)">
+        <button type="button" class="add-availability-day" onclick="addAvailabilityDayField()">+</button>
+    </div>
+</div>
 
             <label for="availability-time">Availability Time</label>
             <select id="availability-time" name="availability_time" required>
@@ -668,19 +537,7 @@ function closeAlert() {
     newField.classList.add('language-field');
 
     newField.innerHTML = `
-        <select name="languages[]" required>
-            <option value="" disabled selected>Select a language</option>
-            <option value="English">English</option>
-            <option value="Urdu">Urdu</option>
-            <option value="Spanish">Spanish</option>
-            <option value="French">French</option>
-            <option value="German">German</option>
-            <option value="Chinese">Chinese</option>
-            <option value="Arabic">Arabic</option>
-            <option value="Punjabi">Punjabi</option>
-            <option value="Sindhi">Sindhi</option>
-            <option value="Pashto">Pashto</option>
-        </select>
+        <input type="text" name="languages[]" placeholder="Enter a language">
         <button type="button" class="remove-language" onclick="removeLanguageField(this)">-</button>
     `;
 
@@ -694,10 +551,8 @@ function removeLanguageField(button) {
 }
 
 function gatherLanguages() {
-    const languageFields = document.querySelectorAll('select[name="languages[]"]');
-    const languages = Array.from(languageFields)
-        .map(field => field.value)
-        .filter(Boolean);  // Filters out empty or unselected values
+    const languageFields = document.querySelectorAll('input[name="languages[]"]');
+    const languages = Array.from(languageFields).map(field => field.value.trim()).filter(Boolean);
     return languages.join(', ');
 }
 function addSubjectField() {
@@ -706,19 +561,7 @@ function addSubjectField() {
     newField.classList.add('subject-field');
 
     newField.innerHTML = `
-        <select name="subjects[]">
-            <option value="" disabled selected>Select a subject</option>
-            <option value="Mathematics">Mathematics</option>
-            <option value="English">English</option>
-            <option value="Physics">Physics</option>
-            <option value="Chemistry">Chemistry</option>
-            <option value="Biology">Biology</option>
-            <option value="Computer Science">Computer Science</option>
-            <option value="Urdu">Urdu</option>
-            <option value="Islamic Studies">Islamic Studies</option>
-            <option value="Pakistan Studies">Pakistan Studies</option>
-            <option value="Other">Other</option>
-        </select>
+        <input type="text" name="subjects[]" placeholder="Enter a subject">
         <button type="button" class="remove-subject" onclick="removeSubjectField(this)">-</button>
     `;
 
@@ -727,7 +570,8 @@ function addSubjectField() {
 
 function removeSubjectField(button) {
     const field = button.parentNode;
-    field.parentNode.removeChild(field);
+    const container = document.getElementById('subjects-container');
+    container.removeChild(field);
 }
 
 function addGradeField() {
@@ -736,12 +580,7 @@ function addGradeField() {
     newField.classList.add('grade-field');
 
     newField.innerHTML = `
-        <select name="grades[]">
-            <option value="" disabled selected>Select a grade</option>
-            <option value="School">School</option>
-            <option value="Matric">Matric</option>
-            <option value="Intermediate">Intermediate</option>
-        </select>
+        <input type="text" name="grades[]" placeholder="Enter a grade">
         <button type="button" class="remove-grade" onclick="removeGradeField(this)">-</button>
     `;
 
@@ -750,83 +589,44 @@ function addGradeField() {
 
 function removeGradeField(button) {
     const field = button.parentNode;
-    field.parentNode.removeChild(field);
+    const container = document.getElementById('grades-container');
+    container.removeChild(field);
 }
 
 function gatherSubjects() {
-    const subjectFields = document.querySelectorAll('select[name="subjects[]"]');
-    const subjects = Array.from(subjectFields).map(field => field.value).filter(Boolean);
+    const subjectFields = document.querySelectorAll('input[name="subjects[]"]');
+    const subjects = Array.from(subjectFields).map(field => field.value.trim()).filter(Boolean);
     return subjects.join(', ');
 }
 
 function gatherGrades() {
-    const gradeFields = document.querySelectorAll('select[name="grades[]"]');
-    const grades = Array.from(gradeFields).map(field => field.value).filter(Boolean);
+    const gradeFields = document.querySelectorAll('input[name="grades[]"]');
+    const grades = Array.from(gradeFields).map(field => field.value.trim()).filter(Boolean);
     return grades.join(', ');
 }
 
 function addAvailabilityDayField() {
-    const allWeekSelected = document.querySelector('select[name="availability_days[]"][value="All Week"]');
-    if (allWeekSelected) return; // Prevent adding more days if 'All Week' is selected
-
     const container = document.getElementById('availability-days-container');
     const newField = document.createElement('div');
     newField.classList.add('availability-day-field');
 
     newField.innerHTML = `
-        <select name="availability_days[]" onchange="checkAllWeek(this)">
-            <option value="" disabled selected>Select a day</option>
-            <option value="Monday">Monday</option>
-            <option value="Tuesday">Tuesday</option>
-            <option value="Wednesday">Wednesday</option>
-            <option value="Thursday">Thursday</option>
-            <option value="Friday">Friday</option>
-            <option value="Saturday">Saturday</option>
-            <option value="Sunday">Sunday</option>
-            <option value="All Week">All Week</option>
-        </select>
+        <input type="text" name="availability_days[]" placeholder="Enter a day (e.g., Monday)">
         <button type="button" class="remove-availability-day" onclick="removeAvailabilityDayField(this)">-</button>
     `;
 
     container.appendChild(newField);
-    toggleAddButton();
 }
 
 function removeAvailabilityDayField(button) {
     const field = button.parentNode;
-    field.parentNode.removeChild(field);
-    toggleAddButton();
-}
-
-function checkAllWeek(selectElement) {
-    const addButton = document.querySelector('.add-availability-day');
-    if (selectElement.value === "All Week") {
-        const container = document.getElementById('availability-days-container');
-        const fields = container.querySelectorAll('.availability-day-field');
-        fields.forEach(field => {
-            if (!field.contains(selectElement)) {
-                field.remove();
-            }
-        });
-        addButton.style.display = 'none';
-    } else {
-        addButton.style.display = 'inline-block';
-    }
-}
-
-function toggleAddButton() {
-    const allWeekSelected = document.querySelector('select[name="availability_days[]"][value="All Week"]');
-    const addButton = document.querySelector('.add-availability-day');
-    if (allWeekSelected) {
-        addButton.style.display = 'none';
-    } else {
-        addButton.style.display = 'inline-block';
-    }
+    const container = document.getElementById('availability-days-container');
+    container.removeChild(field);
 }
 
 function gatherAvailabilityDays() {
-    const availabilityFields = document.querySelectorAll('select[name="availability_days[]"]');
-    const availabilityDays = Array.from(availabilityFields).map(field => field.value).filter(Boolean);
+    const availabilityFields = document.querySelectorAll('input[name="availability_days[]"]');
+    const availabilityDays = Array.from(availabilityFields).map(field => field.value.trim()).filter(Boolean);
     return availabilityDays.join(', ');
 }
 
