@@ -5,6 +5,12 @@ const path = require('path');
 const session = require('express-session');
 const http = require('http');
 const socketIO = require('socket.io');
+const multer = require('multer');
+const { exec } = require('child_process');
+const fs = require('fs-extra');
+const axios = require('axios');
+
+
 
 const app = express();
 const server = http.createServer(app);
@@ -80,9 +86,124 @@ require('./community')(app, db);
 require("./tutor_assigned_students")(app, db);
 require('./student_join_meeting_session')(app, db);
 require('./tutor_join_meeting_session')(app, db);
+
+
 require('./video_call')(io);
+
 require('./parent_tutor_chat')(app, db);
 require('./Student_tutor_chat')(app, db);
+
+
+
+
+const FormData = require('form-data');
+
+// Multer for Image Upload
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const studentID = req.body.Student_ID || req.query.Student_ID;  
+        const sessionID = req.body.Session_ID || req.query.Session_ID;  
+
+        if (!studentID || !sessionID) {
+            return cb(new Error("Missing Student_ID or Session_ID"), false);
+        }
+
+        const uploadPath = path.join(__dirname, 'student_emotion', studentID, sessionID);
+
+        // Ensure the directory exists
+        fs.mkdirSync(uploadPath, { recursive: true });
+
+        cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+        const fileName = `emotion_${Date.now()}${path.extname(file.originalname)}`;
+        cb(null, fileName);
+    }
+});
+
+const upload = multer({ storage });
+
+const fileUpload = require('express-fileupload');
+
+app.use(fileUpload());
+
+app.post('/upload-student-emotion', async (req, res) => {
+    try {
+        const { Student_ID, Session_ID } = req.body;
+        if (!req.files || !req.files.image || !Student_ID || !Session_ID) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }
+
+        const imageFile = req.files.image;
+        const folderPath = path.join(__dirname, 'student_emotion', Student_ID, Session_ID);
+        await fs.ensureDir(folderPath); // Ensure directory exists
+
+        const timestamp = Date.now();
+        const imagePath = path.join(folderPath, `emotion_${timestamp}.jpg`);
+
+        await imageFile.mv(imagePath); // Save image
+
+        // Send image to FastAPI for emotion detection
+        const formData = new FormData();
+        formData.append('file', fs.createReadStream(imagePath));
+
+        const response = await axios.post('http://localhost:8000/detect-emotion/', formData, {
+            headers: formData.getHeaders()
+        });
+
+        const detectedEmotion = response.data.emotion;
+
+        // Store detected emotion in MySQL
+        const sql = `INSERT INTO emotions_details (Student_ID, Session_ID, Emotion_Type, captured_time) 
+                     VALUES (?, ?, ?, NOW())`;
+        db.query(sql, [Student_ID, Session_ID, detectedEmotion, imagePath], (err, result) => {
+            if (err) {
+                console.error("Database error:", err);
+                return res.status(500).json({ error: "Database error" });
+            }
+
+            res.json({ message: "Emotion detected and stored", emotion: detectedEmotion, path: imagePath });
+        });
+
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+
+
+
+app.get('/get-recent-emotion/:sessionId', (req, res) => {
+    const { sessionId } = req.params;
+
+    const query = `
+        SELECT e.Emotion_Type, e.captured_time, s.Student_Name, e.Student_ID
+        FROM emotions_details e
+        JOIN student_table s ON e.Student_ID = s.Student_ID
+        WHERE e.Session_ID = ?
+        AND e.captured_time = (
+            SELECT MAX(captured_time)
+            FROM emotions_details
+            WHERE Student_ID = e.Student_ID AND Session_ID = ?
+        )
+        ORDER BY e.captured_time DESC;
+    `;
+
+    db.query(query, [sessionId, sessionId], (err, results) => {
+        if (err) {
+            console.error("Error fetching recent emotion:", err);
+            return res.status(500).json({ error: "Database error" });
+        }
+
+        if (results.length === 0) {
+            return res.json({ message: "No recent emotions found." });
+        }
+
+        res.json(results);
+    });
+});
+
 
 // Start the server
 server.listen(PORT, () => {
