@@ -10,6 +10,11 @@
             gap: 10px;
         }
 
+        body {
+            background-color: black;
+            color: white; /* Ensures text remains visible */
+        }
+        
         video {
             width: 45%;
             border: 2px solid green;
@@ -19,12 +24,31 @@
 
         .screen-share {
             width: 100%;
+        }        
+
+        #emotionChart, #satisfactionChart {
+            max-width: 200px;  /* Reduce size */
+            max-height: 200px;
         }
+        
     </style>
 </head>
 
 <body>
     <h2>SmartTutor Video Call</h2>
+    
+    <h2>Recent Student Emotion</h2>
+    <div id="recentEmotion">
+        <p>Loading...</p>
+    </div>
+
+    <h2>Emotion Analysis</h2>
+    <canvas id="emotionChart"></canvas>
+    <div id="emotionStats"></div>
+
+    <h2>Emotion Satisfaction Analysis</h2>
+    <canvas id="satisfactionChart"></canvas>
+    <div id="satisfactionStats"></div>
 
     <div id="userDetails">
         <h3>User Details</h3>
@@ -32,16 +56,21 @@
         <p><strong>Roll Number:</strong> <span id="userRollNo"></span></p>
         <p><strong>Email:</strong> <span id="userEmail"></span></p>
         <p><strong>Contact:</strong> <span id="userContact"></span></p>
+        <p><strong>ID:</strong> <span id="userID"></span></p>
     </div>
 
     <div id="videos"></div>
     <button id="leaveCall">Leave Call</button>
     <button id="shareScreen">Share Screen</button>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-peer@9.11.1/simplepeer.min.js"></script>
 
     <script>
+        let emotionChart = null;
+        let categorizedEmotionChart = null;
+
         document.addEventListener('DOMContentLoaded', () => {
             const userDetails = JSON.parse(sessionStorage.getItem('videoCallUserDetails'));
             if (userDetails) {
@@ -49,9 +78,138 @@
                 document.getElementById('userRollNo').textContent = userDetails.Tutor_Roll_No || userDetails.Student_roll_No || 'N/A';
                 document.getElementById('userEmail').textContent = userDetails.Tutor_Email || userDetails.Student_Email || 'N/A';
                 document.getElementById('userContact').textContent = userDetails.Tutor_Number || userDetails.Student_number || 'N/A';
+                document.getElementById('userID').textContent = userDetails.Tutor_ID || userDetails.Student_ID || 'N/A';
             } else {
                 alert("User details not found!");
             }
+    
+            if (!userDetails || userDetails.Student_ID) {
+                console.log("Hiding emotion analysis for students.");
+
+                document.querySelector('h2:nth-of-type(2)').style.display = 'none';
+                document.getElementById('recentEmotion').style.display = 'none';
+
+                document.querySelector('h2:nth-of-type(3)').style.display = 'none';
+                document.getElementById('emotionChart').style.display = 'none';
+                document.getElementById('emotionStats').style.display = 'none';
+
+                document.querySelector('h2:nth-of-type(4)').style.display = 'none';
+                document.getElementById('satisfactionChart').style.display = 'none';
+                document.getElementById('satisfactionStats').style.display = 'none';
+            }
+    
+            const sessionId = new URLSearchParams(window.location.search).get('sessionId');
+            if (!sessionId) {
+                console.error("Session ID missing!");
+                return;
+            }
+    
+            function fetchRecentEmotion() {
+                fetch(`/get-recent-emotion/${sessionId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data || data.length === 0 || data.message) {
+                            document.getElementById('recentEmotion').innerHTML = "<p>No recent emotions recorded.</p>";
+                            document.getElementById('emotionStats').innerHTML = "";
+                            document.getElementById('categorizedEmotionStats').innerHTML = "";
+                            return;
+                        }
+
+                        let emotionCounts = {}; 
+                        let categorizedCounts = { Satisfied: 0, Neutral: 0, "Not Satisfied": 0 };
+
+                        let emotionHTML = "<h3>Recent Emotions</h3>";
+                        data.forEach(entry => {
+                            emotionHTML += `
+                                <div>
+                                    <p><strong>Student:</strong> ${entry.Student_Name}</p>
+                                    <p><strong>Recent Emotion:</strong> ${entry.Emotion_Type}</p>
+                                    <p><strong>Captured at:</strong> ${new Date(entry.captured_time).toLocaleTimeString()}</p>
+                                    <hr>
+                                </div>
+                            `;
+
+                            if (emotionCounts[entry.Emotion_Type]) {
+                                emotionCounts[entry.Emotion_Type]++;
+                            } else {
+                                emotionCounts[entry.Emotion_Type] = 1;
+                            }
+
+                            if (["happy"].includes(entry.Emotion_Type)) {
+                                categorizedCounts["Satisfied"]++;
+                            } else if (["neutral", "surprise"].includes(entry.Emotion_Type)) {
+                                categorizedCounts["Neutral"]++;
+                            } else if (["angry", "disgust", "fear", "sad"].includes(entry.Emotion_Type)) {
+                                categorizedCounts["Not Satisfied"]++;
+                            }
+                        });
+
+                        document.getElementById('recentEmotion').innerHTML = emotionHTML;
+
+                        updateEmotionChart(emotionCounts);
+                        updateCategorizedEmotionChart(categorizedCounts);
+                    })
+                    .catch(error => console.error("Error fetching recent emotions:", error));
+            }
+
+            function updateEmotionChart(emotionCounts) {
+                const labels = Object.keys(emotionCounts);
+                const values = Object.values(emotionCounts);
+                const backgroundColors = labels.map(() => '#' + Math.floor(Math.random() * 16777215).toString(16));
+
+                if (emotionChart) {
+                    emotionChart.destroy();
+                }
+
+                const ctx = document.getElementById('emotionChart').getContext('2d');
+                emotionChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: backgroundColors }] },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+
+                const total = values.reduce((sum, value) => sum + value, 0);
+                let statsHTML = "<h3>Emotion Distribution</h3><ul>";
+                labels.forEach((label, index) => {
+                    const percentage = ((values[index] / total) * 100).toFixed(2);
+                    statsHTML += `<li><strong>${label}:</strong> ${percentage}%</li>`;
+                });
+                statsHTML += "</ul>";
+
+                document.getElementById('emotionStats').innerHTML = statsHTML;
+            }
+
+            function updateCategorizedEmotionChart(categorizedCounts) {
+                const labels = Object.keys(categorizedCounts);
+                const values = Object.values(categorizedCounts);
+                const backgroundColors = ['#2ecc71', '#f1c40f', '#e74c3c'];
+            
+                if (categorizedEmotionChart) {
+                    categorizedEmotionChart.destroy();
+                }
+            
+                const ctx = document.getElementById('satisfactionChart').getContext('2d');
+                categorizedEmotionChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: backgroundColors }] },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            
+                const total = values.reduce((sum, value) => sum + value, 0);
+                const satisfactionPercentage = total > 0 ? ((categorizedCounts["Satisfied"] / total) * 100).toFixed(2) : 0;
+            
+                let statsHTML = "<h3>Categorized Emotion Distribution</h3><ul>";
+                labels.forEach((label, index) => {
+                    const percentage = ((values[index] / total) * 100).toFixed(2);
+                    statsHTML += `<li><strong>${label}:</strong> ${percentage}%</li>`;
+                });
+                statsHTML += `</ul><p><strong>Overall Satisfaction Percentage:</strong> ${satisfactionPercentage}%</p>`;
+            
+                document.getElementById('satisfactionStats').innerHTML = statsHTML;
+            }
+            
+            fetchRecentEmotion();
+            setInterval(fetchRecentEmotion, 5000);
         });
 
         const socket = io();
@@ -59,12 +217,11 @@
         const sessionId = urlParams.get('sessionId');
         const peers = {};
 
-        let localStream; // Store the user's main media stream
+        let localStream;
+        let screenStream;
 
-        // Join session
         socket.emit('joinSession', sessionId);
 
-        // Get user media (video/audio)
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then(stream => {
                 localStream = stream;
@@ -113,17 +270,22 @@
         }
 
         function addVideoStream(stream, isLocal, id = null) {
+            const videoContainer = document.createElement('div');
+            videoContainer.style.position = 'relative';
+            videoContainer.style.width = '45%';
+
             const video = document.createElement('video');
             video.srcObject = stream;
             video.autoplay = true;
             video.playsInline = true;
-            video.dataset.id = id; // Set ID to track the peer
+            video.dataset.id = id;
 
             if (isLocal) {
-                video.muted = true; // Mute local video
+                video.muted = true;
             }
 
-            document.getElementById('videos').appendChild(video);
+            videoContainer.appendChild(video);
+            document.getElementById('videos').appendChild(videoContainer);
             adjustVideoLayout();
         }
 
@@ -132,16 +294,19 @@
                 peers[id].destroy();
                 delete peers[id];
             }
-
+        
             const video = document.querySelector(`video[data-id="${id}"]`);
             if (video) {
+                if (video.srcObject) {
+                    video.srcObject.getTracks().forEach(track => track.stop());
+                }
+        
                 video.remove();
             }
-
+        
             adjustVideoLayout();
         }
-
-        // Adjusts video sizes dynamically
+        
         function adjustVideoLayout() {
             const videos = document.querySelectorAll('#videos video');
             videos.forEach(video => {
@@ -157,11 +322,41 @@
             }
         }
 
-        // Share screen
+        setInterval(captureAndSendImage, 45000);
+
+        function captureAndSendImage() {
+            const userDetails = JSON.parse(sessionStorage.getItem('videoCallUserDetails'));
+            if (!userDetails || !userDetails.Student_ID) return;
+        
+            const videoElement = document.querySelector('video');
+            if (!videoElement) return;
+        
+            const canvas = document.createElement('canvas');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        
+            canvas.toBlob(blob => {
+                const formData = new FormData();
+                formData.append('image', blob, 'snapshot.jpg');
+                formData.append('Student_ID', userDetails.Student_ID);
+                formData.append('Session_ID', sessionId);
+        
+                fetch('/upload-student-emotion', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => console.log('Emotion processed:', data))
+                .catch(error => console.error('Error uploading image:', error));
+            }, 'image/jpeg');
+        }
+
         document.getElementById('shareScreen').addEventListener('click', async () => {
             try {
-                const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-                addVideoStream(screenStream, true);
+                screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                replaceVideoStream(screenStream);
 
                 Object.values(peers).forEach(peer => {
                     const sender = peer._pc.getSenders().find(s => s.track.kind === 'video');
@@ -176,11 +371,10 @@
             }
         });
 
-        // Switch back to camera
         async function switchToCamera() {
             try {
                 const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
-                addVideoStream(cameraStream, true);
+                replaceVideoStream(cameraStream);
 
                 Object.values(peers).forEach(peer => {
                     const sender = peer._pc.getSenders().find(s => s.track.kind === 'video');
@@ -193,7 +387,13 @@
             }
         }
 
-        // Leave call
+        function replaceVideoStream(newStream) {
+            const localVideo = document.querySelector('video[muted]');
+            if (localVideo) {
+                localVideo.srcObject = newStream;
+            }
+        }
+
         document.getElementById('leaveCall').addEventListener('click', () => {
             Object.values(peers).forEach(peer => peer.destroy());
             socket.disconnect();
@@ -211,9 +411,7 @@
                 window.location.href = '/';
             }
         });
-
     </script>
-
 </body>
 
 </html>

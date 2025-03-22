@@ -176,18 +176,22 @@
         
     }
     main {
-    margin-top: 90px;
     padding: 2rem 1.5rem;
     width: 100%;
-    /* width: calc(100% - 345px);  */
-    background: #f0f0f0;
-    min-height: calc(100vh - 90px);
+    background-image: url('images/background1.png');
+    background-size: cover;
+    /* background-position: center;  */
+    /* background-repeat: repeat; */
+    margin-top: 70px;
+    padding: 2rem 1.5rem;
+    width: 100%;
+    min-height: calc(100vh - 70px);
 }
 
 /* Main container styling */
 .container {
     padding: 20px;
-    background-color: #f9f9f9;
+    /* background-color: #f9f9f9; */
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -342,27 +346,38 @@ h1 {
       </div>
       <div class="sidebar-menu">
         <ul>
-          <li>
-            <a href="student_dashboard.html" ><span class="las la-home"></span>
-            <span>Dashboard</span></a>
-          </li>
-          <li>
-            <a href="student_search_for_tutor.html"><span class="las la-user"></span>
-            <span>Search for Tutor</span></a>
-          </li>
-          <li>
-              <a href="joined_communities.html"><span class="fa-solid fa-people-group"></span>
-              <span>Communities Joined</span></a>
-          </li>
-          <li>
-              <a href="" class="active"><span class="fa-solid fa-people-roof"></span>
-              <span>Join Community</span></a>
-          </li>
-          <li>
-              <a href="index.html"><span class="fa-solid fa-right-from-bracket"></span>
-              <span>Logout</span></a>
-          </li>
-        </ul>
+            <li>
+              <a href="student_dashboard.html" ><span class="las la-home"></span>
+              <span>Dashboard</span></a>
+            </li>
+            <li>
+              <a href="student_search_for_tutor.html"><span class="las la-user"></span>
+              <span>Search for Tutor</span></a>
+            </li>
+            <li>
+                <a href="Assigned_Tutors.html"><span class="fa-solid fa-people-group"></span>
+                <span>Assigned Tutors</span></a>
+            </li>
+            <li>
+                <a href="joined_communities.html"><span class="fa-solid fa-people-group"></span>
+                <span>Communities Joined</span></a>
+            </li>
+            <li>
+                <a href="" class="active"><span class="fa-solid fa-people-roof"></span>
+                <span>Join Community</span></a>
+            </li>
+            <li>
+                <a href="student_join_online_session.html" onclick="saveUserDetails()">
+                    <span class="fa-solid fa-people-roof"></span>
+                    <span>Join Session</span>
+                </a>
+            </li>
+    
+            <li>
+                <a href="index.html"><span class="fa-solid fa-right-from-bracket"></span>
+                <span>Logout</span></a>
+            </li>
+          </ul>
       </div>
     </div>
   

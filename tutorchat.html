@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel= "stylesheet" href= "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" >
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Tutor Chat</title>
+    <style>
+      *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        list-style-type: none;
+        text-decoration: none;
+        font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+        
+    }
+    .logo {
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+    font-family: "Montserrat";
+    color: #000000;
+    text-decoration: none;
+    color: inherit;
+}
+.logo span{
+    color: #f4f4f4;
+}
+    .sidebar{
+        width: 345px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background: #2C98F0;
+        z-index: 100;
+        transition: width 300ms;
+    }
+    .sidebar-brand{
+        height: 90px;
+        padding: 1rem 0rem 1rem 2rem;
+        color: #fff;
+    }
+    .sidebar-brand span{
+        display: inline-block;
+        padding-right: 1rem;
+    }
+    .sidebar-menu{
+        margin-top: 1rem;
+    }
+    .sidebar-menu li{
+        width: 100%;
+        margin-bottom: 1.3rem;
+        padding-left: 2rem;
+
+    }
+    .sidebar-menu a{
+        padding-left: 1rem;
+        display: block;
+        color: #fff;
+        font-size: 1.1rem;
+        padding-top: 1rem;
+    }
+    .sidebar-menu a.active{
+        background: #fff;
+        padding-top: 1rem ;
+        padding-bottom: 1rem ;
+        color: #2C98F0;
+        border-radius: 30px 0px 0px 30px;
+    }
+    .sidebar-menu a:hover{
+        background: #fff;
+        padding-top: 1rem ;
+        padding-bottom: 1rem ;
+        color: #2C98F0;
+        border-radius: 30px 0px 0px 30px;
+        transition-duration: 0.5s;
+    }
+    .sidebar-menu a span :first-child{
+        font-size: 1.5rem;
+        padding-right: 1rem;
+    }
+    .menu-icon {
+    width: 33px;
+    height: 33px;
+    margin-top: -2px; /* Adjust this value to move the image down */
+    vertical-align: middle;
+    }
+    #nav-toggle{
+        display: none;
+        
+    }
+    #nav-toggle:checked + .sidebar{
+        width: 70px;  
+    }
+    #nav-toggle:checked + .sidebar .sidebar-brand ,
+    #nav-toggle:checked + .sidebar li {
+        padding-left: 1rem;
+        text-align: center;
+    }
+    #nav-toggle:checked + .sidebar li a{
+        padding-left: 0rem;
+    }
+    #nav-toggle:checked + .sidebar li a span{
+        padding-left: 0rem;
+    }
+    #nav-toggle:checked + .sidebar .sidebar-brand h2 span:last-child,
+    #nav-toggle:checked + .sidebar li a span:last-child{
+        display: none;  
+    }
+    #nav-toggle:checked ~ .main-content{
+        margin-left: 70px;  
+    }
+    #nav-toggle:checked ~ .main-content header{
+        width: calc(100% - 70px);  
+        left: 70px;
+    }
+    .main-content{
+        transition: margin-left 300ms;
+        line-height: 1.6;
+        margin-left: 345px;
+    }
+    header{
+        background: #fff;
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        position: fixed;
+        left: 345px;
+        width: calc(100% - 345px);
+        top: 0;
+        z-index: 100;
+        transition: left 300ms;
+    }
+    header h2{
+        color: #222;
+    }
+    header label span{
+        font-size: 1.7rem;
+        padding-right: 1rem;
+
+    }
+    .search-wrapper{
+        border: 1px solid #ccc;
+        /* border-radius: 25px; */
+        height: 50px;
+        display: flex;
+        align-items: center;
+        overflow-x: hidden;
+    }
+    .search-wrapper span{
+        display: inline-block;
+        padding: 0rem 1rem;
+        font-size: 1.5rem;
+    }
+    .search-wrapper input{
+        height: 100%;
+        padding: .5rem;
+
+    }
+    .user-wrapper{
+        display: flex;
+        align-items: center;
+    }
+    .user-wrapper img{
+        border-radius: 50%;
+        margin-left: 1rem;
+
+    }
+    .user-wrapper small{
+        display: inline-block;
+        color: black;
+        
+    }
+    main{
+        line-height: 1.6;
+        color: #333;
+        background-image: url('images/background1.png');
+        /* background-size: cover; */
+        background-position: center; 
+        background-repeat: repeat;
+        margin-top: 20px;
+        padding: 2rem 1.5rem;
+        width: 100%;
+        /* background: #fff; */
+        min-height: calc(100vh - 70px);
+    }
+      
+      /* Fullscreen Chat Container */
+.chat-container {
+    /* position: fixed; */
+    position: relative;
+    /* top: 0; */
+    left: 0;
+    margin-top: 5px;
+    width: 100%;
+    height: 92vh;
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Chat Header */
+.chat-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: #2C98F0; /* Dashboard blue */
+  color: white;
+  font-size: 12px;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+/* Back Button */
+.back-button {
+  margin-right: 12px;
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
+  transition: 0.3s;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Chat Box */
+.chat-box {
+  flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    margin-top: 10px;
+    max-height: 90vh;
+}
+
+/* Message Styling */
+.message {
+  max-width: 75%;
+  word-wrap: break-word;
+  padding: 10px 15px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  font-size: 16px;
+  line-height: 1.4;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.parent {
+  background: #E5F1FF; /* Light blue */
+  color: #333;
+    align-self: flex-start;
+    border-bottom-left-radius: 0;
+}
+
+.tutor {
+    align-self: flex-end;
+    background: #2C98F0;
+    color: white;
+}
+
+/* File Preview */
+.file-preview {
+  max-width: 550px;  /* Prevent oversized images */
+  max-height: 500px; /* Maintain aspect ratio */
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+/* Input Box */
+.input-box {
+  display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 5px;
+    background: white;
+  border-top: 2px solid #ddd;
+    border-radius: 10px;
+}
+
+.input-box input {
+  flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.input-box button {
+  padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    background: #2C98F0;
+  color: white;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.input-box button:hover {
+  background: #1A7EC8;
+}
+@media only screen and (max-width: 1200px) {
+        .sidebar{
+            width: 70px;  
+        }
+
+       
+       .sidebar .sidebar-brand,
+       .sidebar li{
+            padding-left: 1rem;
+            text-align: center;
+        }
+        .sidebar li a{
+            padding-left: 0rem;
+        }
+        
+        .sidebar .sidebar-brand h2 span:last-child,
+        .sidebar li a span:last-child{
+            display: none;  
+        }
+        .main-content{
+            margin-left: 70px;  
+        }
+        .main-content header{
+            width: calc(100% - 70px);  
+            left: 70px;
+        }
+        
+        .sidebar:hover{
+            width: 345px;
+            z-index: 200;
+        }
+       .sidebar:hover .sidebar-brand,
+        .sidebar:hover li{
+            padding-left: 1rem;
+            text-align: left;
+        }
+        .sidebar:hover li a{
+            padding-left: 0rem;
+        }
+        
+        .sidebar:hover .sidebar-brand h2 span:last-child,
+        .sidebar:hover li a span:last-child{
+            display: inline;  
+        }
+    }
+@media only screen and (max-width: 960px) {
+    
+    .container {
+        grid-template-columns: repeat(3,1fr);
+    }
+}
+@media only screen and (max-width: 768px){
+    .container {
+        grid-template-columns: 100%;
+    }
+    .search-wrapper{
+        display: none;
+    }
+}
+
+
+    @media only screen and (max-width: 768px){
+        .container{
+            grid-template-columns: repeat(2,1fr);
+        }
+        .search-wrapper{
+            display:none;
+
+        }
+        .sidebar{
+            left: -100% !important;
+        }
+        header h2 label {
+            display: inline-block;
+            justify-content: center !important;
+            align-items: center;
+            background: var(#2C98F0);
+            padding-right: 0rem;
+            margin-right: 1rem;
+            height: 40px;
+            width: 40px;
+            color: #030202;
+            border-radius: 50%;
+        }
+
+        header h2{
+            font-size: 1.1rem;
+        }
+        header h2 span{
+            text-align: center;
+            padding-right: 0rem;
+        }
+        .main-content{
+            width: 100%;
+            margin-left: 0rem;
+        }
+        header{
+            width: 100% !important;
+            left: 0 !important;
+        }
+
+        #nav-toggle:checked + .sidebar{
+            left: 0 !important;
+            z-index: 100;
+            width: 345px;
+        }
+    
+        #nav-toggle:checked + .sidebar .sidebar-brand,
+        #nav-toggle:checked + .sidebar li{
+            padding-left: 1rem;
+            text-align: left;
+        }
+        #nav-toggle:checked + .sidebar li a{
+            padding-left: 1rem;
+        }
+        
+        #nav-toggle:checked + .sidebar .sidebar-brand h2 span:last-child,
+        #nav-toggle:checked + .sidebar li a span:last-child{
+            display: inline;  
+        }
+
+        #nav-toggle:checked ~ .main-content{
+            margin-left: 0rem !important;
+        }
+
+    }
+    </style>
+  </head>
+  <body>
+    <input type="checkbox" id="nav-toggle">
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h2><img src="src=images/Logo.png" alt=""><span>Smart Tutor</span></h2>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li>
+                    <a href="tutor_dashboard.html"><span class="las la-home"></span>
+                    <span>Dashboard</span></a>
+                </li>
+                <li>
+                    <a href="tutor_manage_student_requests.html"><span class="las la-user"></span>
+                    <span>Manage Student Requests</span></a>
+                </li>
+                <li>
+                    <a href="" class="active"><span class="fa-solid fa-user-group"></span>
+                    <span>Parents of Assigned Students</span></a>
+                </li>
+                <li>
+                    <a href="Assigned_Students.html"><span class="fa-solid fa-user-tie"></span>
+                    <span>  Assigned Students</span></a>
+                </li>
+                <li>
+                    <a href="created_communities.html"><span class="fa-solid fa-people-group"></span>
+                    <span>Created Communities</span></a>
+                </li>
+                <li>
+                    <a href="tutor_create_community.html"><span class="fa-solid fa-people-roof"></span>
+                    <span>Create New Community</span></a>
+                </li>
+                <li>
+                    <a href="tutor_start_online_session.html" onclick="saveUserToSession()">
+                        <span class="fa-solid fa-video"></span>
+                        <span>Create a Session</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="tutor_join_online_session.html" onclick="saveUserToSession()">
+                        <span class="fa-solid fa-video"></span>
+                        <span>Join a Session</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="loginpage.html"><span class="fa-solid fa-right-from-bracket"></span>
+                    <span>Logout</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="main-content">
+      <header>
+          <h2 style="margin-top: 7px;">
+              <label for="nav-toggle">
+                  <img src="images/bluebar2.png" src="" alt="Menu Icon" class="menu-icon">
+              </label>
+              Dashboard
+          </h2>
+  
+          <div class="user-wrapper">
+              <!-- <img id="userProfileImage" src="" width="40px" height="30px" alt="User Photo"> -->
+              <div>
+                  <h4 id="userWrapperTutorName">Tutor</h4>
+                  <small>Tutor</small>
+              </div>
+          </div>
+      </header>
+      <main>
+        <div class="chat-container">
+            <div class="chat-header">
+              <span class="back-button" onclick="history.back()">&#8592;</span>
+                <h2 id="chatHeader">Loading...</h2>
+            </div>
+            <div class="chat-box" id="chat-box"></div>
+            <div class="input-box">
+                <input type="text" id="messageInput" placeholder="Type a message..." />
+                <button onclick="sendMessage()">Send</button>
+            </div>
+            <div class="input-box">
+                <input type="file" id="fileInput" />
+                <button onclick="uploadFile()">Upload</button>
+            </div>
+        </div>
+    </main>
+    </div>
+
+    <script>
+       const tutorDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
+    
+    // Display tutor details on the page
+    if (tutorDetails) {
+        document.getElementById('userWrapperTutorName').textContent = tutorDetails.Tutor_Name;
+    } else {
+        document.getElementById('tutorDetails').innerHTML = `
+            <p>Error: Tutor details not found. Please go back to the dashboard.</p>
+        `;
+    }
+      const urlParams = new URLSearchParams(window.location.search);
+      let chatId = urlParams.get("roomId");
+      const parentId = urlParams.get("parentId");
+      const userRole = "tutor"; // Assuming tutor is logged in
+      const tutorData = sessionStorage.getItem("tutorDetails");
+      let tutorId = null;
+
+      if (tutorData) {
+        const parsedData = JSON.parse(tutorData);
+        tutorId = parsedData.Tutor_ID; // Extract Tutor_ID
+      } else {
+        console.error("Tutor data not found in sessionStorage");
+      }
+
+      if (!chatId || !parentId || !tutorId) {
+        console.error("Missing chatId, parentId, or tutorId");
+      }
+
+      // Get or Create Chat Room
+      async function getChatRoom() {
+        if (!tutorId || !parentId) {
+          console.error("Missing tutorId or parentId");
+          return;
+        }
+
+        try {
+          // Fetch student name based on parentId
+          const studentResponse = await fetch(`/api/chat/student/${parentId}`);
+          const studentData = await studentResponse.json();
+          const studentName = studentData.studentName || "Unknown Student";
+
+          // Fetch chat room details
+          const response = await fetch("/api/chat/getRoom", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ parentId, tutorId }),
+          });
+          const data = await response.json();
+          chatId = data.chatId;
+
+          if (data.chatName) {
+            document.getElementById(
+              "chatHeader"
+            ).innerText = `Parent of ${studentName}`;
+          } else {
+            document.getElementById("chatHeader").innerText = "Unknown Parent";
+          }
+
+          loadMessages();
+        } catch (error) {
+          console.error("Error getting chat room:", error);
+        }
+      }
+
+      getChatRoom();
+
+      let firstLoad = true; // Track first load
+
+      let lastMessageCount = 0; // Track the number of messages
+
+      async function loadMessages() {
+        const chatBox = document.getElementById("chat-box");
+        const prevScrollHeight = chatBox.scrollHeight; // Store previous height
+        const prevScrollTop = chatBox.scrollTop; // Store previous scroll position
+
+        const response = await fetch(`/api/chat/messages/${chatId}`);
+        const messages = await response.json();
+
+        // If there are new messages, determine whether to scroll
+        const newMessageArrived = messages.length > lastMessageCount;
+        lastMessageCount = messages.length; // Update message count
+
+        chatBox.innerHTML = ""; // Clear chat box
+
+        messages.forEach((msg) => {
+          const msgDiv = document.createElement("div");
+          msgDiv.classList.add("message");
+
+          if (msg.user_role === "tutor") {
+            msgDiv.classList.add("tutor");
+          } else if (msg.user_role === "parent") {
+            msgDiv.classList.add("parent");
+          }
+
+          if (msg.file_url) {
+            if (msg.file_type === "image") {
+              msgDiv.innerHTML = ` <br><img src="${msg.file_url}" class="file-preview">`;
+            } else if (msg.file_type === "video") {
+              msgDiv.innerHTML = `<br><video controls class="file-preview"><source src="${msg.file_url}" type="video/mp4"></video>`;
+            } else {
+              msgDiv.innerHTML = `<a href="${msg.file_url}" target="_blank">📂 View File</a>`;
+            }
+          } else {
+            msgDiv.innerHTML = ` ${msg.message}`;
+          }
+
+          chatBox.appendChild(msgDiv);
+        });
+
+        // Auto-scroll only when a new message is added
+        if (newMessageArrived) {
+          setTimeout(() => {
+            chatBox.scrollTop = chatBox.scrollHeight;
+          }, 50);
+        } else {
+          // Maintain the user's scroll position if they are scrolling up
+          chatBox.scrollTop =
+            prevScrollTop + (chatBox.scrollHeight - prevScrollHeight);
+        }
+      }
+
+      // Refresh messages every 2 seconds
+      setInterval(loadMessages, 1000);
+      loadMessages();
+
+      document
+        .getElementById("messageInput")
+        .addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            document.querySelector("button[onclick='sendMessage()']").click(); // Click the send button
+          }
+        });
+
+      async function sendMessage() {
+        if (!chatId || !tutorId) {
+          alert("Chat room or tutor ID not found.");
+          return;
+        }
+
+        const messageInput = document.getElementById("messageInput");
+        const message = messageInput.value.trim();
+        if (!message) return;
+
+        await fetch("/api/chat/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chatId,
+            senderId: tutorId,
+            userRole,
+            message,
+          }),
+        });
+
+        messageInput.value = "";
+        loadMessages();
+      }
+
+      async function uploadFile() {
+        if (!chatId || !tutorId) {
+          alert("Chat room or tutor ID not found.");
+          return;
+        }
+
+        const fileInput = document.getElementById("fileInput");
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("chatId", chatId);
+        formData.append("senderId", tutorId);
+        formData.append("userRole", userRole);
+
+        await fetch("/api/chat/upload", { method: "POST", body: formData });
+
+        fileInput.value = "";
+        loadMessages();
+      }
+    </script>
+  </body>
+</html>

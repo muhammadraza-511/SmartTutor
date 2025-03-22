@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parent Chat</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f0f2f5;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        justify-content: center;
+      }
+      .chat-container {
+        width: 400px;
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+      }
+      .chat-box {
+        height: 300px;
+        overflow-y: auto;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 10px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+      }
+      .message {
+        padding: 10px;
+        margin: 5px;
+        border-radius: 10px;
+        max-width: 80%;
+        word-wrap: break-word;
+        text-align: left;
+      }
+
+      /* Parent messages (Right-aligned) */
+      .message.parent {
+        align-self: flex-end;
+        background: #e6e6e6;
+        color: black;
+      }
+
+      /* Tutor messages (Left-aligned) */
+      .message.tutor {
+        align-self: flex-start;
+        background: #e6e6e6;
+        color: black;
+      }
+      .file-preview {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 5px;
+      }
+      .input-box {
+        display: flex;
+        align-items: center;
+      }
+      input[type="text"],
+      input[type="file"] {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      button {
+        padding: 10px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 5px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chat-container">
+      <h2 id="chatHeader">Loading...</h2>
+      <div class="chat-box" id="chat-box"></div>
+      <div class="input-box">
+        <input type="text" id="messageInput" placeholder="Type a message" />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+      <div class="input-box">
+        <input type="file" id="fileInput" />
+        <button onclick="uploadFile()">Upload</button>
+      </div>
+    </div>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const chatId = urlParams.get("chatId");
+      const tutorId = urlParams.get("with"); // Extract tutorId from URL
+      const chatBox = document.getElementById("chat-box");
+
+      let lastMessageCount = 0; // Store previous message count
+
+      // Fetch tutor's name using tutorId
+      async function fetchTutorName() {
+        if (!tutorId) return;
+
+        try {
+          const response = await fetch(`/api/chat/tutor/${tutorId}`);
+          const data = await response.json();
+
+          if (data.tutorName) {
+            document.getElementById(
+              "chatHeader"
+            ).innerText = `Tutor: ${data.tutorName}`;
+          } else {
+            document.getElementById("chatHeader").innerText =
+              "Chat with Unknown Tutor";
+          }
+        } catch (error) {
+          console.error("Error fetching tutor name:", error);
+        }
+      }
+
+      fetchTutorName();
+
+      const parentData = sessionStorage.getItem("parentDetails");
+      let senderId = null;
+      let userRole = "parent"; // Always set as "parent"
+
+      if (parentData) {
+        const parsedData = JSON.parse(parentData);
+        senderId = parsedData.Parent_ID; // Extract Parent_ID
+      } else {
+        console.error("Parent data not found in sessionStorage");
+      }
+
+      // Function to check if the user is at the bottom of the chat
+      function isUserAtBottom() {
+        return (
+          chatBox.scrollTop + chatBox.clientHeight >= chatBox.scrollHeight - 10
+        );
+      }
+
+      // Load messages from API and manage auto-scrolling
+      async function loadMessages() {
+        const response = await fetch(`/api/chat/messages/${chatId}`);
+        const messages = await response.json();
+
+        const wasAtBottom = isUserAtBottom();
+        const previousMessageCount = lastMessageCount; // Store previous message count
+        lastMessageCount = messages.length; // Update message count
+
+        chatBox.innerHTML = "";
+
+        messages.forEach((msg) => {
+          const msgDiv = document.createElement("div");
+          msgDiv.classList.add("message", msg.user_role);
+
+          if (msg.file_url) {
+            if (msg.file_type === "image") {
+              msgDiv.innerHTML = `<strong>${msg.user_role}:</strong> <br><img src="${msg.file_url}" class="file-preview">`;
+            } else if (msg.file_type === "video") {
+              msgDiv.innerHTML = `<strong>${msg.user_role}:</strong> <br><video controls class="file-preview"><source src="${msg.file_url}" type="video/mp4"></video>`;
+            } else {
+              msgDiv.innerHTML = `<strong>${msg.user_role}:</strong> <br><a href="${msg.file_url}" target="_blank">View File</a>`;
+            }
+          } else {
+            msgDiv.innerHTML = `<strong>${msg.user_role}:</strong> ${msg.message}`;
+          }
+
+          chatBox.appendChild(msgDiv);
+        });
+
+        // Scroll to bottom if new messages arrive and user was already at bottom
+        if (messages.length > previousMessageCount && wasAtBottom) {
+          setTimeout(() => (chatBox.scrollTop = chatBox.scrollHeight), 50);
+        }
+      }
+
+      // Refresh messages every second
+      setInterval(loadMessages, 1000);
+      loadMessages();
+
+      // Send message function
+      async function sendMessage() {
+        if (!senderId) {
+          alert("Sender ID not found. Please log in again.");
+          return;
+        }
+
+        const messageInput = document.getElementById("messageInput");
+        const message = messageInput.value.trim();
+        if (!message) return;
+
+        await fetch("/api/chat/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chatId, senderId, userRole, message }),
+        });
+
+        messageInput.value = "";
+        await loadMessages();
+        chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom after sending a message
+      }
+
+      // File upload function
+      async function uploadFile() {
+        if (!senderId) {
+          alert("Sender ID not found. Please log in again.");
+          return;
+        }
+
+        const fileInput = document.getElementById("fileInput");
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("chatId", chatId);
+        formData.append("senderId", senderId);
+        formData.append("userRole", userRole);
+
+        await fetch("/api/chat/upload", { method: "POST", body: formData });
+
+        fileInput.value = "";
+        await loadMessages();
+        chatBox.scrollTop = chatBox.scrollHeight; // Scroll to bottom after file upload
+      }
+
+      // Handle Enter key for message sending
+      document
+        .getElementById("messageInput")
+        .addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            sendMessage();
+          }
+        });
+    </script>
+  </body>
+</html>

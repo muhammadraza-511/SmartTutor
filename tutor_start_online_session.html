@@ -3,126 +3,624 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Start Online Session</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Add your CSS file -->
+    <link rel= "stylesheet" href= "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" >
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Create Online Session</title>
+    <style>
+        * {
+            font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+            /* background-color: #ffffff; */
+            padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        list-style-type: none;
+        text-decoration: none;
+        }
+        .logo {
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+    font-family: "Montserrat";
+    color: #000000;
+    text-decoration: none;
+    color: inherit;
+}
+.logo span{
+    color: #f4f4f4;
+}
+    .sidebar{
+        width: 345px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background: #2C98F0;
+        z-index: 100;
+        transition: width 300ms;
+    }
+    .sidebar-brand{
+        height: 90px;
+        padding: 1rem 0rem 1rem 2rem;
+        color: #fff;
+    }
+    .sidebar-brand h2{
+        text-align: left;
+    }
+    .sidebar-brand span{
+        color: white;
+        display: inline-block;
+        padding-right: 1rem;
+    }
+    .sidebar-menu{
+        margin-top: 1rem;
+    }
+    .sidebar-menu li{
+        width: 100%;
+        margin-bottom: 1.3rem;
+        padding-left: 2rem;
+
+    }
+    .sidebar-menu a{
+        padding-left: 1rem;
+        display: block;
+        color: #fff;
+        font-size: 1.1rem;
+        padding-top: 1rem;
+    }
+    .sidebar-menu a.active{
+        background: #fff;
+        padding-top: 1rem ;
+        padding-bottom: 1rem ;
+        color: #2C98F0;
+        border-radius: 30px 0px 0px 30px;
+    }
+    .sidebar-menu a:hover{
+        background: #fff;
+        padding-top: 1rem ;
+        padding-bottom: 1rem ;
+        color: #2C98F0;
+        border-radius: 30px 0px 0px 30px;
+        transition-duration: 0.5s;
+    }
+    .sidebar-menu a span :first-child{
+        font-size: 1.5rem;
+        padding-right: 1rem;
+    }
+    .menu-icon {
+    width: 33px;
+    height: 33px;
+    margin-top: -2px; /* Adjust this value to move the image down */
+    vertical-align: middle;
+    }
+    #nav-toggle{
+        display: none;
+        
+    }
+    #nav-toggle:checked + .sidebar{
+        width: 70px;  
+    }
+    #nav-toggle:checked + .sidebar .sidebar-brand ,
+    #nav-toggle:checked + .sidebar li {
+        padding-left: 1rem;
+        text-align: center;
+    }
+    #nav-toggle:checked + .sidebar li a{
+        padding-left: 0rem;
+    }
+    #nav-toggle:checked + .sidebar li a span{
+        padding-left: 0rem;
+    }
+    #nav-toggle:checked + .sidebar .sidebar-brand h2 span:last-child,
+    #nav-toggle:checked + .sidebar li a span:last-child{
+        display: none;  
+    }
+    #nav-toggle:checked ~ .main-content{
+        margin-left: 70px;  
+    }
+    #nav-toggle:checked ~ .main-content header{
+        width: calc(100% - 70px);  
+        left: 70px;
+    }
+    .main-content{
+        transition: margin-left 300ms;
+        margin-left: 345px;
+    }
+    header{
+        background: #fff;
+        display: flex;
+
+        justify-content: space-between;
+        padding: 1rem 1.5rem;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        position: fixed;
+        left: 345px;
+        width: calc(100% - 345px);
+        top: 0;
+        z-index: 100;
+        transition: left 300ms;
+        
+    }
+    header h2{
+        color: #222;
+    }
+    header label span{
+        font-size: 1.7rem;
+        padding-right: 1rem;
+
+    }
+    .search-wrapper{
+        border: 1px solid #ccc;
+        /* border-radius: 25px; */
+        height: 50px;
+        display: flex;
+        align-items: center;
+        overflow-x: hidden;
+    }
+    .search-wrapper span{
+        display: inline-block;
+        padding: 0rem 1rem;
+        font-size: 1.5rem;
+    }
+    .search-wrapper input{
+        height: 100%;
+        padding: .5rem;
+
+    }
+    .user-wrapper{
+        display: flex;
+        align-items: center;
+    }
+    .user-wrapper img{
+        border-radius: 50%;
+        margin-left: 1rem;
+
+    }
+    .user-wrapper small{
+        display: inline-block;
+        color: black;
+        
+    }
+    main{
+        margin-top: 90px;
+        padding: 2rem 1.5rem;
+        width: 100%;
+        line-height: 1.6;
+        color: #333;
+        background-image: url('images/background1.png');
+        /* background-size: cover; */
+        background-position: center; 
+        background-repeat: repeat;
+        min-height: calc(100vh - 90px);
+    }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin-top: 120px;
+            margin-left: 200px;
+            padding: 20px;
+            background-color: #f0f8ff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2, h3 {
+            color: #2C98F0;
+            text-align: center;
+        }
+        /* label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #333;
+        } */
+        input[type="time"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #2C98F0;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #024ea2;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #2C98F0;
+            color: white;
+        }
+        .session-id {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        @media only screen and (max-width: 1200px) {
+            .sidebar{
+            width: 70px;  
+        }
+
+       
+       .sidebar .sidebar-brand,
+       .sidebar li{
+            padding-left: 1rem;
+            text-align: center;
+        }
+        .sidebar li a{
+            padding-left: 0rem;
+        }
+        
+        .sidebar .sidebar-brand h2 span:last-child,
+        .sidebar li a span:last-child{
+            display: none;  
+        }
+        .main-content{
+            margin-left: 70px;  
+        }
+        .main-content header{
+            width: calc(100% - 70px);  
+            left: 70px;
+        }
+        
+        .sidebar:hover{
+            width: 345px;
+            z-index: 200;
+        }
+       .sidebar:hover .sidebar-brand,
+        .sidebar:hover li{
+            padding-left: 1rem;
+            text-align: left;
+        }
+        .sidebar:hover li a{
+            padding-left: 0rem;
+        }
+        
+        .sidebar:hover .sidebar-brand h2 span:last-child,
+        .sidebar:hover li a span:last-child{
+            display: inline;  
+        }
+    }
+@media only screen and (max-width: 960px) {
+    
+    .container {
+        grid-template-columns: repeat(3,1fr);
+    }
+}
+@media only screen and (max-width: 768px){
+    .container {
+        grid-template-columns: 100%;
+    }
+    .search-wrapper{
+        display: none;
+    }
+}
+
+
+    @media only screen and (max-width: 768px){
+        .container{
+            grid-template-columns: repeat(2,1fr);
+        }
+        .search-wrapper{
+            display:none;
+
+        }
+        .sidebar{
+            left: -100% !important;
+        }
+        header h2 label {
+            display: inline-block;
+            justify-content: center !important;
+            align-items: center;
+            background: var(#2C98F0);
+            padding-right: 0rem;
+            margin-right: 1rem;
+            height: 40px;
+            width: 40px;
+            color: #030202;
+            border-radius: 50%;
+        }
+
+        header h2{
+            font-size: 1.1rem;
+        }
+        header h2 span{
+            text-align: center;
+            padding-right: 0rem;
+        }
+        .main-content{
+            width: 100%;
+            margin-left: 0rem;
+        }
+        header{
+            width: 100% !important;
+            left: 0 !important;
+        }
+
+        #nav-toggle:checked + .sidebar{
+            left: 0 !important;
+            z-index: 100;
+            width: 345px;
+        }
+    
+        #nav-toggle:checked + .sidebar .sidebar-brand,
+        #nav-toggle:checked + .sidebar li{
+            padding-left: 1rem;
+            text-align: left;
+        }
+        #nav-toggle:checked + .sidebar li a{
+            padding-left: 1rem;
+        }
+        
+        #nav-toggle:checked + .sidebar .sidebar-brand h2 span:last-child,
+        #nav-toggle:checked + .sidebar li a span:last-child{
+            display: inline;  
+        }
+
+        #nav-toggle:checked ~ .main-content{
+            margin-left: 0rem !important;
+        }
+
+    }
+    /* Modal Styles */
+    .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            text-align: center;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .modal-content p {
+            margin: 0;
+            color: #333;
+        }
+        .modal-content button {
+            margin-top: 15px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            background-color: #0366d6;
+            color: white;
+            cursor: pointer;
+        }
+        .modal-content button:hover {
+            background-color: #024ea2;
+        }
+    </style>
 </head>
 <body>
-    <h2>Create Online Session</h2>
-    <div id="tutorDetails">
-        <h3>Tutor Details</h3>
-        <p><strong>ID:</strong> <span id="tutorId"></span></p>
-        <p><strong>Name:</strong> <span id="tutorName"></span></p>
-        <p><strong>Email:</strong> <span id="tutorEmail"></span></p>
-        <p><strong>Roll No:</strong> <span id="tutorRollNo"></span></p>
-        <p><strong>Number:</strong> <span id="tutorNumber"></span></p>
+    <input type="checkbox" id="nav-toggle">
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h2><img src="src=images/Logo.png" alt=""><span>Smart Tutor</span></h2>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li>
+                    <a href="tutor_dashboard.html" ><span class="las la-home"></span>
+                    <span>Dashboard</span></a>
+                </li>
+                <li>
+                    <a href="tutor_manage_student_requests.html"><span class="las la-user"></span>
+                    <span>Manage Student Requests</span></a>
+                </li>
+                <li>
+                    <a href="parentlist.html"><span class="fa-solid fa-user-group"></span>
+                    <span>Parents of Assigned Students</span></a>
+                </li>
+                <li>
+                    <a href="Assigned_Students.html"><span class="fa-solid fa-user-tie"></span>
+                    <span>  Assigned Students</span></a>
+                </li>
+                <li>
+                    <a href="created_communities.html"><span class="fa-solid fa-people-group"></span>
+                    <span>Created Communities</span></a>
+                </li>
+                <li>
+                    <a href="tutor_create_community.html"><span class="fa-solid fa-people-roof"></span>
+                    <span>Create New Community</span></a>
+                </li>
+                <li>
+                    <a href="" class="active" onclick="saveUserToSession()">
+                        <span class="fa-solid fa-video"></span>
+                        <span>Create a Session</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="tutor_join_online_session.html" onclick="saveUserToSession()">
+                        <span class="fa-solid fa-video"></span>
+                        <span>Join a Session</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="loginpage.html"><span class="fa-solid fa-right-from-bracket"></span>
+                    <span>Logout</span></a>
+                </li>
+            </ul>
+        </div>
     </div>
-    
-    <label for="startTime"><strong>Start Time:</strong></label>
-    <input type="time" id="startTime" required>
-    
-    <label for="endTime"><strong>End Time:</strong></label>
-    <input type="time" id="endTime" required>
-    
-    <button id="generateSessionId">Generate Session ID</button>
-    <p><strong>Session ID:</strong> <span id="sessionId">Not Generated</span></p>
-    
-    <h3>Assigned Students</h3>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Select</th>
-                <th>Student Name</th>
-                <th>Student Roll Number</th>
-            </tr>
-        </thead>
-        <tbody id="studentList">
-            <!-- Assigned students will be displayed here -->
-        </tbody>
-    </table>
 
-    <button id="startSession">Create Session</button>
-
+    <div class="main-content">
+        <header>
+            <h2 style="margin-top: 7px;">
+                <label for="nav-toggle">
+                    <img src="images/bluebar2.png" src="" alt="Menu Icon" class="menu-icon">
+                </label>
+                Dashboard
+            </h2>
+    
+            <div class="user-wrapper">
+                <!-- <img id="userProfileImage" src="" width="40px" height="30px" alt="User Photo"> -->
+                <div>
+                    <h4 id="userWrapperTutorName">Tutor</h4>
+                    <small>Tutor</small>
+                </div>
+            </div>
+        </header>
+        <div class="main">
+            <div class="container">
+                <h2>Create Online Session</h2>
+        
+                <label for="startTime">Start Time</label>
+                <input type="time" id="startTime" required>
+        
+                <label for="endTime">End Time</label>
+                <input type="time" id="endTime" required>
+        
+                <button id="generateSessionId">Generate Session ID</button>
+                <div class="session-id"><strong>Session ID:</strong> <span id="sessionId">Not Generated</span></div>
+        
+                <h3>Assigned Students</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>Student Name</th>
+                            <th>Roll Number</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentList">
+                        <tr><td colspan="3">Loading students...</td></tr>
+                    </tbody>
+                </table>
+        
+                <button id="startSession">Create Session</button>
+            </div>
+    
+        </div>
+    </div>
+    <div class="modal" id="alertModal">
+        <div class="modal-content">
+            <p id="alertMessage"></p>
+            <button onclick="closeAlert()">OK</button>
+        </div>
+    </div>
     <script>
+         const tutorDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
+    
+    // Display tutor details on the page
+    if (tutorDetails) {
+        document.getElementById('userWrapperTutorName').textContent = tutorDetails.Tutor_Name;
+    } else {
+        document.getElementById('tutorDetails').innerHTML = `
+            <p>Error: Tutor details not found. Please go back to the dashboard.</p>
+        `;
+    }
+        function showAlert(message) {
+            document.getElementById("alertMessage").textContent = message;
+            document.getElementById("alertModal").style.display = "flex";
+        }
+
+        function closeAlert() {
+            document.getElementById("alertModal").style.display = "none";
+        }
         document.addEventListener("DOMContentLoaded", function() {
             const tutorDetails = JSON.parse(sessionStorage.getItem("tutorDetails"));
             const existingSessionId = sessionStorage.getItem("sessionId");
-            if (existingSessionId) {
-                document.getElementById("sessionId").textContent = existingSessionId;
-            }
 
             if (!tutorDetails) {
-                alert("Tutor details not found. Please log in again.");
+                showAlert("Tutor details not found. Please log in again.");
                 window.location.href = "loginpage.html";
                 return;
             }
 
-            document.getElementById("tutorId").textContent = tutorDetails.Tutor_ID;
-            document.getElementById("tutorName").textContent = tutorDetails.Tutor_Name;
-            document.getElementById("tutorEmail").textContent = tutorDetails.Tutor_Email;
-            document.getElementById("tutorRollNo").textContent = tutorDetails.Tutor_Roll_No;
-            document.getElementById("tutorNumber").textContent = tutorDetails.Tutor_Number;
+            if (existingSessionId) {
+                document.getElementById("sessionId").textContent = existingSessionId;
+            }
 
+            // Fetch and display assigned students
             fetch(`/assigned-students?tutorId=${tutorDetails.Tutor_ID}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch students");
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     const studentList = document.getElementById("studentList");
                     studentList.innerHTML = "";
-                    if (data.length === 0) {
+
+                    if (!Array.isArray(data) || data.length === 0) {
                         studentList.innerHTML = "<tr><td colspan='3'>No assigned students found.</td></tr>";
-                    } else {
-                        data.forEach(student => {
-                            const row = document.createElement("tr");
-                            row.innerHTML = `
-                                <td><input type="checkbox" class="studentCheckbox" value="${student.Student_ID}"></td>
-                                <td>${student.Student_Name}</td>
-                                <td>${student.Student_roll_No}</td>
-                            `;
-                            studentList.appendChild(row);
-                        });
+                        return;
                     }
+
+                    data.forEach(student => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td><input type="checkbox" class="studentCheckbox" value="${student.Student_ID}"></td>
+                            <td>${student.Student_Name}</td>
+                            <td>${student.Student_roll_No}</td>
+                        `;
+                        studentList.appendChild(row);
+                    });
                 })
-                .catch(error => console.error("Error fetching assigned students:", error));
+                .catch(error => {
+                    console.error("Error fetching assigned students:", error);
+                    document.getElementById("studentList").innerHTML = "<tr><td colspan='3'>Error fetching students.</td></tr>";
+                });
 
             sessionStorage.removeItem("sessionId");
         });
 
+        // Generate Session ID
         document.getElementById("generateSessionId").addEventListener("click", function() {
             let sessionId = sessionStorage.getItem("sessionId");
-            if (!sessionId) {  // Generate only if sessionId is not already set
+            if (!sessionId) {
                 sessionId = Math.random().toString(36).substr(2, 10).toUpperCase();
                 sessionStorage.setItem("sessionId", sessionId);
             }
             document.getElementById("sessionId").textContent = sessionId;
         });
-        
+
+        // Create Session
         document.getElementById("startSession").addEventListener("click", function() {
-            const tutorId = document.getElementById("tutorId").textContent;
+            const tutorDetails = JSON.parse(sessionStorage.getItem("tutorDetails"));
+            const tutorId = tutorDetails.Tutor_ID;
             const sessionId = sessionStorage.getItem("sessionId");
             const startTime = document.getElementById("startTime").value;
             const endTime = document.getElementById("endTime").value;
             const selectedStudents = [...document.querySelectorAll(".studentCheckbox:checked")].map(cb => cb.value);
-        
-            if (!sessionId) {
-                alert("Please generate a session ID first.");
+
+            if (!sessionId || !startTime || !endTime || selectedStudents.length === 0) {
+                showAlert("Please fill all fields and select at least one student.");
                 return;
             }
-            if (!startTime || !endTime) {
-                alert("Please enter start and end times.");
-                return;
-            }
-            if (selectedStudents.length === 0) {
-                alert("Please select at least one student.");
-                return;
-            }
-        
-            const sessionData = {
-                tutorId,
-                sessionId,
-                startTime,
-                endTime,
-                selectedStudents
-            };
-        
+
+            const sessionData = { tutorId, sessionId, startTime, endTime, selectedStudents };
+
             fetch("/create-session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -131,13 +629,16 @@
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
-                    alert(data.error);
+                    showAlert(data.error);
                 } else {
-                    alert("Session created successfully!");
+                    showAlert("Session created successfully!");
                     console.log("Session Created:", data);
                 }
             })
-            .catch(error => console.error("Error:", error));
+            .catch(error => {
+                console.error("Error creating session:", error);
+                showAlert("An error occurred while creating the session.");
+            });
         });
     </script>
 </body>

@@ -176,12 +176,17 @@
         
     }
     main {
-    margin-top: 90px;
     padding: 2rem 1.5rem;
     width: 100%;
     /* width: calc(100% - 345px);  */
-    background: #f0f0f0;
-    min-height: calc(100vh - 90px);
+    background-image: url('images/background1.png');
+    /* background-size: cover; */
+    background-position: center; 
+    background-repeat: repeat;
+    margin-top: 70px;
+    padding: 2rem 1.5rem;
+    width: 100%;
+    min-height: calc(100vh - 70px);
 }
 
 .container {
@@ -241,12 +246,22 @@
                   <span>Search for Tutor</span></a>
                 </li>
                 <li>
+                    <a href="Assigned_Tutors.html"><span class="fa-solid fa-people-group"></span>
+                    <span>Assigned Tutors</span></a>
+                </li>
+                <li>
                     <a href="" class="active"><span class="fa-solid fa-people-group"></span>
                     <span>Communities Joined</span></a>
                 </li>
                 <li>
                     <a href="join_community.html"><span class="fa-solid fa-people-roof"></span>
                     <span>Join Community</span></a>
+                </li>
+                <li>
+                    <a href="student_join_online_session.html" onclick="saveUserDetails()">
+                        <span class="fa-solid fa-people-roof"></span>
+                        <span>Join Session</span>
+                    </a>
                 </li>
                 <li>
                     <a href="index.html"><span class="fa-solid fa-right-from-bracket"></span>

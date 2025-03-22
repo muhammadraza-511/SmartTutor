@@ -11,6 +11,12 @@ module.exports = (io) => {
             socket.to(sessionId).emit('userJoined', socket.id);
         });
 
+        // Handle nickname updates
+        socket.on('nickname', ({ nickname, sessionId, userId }) => {
+            // Broadcast the nickname to all peers in the session
+            socket.to(sessionId).emit('nickname', { nickname, userId });
+        });
+
         // Forward signaling messages (for WebRTC)
         socket.on('signal', (data) => {
             io.to(data.target).emit('signal', {
