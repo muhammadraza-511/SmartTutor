@@ -88,7 +88,7 @@ require('./student_join_meeting_session')(app, db);
 require('./tutor_join_meeting_session')(app, db);
 
 
-require('./video_call')(io);
+require('./video_call')(io, db);
 
 require('./parent_tutor_chat')(app, db);
 require('./Student_tutor_chat')(app, db);
