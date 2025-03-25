@@ -4,87 +4,293 @@
 <head>
     <title>SmartTutor Video Call</title>
     <style>
-        #videos {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
         body {
-            background-color: black;
-            color: white; /* Ensures text remains visible */
-        }
-        
-        video {
-            width: 45%;
-            border: 2px solid green;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .screen-share {
-            width: 100%;
-        }        
-
-        #emotionChart, #satisfactionChart {
-            max-width: 200px;  /* Reduce size */
-            max-height: 200px;
-        }
-
-        .nickname-display {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #202124;
             color: white;
-            padding: 5px;
-            border-radius: 4px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: #3c4043;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 300px;
+            background-color: #3c4043;
+            padding: 15px;
+            overflow-y: auto;
+            border-right: 1px solid #5f6368;
+        }
+
+        .video-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .participants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
+            padding: 10px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .participant {
+            position: relative;
+            background-color: #3c4043;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            transition: all 0.2s ease;
+        }
+
+        .participant:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background-color: #202124;
+        }
+
+        .participant-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            padding: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .participant-name {
+            font-size: 14px;
+            margin-left: 5px;
+        }
+
+        .mute-indicator {
+            background-color: rgba(0,0,0,0.6);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .emotion-display {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid #444;
+        }
+
+        .satisfied {
+            color: #2ecc71;
+            border-color: #2ecc71;
+        }
+
+        .not-satisfied {
+            color: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        .neutral {
+            color: #f1c40f;
+            border-color: #f1c40f;
+        }
+
+        .controls {
+            background-color: #3c4043;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            border-top: 1px solid #5f6368;
+        }
+
+        .control-btn {
+            background-color: #5f6368;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background-color: #80868b;
+        }
+
+        .control-btn.end-call {
+            background-color: #d93025;
+        }
+
+        .control-btn.end-call:hover {
+            background-color: #f44336;
+        }
+
+        .control-btn.active {
+            background-color: #4285f4;
+        }
+
+        .sidebar-section {
+            margin-bottom: 20px;
+            background-color: #202124;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .sidebar-section h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #9aa0a6;
+            border-bottom: 1px solid #5f6368;
+            padding-bottom: 8px;
+        }
+
+        .user-detail {
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .user-detail strong {
+            color: #9aa0a6;
+            display: inline-block;
+            width: 100px;
+        }
+
+        #satisfactionChart {
+            max-width: 150px;
+            max-height: 150px;
+            margin: 0 auto 15px;
+        }
+
+        .chart-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .emotion-item {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #5f6368;
+        }
+
+        .emotion-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .screen-share-active {
+            border: 3px solid #4285f4;
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <h2>SmartTutor Video Call</h2>
-    
-    <h2>Recent Student Emotion</h2>
-    <div id="recentEmotion">
-        <p>Loading...</p>
+    <div class="header">
+        <h2>SmartTutor Video Call</h2>
     </div>
 
-    <h2>Emotion Analysis</h2>
-    <canvas id="emotionChart"></canvas>
-    <div id="emotionStats"></div>
+    <div class="content">
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <h3>User Details</h3>
+                <div class="user-detail"><strong>Name:</strong> <span id="userName"></span></div>
+                <div class="user-detail"><strong>Roll Number:</strong> <span id="userRollNo"></span></div>
+                <div class="user-detail"><strong>Email:</strong> <span id="userEmail"></span></div>
+                <div class="user-detail"><strong>Contact:</strong> <span id="userContact"></span></div>
+                <div class="user-detail"><strong>ID:</strong> <span id="userID"></span></div>
+            </div>
 
-    <h2>Emotion Satisfaction Analysis</h2>
-    <canvas id="satisfactionChart"></canvas>
-    <div id="satisfactionStats"></div>
+            <div id="emotionSection" class="sidebar-section">
+                <h3>Recent Student Emotion</h3>
+                <div id="recentEmotion">
+                    <p>Loading...</p>
+                </div>
+            </div>
 
-    <div id="userDetails">
-        <h3>User Details</h3>
-        <p><strong>Name:</strong> <span id="userName"></span></p>
-        <p><strong>Roll Number:</strong> <span id="userRollNo"></span></p>
-        <p><strong>Email:</strong> <span id="userEmail"></span></p>
-        <p><strong>Contact:</strong> <span id="userContact"></span></p>
-        <p><strong>ID:</strong> <span id="userID"></span></p>
+            <div id="satisfactionSection" class="sidebar-section">
+                <h3>Emotion Satisfaction</h3>
+                <div class="chart-container">
+                    <canvas id="satisfactionChart"></canvas>
+                </div>
+                <div id="satisfactionStats"></div>
+            </div>
+        </div>
+
+        <div class="video-container">
+            <div class="participants-grid" id="participants-grid"></div>
+        </div>
     </div>
 
-    <div id="videos"></div>
-    <button id="leaveCall">Leave Call</button>
-    <button id="shareScreen">Share Screen</button>
+    <div class="controls">
+        <button id="toggleAudio" class="control-btn" title="Mute/Unmute">🎤</button>
+        <button id="leaveCall" class="control-btn end-call" title="Leave Call">📞</button>
+        <button id="shareScreen" class="control-btn" title="Share Screen">🖥️</button>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-peer@9.11.1/simplepeer.min.js"></script>
 
     <script>
-        let emotionChart = null;
         let categorizedEmotionChart = null;
+        let isAudioMuted = false;
+        let audioTrack = null;
 
         const socket = io();
         const urlParams = new URLSearchParams(window.location.search);
         const sessionId = urlParams.get('sessionId');
         const peers = {};
         const nicknames = {};
+        const studentEmotions = {};
+        const studentIdToSocketId = {};
 
         let localStream;
         let screenStream;
@@ -92,6 +298,17 @@
         const userDetails = JSON.parse(sessionStorage.getItem('videoCallUserDetails'));
         const userId = userDetails?.Tutor_ID || userDetails?.Student_ID;
         const userType = userDetails?.Tutor_ID ? 'tutor' : 'student';
+        const isTutor = userType === 'tutor';
+
+        const emotionCategories = {
+            'happy': { category: 'Satisfied', emoji: '😃', class: 'satisfied' },
+            'surprise': { category: 'Satisfied', emoji: '😲', class: 'satisfied' },
+            'neutral': { category: 'Neutral', emoji: '😐', class: 'neutral' },
+            'angry': { category: 'Not Satisfied', emoji: '😠', class: 'not-satisfied' },
+            'disgust': { category: 'Not Satisfied', emoji: '🤢', class: 'not-satisfied' },
+            'fear': { category: 'Not Satisfied', emoji: '😨', class: 'not-satisfied' },
+            'sad': { category: 'Not Satisfied', emoji: '😢', class: 'not-satisfied' }
+        };
 
         document.addEventListener('DOMContentLoaded', () => {
             if (userDetails) {
@@ -105,18 +322,8 @@
             }
 
             if (!userDetails || userDetails.Student_ID) {
-                console.log("Hiding emotion analysis for students.");
-
-                document.querySelector('h2:nth-of-type(2)').style.display = 'none';
-                document.getElementById('recentEmotion').style.display = 'none';
-
-                document.querySelector('h2:nth-of-type(3)').style.display = 'none';
-                document.getElementById('emotionChart').style.display = 'none';
-                document.getElementById('emotionStats').style.display = 'none';
-
-                document.querySelector('h2:nth-of-type(4)').style.display = 'none';
-                document.getElementById('satisfactionChart').style.display = 'none';
-                document.getElementById('satisfactionStats').style.display = 'none';
+                document.getElementById('emotionSection').style.display = 'none';
+                document.getElementById('satisfactionSection').style.display = 'none';
             }
 
             if (!sessionId) {
@@ -128,79 +335,110 @@
             setInterval(fetchRecentEmotion, 5000);
         });
 
+        document.getElementById('toggleAudio').addEventListener('click', toggleAudio);
+
+        function toggleAudio() {
+            if (!audioTrack) return;
+            
+            isAudioMuted = !isAudioMuted;
+            audioTrack.enabled = !isAudioMuted;
+            
+            const audioBtn = document.getElementById('toggleAudio');
+            audioBtn.textContent = isAudioMuted ? '🔇' : '🎤';
+            audioBtn.title = isAudioMuted ? 'Unmute' : 'Mute';
+            audioBtn.classList.toggle('active', isAudioMuted);
+            
+            socket.emit('audioStateChange', { userId, isMuted: isAudioMuted });
+        }
+
+        socket.on('audioStateChanged', ({ userId, isMuted }) => {
+            const participant = document.querySelector(`#participant-${userId}`);
+            if (participant) {
+                let muteIndicator = participant.querySelector('.mute-indicator');
+                if (!muteIndicator) {
+                    muteIndicator = document.createElement('div');
+                    muteIndicator.className = 'mute-indicator';
+                    muteIndicator.innerHTML = '🔇';
+                    participant.querySelector('.participant-info').prepend(muteIndicator);
+                }
+                muteIndicator.style.display = isMuted ? 'flex' : 'none';
+            }
+        });
+
         function fetchRecentEmotion() {
             fetch(`/get-recent-emotion/${sessionId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (!data || data.length === 0 || data.message) {
                         document.getElementById('recentEmotion').innerHTML = "<p>No recent emotions recorded.</p>";
-                        document.getElementById('emotionStats').innerHTML = "";
-                        document.getElementById('categorizedEmotionStats').innerHTML = "";
+                        document.getElementById('satisfactionStats').innerHTML = "";
                         return;
                     }
 
-                    let emotionCounts = {}; 
                     let categorizedCounts = { Satisfied: 0, Neutral: 0, "Not Satisfied": 0 };
+                    let emotionHTML = "";
 
-                    let emotionHTML = "<h3>Recent Emotions</h3>";
                     data.forEach(entry => {
+                        const emotionType = entry.Emotion_Type.toLowerCase();
+                        const categoryInfo = emotionCategories[emotionType] || 
+                                           { category: 'Unknown', emoji: '', class: '' };
+
+                        studentEmotions[entry.Student_ID] = {
+                            emotion: entry.Emotion_Type,
+                            category: categoryInfo.category,
+                            class: categoryInfo.class,
+                            emoji: categoryInfo.emoji,
+                            studentName: entry.Student_Name
+                        };
+
+                        if (isTutor) {
+                            updateEmotionDisplayForStudent(entry.Student_ID);
+                        }
+
                         emotionHTML += `
-                            <div>
-                                <p><strong>Student:</strong> ${entry.Student_Name}</p>
-                                <p><strong>Recent Emotion:</strong> ${entry.Emotion_Type}</p>
-                                <p><strong>Captured at:</strong> ${new Date(entry.captured_time).toLocaleTimeString()}</p>
-                                <hr>
+                            <div class="emotion-item">
+                                <p><strong>${entry.Student_Name}</strong></p>
+                                <p>${entry.Emotion_Type} ${categoryInfo.emoji} <span class="${categoryInfo.class}">(${categoryInfo.category})</span></p>
+                                <small>${new Date(entry.captured_time).toLocaleTimeString()}</small>
                             </div>
                         `;
 
-                        if (emotionCounts[entry.Emotion_Type]) {
-                            emotionCounts[entry.Emotion_Type]++;
-                        } else {
-                            emotionCounts[entry.Emotion_Type] = 1;
-                        }
-
-                        if (["happy"].includes(entry.Emotion_Type)) {
+                        if (["happy", "surprise"].includes(emotionType)) {
                             categorizedCounts["Satisfied"]++;
-                        } else if (["neutral", "surprise"].includes(entry.Emotion_Type)) {
+                        } else if (["neutral"].includes(emotionType)) {
                             categorizedCounts["Neutral"]++;
-                        } else if (["angry", "disgust", "fear", "sad"].includes(entry.Emotion_Type)) {
+                        } else if (["angry", "disgust", "fear", "sad"].includes(emotionType)) {
                             categorizedCounts["Not Satisfied"]++;
                         }
                     });
 
                     document.getElementById('recentEmotion').innerHTML = emotionHTML;
-
-                    updateEmotionChart(emotionCounts);
                     updateCategorizedEmotionChart(categorizedCounts);
                 })
                 .catch(error => console.error("Error fetching recent emotions:", error));
         }
 
-        function updateEmotionChart(emotionCounts) {
-            const labels = Object.keys(emotionCounts);
-            const values = Object.values(emotionCounts);
-            const backgroundColors = labels.map(() => '#' + Math.floor(Math.random() * 16777215).toString(16));
+        function updateEmotionDisplayForStudent(studentId) {
+            if (!isTutor) return;
+            
+            const socketId = studentIdToSocketId[studentId];
+            if (!socketId) return;
 
-            if (emotionChart) {
-                emotionChart.destroy();
+            const participant = document.querySelector(`#participant-${socketId}`);
+            if (participant) {
+                const existingDisplay = participant.querySelector('.emotion-display');
+                if (existingDisplay) {
+                    existingDisplay.remove();
+                }
+
+                const emotionData = studentEmotions[studentId];
+                if (emotionData) {
+                    const emotionDisplay = document.createElement('div');
+                    emotionDisplay.className = `emotion-display ${emotionData.class}`;
+                    emotionDisplay.textContent = `${emotionData.emoji} ${emotionData.category}`;
+                    participant.appendChild(emotionDisplay);
+                }
             }
-
-            const ctx = document.getElementById('emotionChart').getContext('2d');
-            emotionChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: { labels, datasets: [{ data: values, backgroundColor: backgroundColors }] },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
-
-            const total = values.reduce((sum, value) => sum + value, 0);
-            let statsHTML = "<h3>Emotion Distribution</h3><ul>";
-            labels.forEach((label, index) => {
-                const percentage = ((values[index] / total) * 100).toFixed(2);
-                statsHTML += `<li><strong>${label}:</strong> ${percentage}%</li>`;
-            });
-            statsHTML += "</ul>";
-
-            document.getElementById('emotionStats').innerHTML = statsHTML;
         }
 
         function updateCategorizedEmotionChart(categorizedCounts) {
@@ -215,162 +453,185 @@
             const ctx = document.getElementById('satisfactionChart').getContext('2d');
             categorizedEmotionChart = new Chart(ctx, {
                 type: 'doughnut',
-                data: { labels, datasets: [{ data: values, backgroundColor: backgroundColors }] },
-                options: { responsive: true, maintainAspectRatio: false }
+                data: { 
+                    labels, 
+                    datasets: [{ 
+                        data: values, 
+                        backgroundColor: backgroundColors,
+                        borderWidth: 0
+                    }] 
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'white',
+                                boxWidth: 12,
+                                padding: 10
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
             });
         
             const total = values.reduce((sum, value) => sum + value, 0);
             const satisfactionPercentage = total > 0 ? ((categorizedCounts["Satisfied"] / total) * 100).toFixed(2) : 0;
         
-            let statsHTML = "<h3>Categorized Emotion Distribution</h3><ul>";
-            labels.forEach((label, index) => {
-                const percentage = ((values[index] / total) * 100).toFixed(2);
-                statsHTML += `<li><strong>${label}:</strong> ${percentage}%</li>`;
-            });
-            statsHTML += `</ul><p><strong>Overall Satisfaction Percentage:</strong> ${satisfactionPercentage}%</p>`;
-        
+            let statsHTML = `<p style="text-align: center;"><strong>Satisfaction:</strong> ${satisfactionPercentage}%</p>`;
             document.getElementById('satisfactionStats').innerHTML = statsHTML;
         }
 
         socket.emit('joinSession', { sessionId, userId, userType });
 
         socket.on('updateUserList', (userList) => {
-            console.log('Received updated user list:', userList);
-
-            userList.forEach(({ socketId, userName }) => {
+            userList.forEach(({ socketId, userName, userId }) => {
                 nicknames[socketId] = userName;
+                if (isTutor && userId !== userDetails.Tutor_ID) {
+                    studentIdToSocketId[userId] = socketId;
+                }
             });
-
-            updateNicknameDisplay();
         });
 
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then((stream) => {
                 localStream = stream;
-                addVideoStream(stream, true, userId);
+                audioTrack = stream.getAudioTracks()[0];
+                addParticipant(stream, true, userId);
 
-                // Listen for new users joining the session
-                socket.on('userJoined', ({ userId, userName }) => {
-                    console.log(`New user joined: ${userId}`);
+                socket.on('userJoined', ({ userId, userName, userType }) => {
                     if (!peers[userId]) {
-                        createPeer(userId, stream, true); // Create a peer connection as the initiator
+                        createPeer(userId, stream, true);
+                    }
+                    if (isTutor && userType === 'student') {
+                        studentIdToSocketId[userId] = userId;
                     }
                 });
 
-                // Listen for signaling data from other peers
                 socket.on('signal', ({ sender, signal }) => {
-                    console.log(`Received signal from ${sender}`);
                     if (!peers[sender]) {
-                        createPeer(sender, stream, false); // Create a peer connection as the receiver
+                        createPeer(sender, stream, false);
                     }
-                    peers[sender].signal(signal); // Process the signaling data
+                    peers[sender].signal(signal);
                 });
 
-                // Listen for users leaving the session
                 socket.on('userLeft', userId => {
-                    console.log(`User left: ${userId}`);
                     removePeer(userId);
+                    Object.keys(studentIdToSocketId).forEach(studentId => {
+                        if (studentIdToSocketId[studentId] === userId) {
+                            delete studentIdToSocketId[studentId];
+                        }
+                    });
                 });
 
-                // Listen for nickname updates
                 socket.on('nickname', ({ nickname, userId }) => {
                     nicknames[userId] = nickname;
-                    updateNicknameDisplay(userId, nickname);
+                    updateParticipantName(userId, nickname);
                 });
             })
             .catch((error) => {
                 console.error("Error accessing media devices:", error);
             });
-        
 
+        function createPeer(id, stream, initiator) {
+            const peer = new SimplePeer({
+                initiator: initiator,
+                trickle: false,
+                stream: stream
+            });
 
-            function createPeer(id, stream, initiator) {
-                const peer = new SimplePeer({
-                    initiator: initiator,
-                    trickle: false,
-                    stream: stream
-                });
-    
-                peer.on('signal', signal => {
-                    console.log(`Sending signal to ${id}`);
-                    socket.emit('signal', { target: id, signal });
-                });
-    
-                peer.on('stream', remoteStream => {
-                    console.log(`Received stream from ${id}`);
-                    addVideoStream(remoteStream, false, id);
-                });
-    
-                peer.on('close', () => {
-                    console.log(`Peer connection closed: ${id}`);
-                    removePeer(id);
-                });
-    
-                peers[id] = peer;
+            peer.on('signal', signal => {
+                socket.emit('signal', { target: id, signal });
+            });
+
+            peer.on('stream', remoteStream => {
+                addParticipant(remoteStream, false, id);
+            });
+
+            peer.on('close', () => {
+                removePeer(id);
+            });
+
+            peers[id] = peer;
+        }
+
+        function addParticipant(stream, isLocal, id = null) {
+            const participantId = id || userId;
+            
+            // Don't add if already exists
+            if (document.querySelector(`#participant-${participantId}`)) return;
+
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.autoplay = true;
+            video.playsInline = true;
+            video.dataset.id = participantId;
+
+            const participant = document.createElement('div');
+            participant.className = 'participant';
+            participant.id = `participant-${participantId}`;
+            
+            const participantInfo = document.createElement('div');
+            participantInfo.className = 'participant-info';
+
+            const nameDisplay = document.createElement('span');
+            nameDisplay.className = 'participant-name';
+            nameDisplay.textContent = isLocal 
+                ? (userDetails?.Tutor_Name || userDetails?.Student_Name || 'You') 
+                : (nicknames[participantId] || 'Participant');
+
+            participantInfo.appendChild(nameDisplay);
+
+            participant.appendChild(video);
+            participant.appendChild(participantInfo);
+            
+            if (isLocal) {
+                video.muted = true;
+                document.getElementById('participants-grid').prepend(participant);
+            } else {
+                document.getElementById('participants-grid').appendChild(participant);
             }
-        
-            function addVideoStream(stream, isLocal, id = null) {
-                const videoContainer = document.createElement('div');
-                videoContainer.style.position = 'relative';
-                videoContainer.style.width = '45%';
-                videoContainer.id = `video-container-${id}`; // Add a unique ID for the container
-    
-                const video = document.createElement('video');
-                video.srcObject = stream;
-                video.autoplay = true;
-                video.playsInline = true;
-                video.dataset.id = id;
-    
-                if (isLocal) {
-                    video.muted = true;
-                    const nicknameDisplay = document.createElement('div');
-                    nicknameDisplay.textContent = userDetails?.Tutor_Name || userDetails?.Student_Name || 'Unknown';
-                    nicknameDisplay.className = 'nickname-display';
-                    videoContainer.appendChild(nicknameDisplay);
-                } else {
-                    if (nicknames[id]) {
-                        const nicknameDisplay = document.createElement('div');
-                        nicknameDisplay.textContent = nicknames[id];
-                        nicknameDisplay.className = 'nickname-display';
-                        videoContainer.appendChild(nicknameDisplay);
-                    }
-                }
-    
-                videoContainer.appendChild(video);
-                document.getElementById('videos').appendChild(videoContainer);
-                adjustVideoLayout();
-            }
-        
-            function removePeer(id) {
-                if (peers[id]) {
-                    peers[id].destroy();
-                    delete peers[id];
-                }
-    
-                // Remove the video container (including the nickname display)
-                const videoContainer = document.getElementById(`video-container-${id}`);
-                if (videoContainer) {
-                    videoContainer.remove();
-                }
-    
-                adjustVideoLayout();
-            }
-        
-            function adjustVideoLayout() {
-                const videos = document.querySelectorAll('#videos video');
-                videos.forEach(video => {
-                    video.classList.remove('screen-share');
-                });
-    
-                if (videos.length === 1) {
-                    videos[0].style.width = '100%';
-                } else if (videos.length === 2) {
-                    videos.forEach(video => video.style.width = '48%');
-                } else {
-                    videos.forEach(video => video.style.width = '30%');
+
+            // Update emotion display if needed
+            if (isTutor && !isLocal) {
+                const studentId = Object.keys(studentIdToSocketId).find(
+                    key => studentIdToSocketId[key] === participantId
+                );
+                if (studentId && studentEmotions[studentId]) {
+                    const emotionData = studentEmotions[studentId];
+                    const emotionDisplay = document.createElement('div');
+                    emotionDisplay.className = `emotion-display ${emotionData.class}`;
+                    emotionDisplay.textContent = `${emotionData.emoji} ${emotionData.category}`;
+                    participant.appendChild(emotionDisplay);
                 }
             }
-        
+        }
+
+        function updateParticipantName(participantId, name) {
+            const participant = document.querySelector(`#participant-${participantId}`);
+            if (participant) {
+                const nameDisplay = participant.querySelector('.participant-name');
+                if (nameDisplay) {
+                    nameDisplay.textContent = name;
+                }
+            }
+        }
+
+        function removePeer(id) {
+            if (peers[id]) {
+                peers[id].destroy();
+                delete peers[id];
+            }
+
+            const participant = document.querySelector(`#participant-${id}`);
+            if (participant) {
+                participant.remove();
+            }
+        }
+
         setInterval(captureAndSendImage, 45000);
 
         function captureAndSendImage() {
@@ -403,13 +664,31 @@
 
         document.getElementById('shareScreen').addEventListener('click', async () => {
             try {
-                screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                if (screenStream) {
+                    // Already sharing screen, stop it
+                    screenStream.getTracks().forEach(track => track.stop());
+                    return;
+                }
+
+                screenStream = await navigator.mediaDevices.getDisplayMedia({ 
+                    video: { displaySurface: 'monitor' },
+                    audio: false 
+                });
+
                 replaceVideoStream(screenStream);
 
                 Object.values(peers).forEach(peer => {
                     const sender = peer._pc.getSenders().find(s => s.track.kind === 'video');
-                    sender.replaceTrack(screenStream.getVideoTracks()[0]);
+                    if (sender) {
+                        sender.replaceTrack(screenStream.getVideoTracks()[0]);
+                    }
                 });
+
+                // Highlight our video when sharing screen
+                const localParticipant = document.querySelector(`#participant-${userId}`);
+                if (localParticipant) {
+                    localParticipant.classList.add('screen-share-active');
+                }
 
                 screenStream.getTracks()[0].onended = () => {
                     switchToCamera();
@@ -426,19 +705,30 @@
 
                 Object.values(peers).forEach(peer => {
                     const sender = peer._pc.getSenders().find(s => s.track.kind === 'video');
-                    sender.replaceTrack(cameraStream.getVideoTracks()[0]);
+                    if (sender) {
+                        sender.replaceTrack(cameraStream.getVideoTracks()[0]);
+                    }
                 });
 
-                adjustVideoLayout();
+                // Remove screen share highlight
+                const localParticipant = document.querySelector(`#participant-${userId}`);
+                if (localParticipant) {
+                    localParticipant.classList.remove('screen-share-active');
+                }
+
+                screenStream = null;
             } catch (err) {
                 console.error("Error switching to camera:", err);
             }
         }
 
         function replaceVideoStream(newStream) {
-            const localVideo = document.querySelector('video[muted]');
-            if (localVideo) {
-                localVideo.srcObject = newStream;
+            const localParticipant = document.querySelector(`#participant-${userId}`);
+            if (localParticipant) {
+                const video = localParticipant.querySelector('video');
+                if (video) {
+                    video.srcObject = newStream;
+                }
             }
         }
 
@@ -460,5 +750,4 @@
         });
     </script>
 </body>
-
 </html>

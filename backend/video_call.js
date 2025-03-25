@@ -7,14 +7,14 @@ module.exports = (io, db) => {
         socket.on('joinSession', async ({ sessionId, userId, userType }) => {
             socket.join(sessionId);
             console.log(`User ${socket.id} joined session ${sessionId}`);
-
+    
             try {
                 let userName = '';
-
+    
                 const query = userType === 'tutor'
                     ? 'SELECT Tutor_Name FROM tutor_table WHERE Tutor_ID = ?'
                     : 'SELECT Student_Name FROM student_table WHERE Student_ID = ?';
-
+    
                 db.query(query, [userId], (err, results) => {
                     if (err) {
                         console.error("Error fetching user name:", err);
@@ -23,26 +23,27 @@ module.exports = (io, db) => {
                     if (results.length > 0) {
                         userName = userType === 'tutor' ? results[0].Tutor_Name : results[0].Student_Name;
                     }
-
+    
                     // Store user in session
                     if (!sessionUsers[sessionId]) {
                         sessionUsers[sessionId] = [];
                     }
-
-                    sessionUsers[sessionId].push({ socketId: socket.id, userName });
-
+    
+                    sessionUsers[sessionId].push({ socketId: socket.id, userName, userId, userType });
+    
                     // Notify all users in the session about the new user
-                    io.to(sessionId).emit('userJoined', { userId: socket.id, userName });
-
+                    io.to(sessionId).emit('userJoined', { userId: socket.id, userName, userType });
+    
                     // Send the complete user list to everyone in the session
                     io.to(sessionId).emit('updateUserList', sessionUsers[sessionId]);
-
+    
                     console.log(`Emitted user list for session ${sessionId}:`, sessionUsers[sessionId]);
                 });
             } catch (error) {
                 console.error("Error fetching user name:", error);
             }
         });
+    
 
         // Forward signaling messages (for WebRTC)
         socket.on('signal', (data) => {
