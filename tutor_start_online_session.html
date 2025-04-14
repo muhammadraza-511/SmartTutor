@@ -143,6 +143,11 @@
     }
     header h2{
         color: #222;
+        margin-bottom: 0;
+    }
+    header label{
+        display: inline;
+        font-size: 1.7rem;
     }
     header label span{
         font-size: 1.7rem;
@@ -181,79 +186,245 @@
         color: black;
         
     }
-    main{
-        margin-top: 90px;
+    
+    
+    .main {
+        margin-top: 25px;
         padding: 2rem 1.5rem;
         width: 100%;
-        line-height: 1.6;
-        color: #333;
-        background-image: url('images/background1.png');
-        /* background-size: cover; */
-        background-position: center; 
-        background-repeat: repeat;
         min-height: calc(100vh - 90px);
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+
+    .container {
+        width: 90%;
+        margin-top: 100px;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 30px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    h2, h3 {
+        color: #3a7bd5;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    h2 {
+        font-size: 28px;
+        font-weight: 600;
+    }
+
+    .session-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #555;
+    }
+
+    input[type="time"] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s;
+    }
+
+    input[type="time"]:focus {
+        border-color: #3a7bd5;
+        box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.2);
+        outline: none;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+    button {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        flex: 1;
+    }
+
+    .btn-primary {
+        background-color: #3a7bd5;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #2c65b8;
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        background-color: #f0f2f5;
+        color: #333;
+    }
+
+    .btn-secondary:hover {
+        background-color: #e0e3e7;
+        transform: translateY(-2px);
+    }
+
+    .session-id-container {
+        background: #f8fafc;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px 0;
+        text-align: center;
+    }
+
+    .session-id {
+        font-size: 18px;
+        font-weight: 600;
+        color: #3a7bd5;
+        margin-top: 5px;
+    }
+
+    .students-container {
+        margin-top: 30px;
+    }
+
+    .student-list {
+        max-height: 300px;
+        overflow-y: auto;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .student-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        transition: all 0.3s;
+    }
+
+    .student-card:last-child {
+        border-bottom: none;
+    }
+
+    .student-card:hover {
+        background-color: #f8fafc;
+        transform: translateX(5px);
+    }
+
+    .student-checkbox {
+        margin-right: 15px;
+        transform: scale(1.3);
+    }
+
+    .student-info {
+        flex: 1;
+    }
+
+    .student-name {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 3px;
+    }
+
+    .student-roll {
+        font-size: 14px;
+        color: #777;
+    }
+
+    .btn-create {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(to right, #3a7bd5, #00d2ff);
+        color: white;
+        font-size: 18px;
+        font-weight: 600;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(58, 123, 213, 0.3);
+    }
+
+    .btn-create:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(58, 123, 213, 0.4);
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #a1a1a1;
+    }
+
+    @media (max-width: 768px) {
+        .session-form {
+            grid-template-columns: 1fr;
+        }
+        
         .container {
-            width: 90%;
-            max-width: 600px;
-            margin-top: 120px;
-            margin-left: 200px;
             padding: 20px;
-            background-color: #f0f8ff;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        h2, h3 {
-            color: #2C98F0;
-            text-align: center;
-        }
-        /* label {
-            display: block;
-            margin: 10px 0 5px;
-            color: #333;
-        } */
-        input[type="time"] {
+        
+        header {
+            left: 0;
             width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            outline: none;
         }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #2C98F0;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #024ea2;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        th, td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            text-align: center;
-        }
-        th {
-            background-color: #2C98F0;
-            color: white;
-        }
-        .session-id {
-            margin-top: 15px;
-            text-align: center;
-            font-weight: bold;
-            color: #333;
-        }
+    }
         
         @media only screen and (max-width: 1200px) {
             .sidebar{
@@ -382,7 +553,7 @@
 
     }
     /* Modal Styles */
-    .modal {
+    /* .modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -416,7 +587,7 @@
         }
         .modal-content button:hover {
             background-color: #024ea2;
-        }
+        } */
     </style>
 </head>
 <body>
@@ -474,7 +645,7 @@
 
     <div class="main-content">
         <header>
-            <h2 style="margin-top: 7px;">
+            <h2>
                 <label for="nav-toggle">
                     <img src="images/bluebar2.png" src="" alt="Menu Icon" class="menu-icon">
                 </label>
@@ -482,49 +653,61 @@
             </h2>
     
             <div class="user-wrapper">
-                <!-- <img id="userProfileImage" src="" width="40px" height="30px" alt="User Photo"> -->
+                
                 <div>
                     <h4 id="userWrapperTutorName">Tutor</h4>
                     <small>Tutor</small>
                 </div>
             </div>
         </header>
+        
         <div class="main">
             <div class="container">
                 <h2>Create Online Session</h2>
-        
-                <label for="startTime">Start Time</label>
-                <input type="time" id="startTime" required>
-        
-                <label for="endTime">End Time</label>
-                <input type="time" id="endTime" required>
-        
-                <button id="generateSessionId">Generate Session ID</button>
-                <div class="session-id"><strong>Session ID:</strong> <span id="sessionId">Not Generated</span></div>
-        
-                <h3>Assigned Students</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Select</th>
-                            <th>Student Name</th>
-                            <th>Roll Number</th>
-                        </tr>
-                    </thead>
-                    <tbody id="studentList">
-                        <tr><td colspan="3">Loading students...</td></tr>
-                    </tbody>
-                </table>
-        
-                <button id="startSession">Create Session</button>
+                
+                <div class="session-form">
+                    <div class="form-group">
+                        <label for="startTime">Start Time</label>
+                        <input type="time" id="startTime" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="endTime">End Time</label>
+                        <input type="time" id="endTime" required>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-secondary" id="currentTimeBtn">Current Time</button>
+                    <button class="btn-primary" id="doneBtn">Done</button>
+                </div>
+                
+                <div class="session-id-container">
+                    <div><strong>Session ID:</strong></div>
+                    <div class="session-id" id="sessionId">Not Generated</div>
+                </div>
+                
+                <div class="students-container">
+                    <h3>Assigned Students</h3>
+                    <div class="student-list" id="studentList">
+                        <!-- Students will be loaded here -->
+                        <div class="student-card">
+                            <div class="student-info">
+                                <div>Loading students...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn-create" id="startSession">Create Session</button>
             </div>
-    
         </div>
-    </div>
-    <div class="modal" id="alertModal">
-        <div class="modal-content">
-            <p id="alertMessage"></p>
-            <button onclick="closeAlert()">OK</button>
+        
+        <div class="modal" id="alertModal">
+            <div class="modal-content">
+                <p id="alertMessage"></p>
+                <button class="btn-primary" onclick="closeAlert()">OK</button>
+            </div>
         </div>
     </div>
     <script>
@@ -538,65 +721,50 @@
             <p>Error: Tutor details not found. Please go back to the dashboard.</p>
         `;
     }
-        function showAlert(message) {
-            document.getElementById("alertMessage").textContent = message;
-            document.getElementById("alertModal").style.display = "flex";
+    
+    function showAlert(message) {
+        document.getElementById("alertMessage").textContent = message;
+        document.getElementById("alertModal").style.display = "flex";
+    }
+
+    function closeAlert() {
+        document.getElementById("alertModal").style.display = "none";
+    }
+    
+    function setCurrentTime() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const currentTime = `${hours}:${minutes}`;
+        
+        document.getElementById("startTime").value = currentTime;
+        
+        // Set end time to 1 hour later by default
+        const endTime = new Date(now.getTime() + 60 * 60 * 1000);
+        const endHours = endTime.getHours().toString().padStart(2, '0');
+        const endMinutes = endTime.getMinutes().toString().padStart(2, '0');
+        document.getElementById("endTime").value = `${endHours}:${endMinutes}`;
+    }
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        const tutorDetails = JSON.parse(sessionStorage.getItem("tutorDetails"));
+        const existingSessionId = sessionStorage.getItem("sessionId");
+
+        if (!tutorDetails) {
+            showAlert("Tutor details not found. Please log in again.");
+            window.location.href = "loginpage.html";
+            return;
         }
 
-        function closeAlert() {
-            document.getElementById("alertModal").style.display = "none";
+        if (existingSessionId) {
+            document.getElementById("sessionId").textContent = existingSessionId;
         }
-        document.addEventListener("DOMContentLoaded", function() {
-            const tutorDetails = JSON.parse(sessionStorage.getItem("tutorDetails"));
-            const existingSessionId = sessionStorage.getItem("sessionId");
 
-            if (!tutorDetails) {
-                showAlert("Tutor details not found. Please log in again.");
-                window.location.href = "loginpage.html";
-                return;
-            }
-
-            if (existingSessionId) {
-                document.getElementById("sessionId").textContent = existingSessionId;
-            }
-
-            // Fetch and display assigned students
-            fetch(`/assigned-students?tutorId=${tutorDetails.Tutor_ID}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Failed to fetch students");
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const studentList = document.getElementById("studentList");
-                    studentList.innerHTML = "";
-
-                    if (!Array.isArray(data) || data.length === 0) {
-                        studentList.innerHTML = "<tr><td colspan='3'>No assigned students found.</td></tr>";
-                        return;
-                    }
-
-                    data.forEach(student => {
-                        const row = document.createElement("tr");
-                        row.innerHTML = `
-                            <td><input type="checkbox" class="studentCheckbox" value="${student.Student_ID}"></td>
-                            <td>${student.Student_Name}</td>
-                            <td>${student.Student_roll_No}</td>
-                        `;
-                        studentList.appendChild(row);
-                    });
-                })
-                .catch(error => {
-                    console.error("Error fetching assigned students:", error);
-                    document.getElementById("studentList").innerHTML = "<tr><td colspan='3'>Error fetching students.</td></tr>";
-                });
-
-            sessionStorage.removeItem("sessionId");
-        });
-
-        // Generate Session ID
-        document.getElementById("generateSessionId").addEventListener("click", function() {
+        // Set current time button
+        document.getElementById("currentTimeBtn").addEventListener("click", setCurrentTime);
+        
+        // Done button (replaces generate session ID)
+        document.getElementById("doneBtn").addEventListener("click", function() {
             let sessionId = sessionStorage.getItem("sessionId");
             if (!sessionId) {
                 sessionId = Math.random().toString(36).substr(2, 10).toUpperCase();
@@ -605,41 +773,91 @@
             document.getElementById("sessionId").textContent = sessionId;
         });
 
-        // Create Session
-        document.getElementById("startSession").addEventListener("click", function() {
-            const tutorDetails = JSON.parse(sessionStorage.getItem("tutorDetails"));
-            const tutorId = tutorDetails.Tutor_ID;
-            const sessionId = sessionStorage.getItem("sessionId");
-            const startTime = document.getElementById("startTime").value;
-            const endTime = document.getElementById("endTime").value;
-            const selectedStudents = [...document.querySelectorAll(".studentCheckbox:checked")].map(cb => cb.value);
-
-            if (!sessionId || !startTime || !endTime || selectedStudents.length === 0) {
-                showAlert("Please fill all fields and select at least one student.");
-                return;
-            }
-
-            const sessionData = { tutorId, sessionId, startTime, endTime, selectedStudents };
-
-            fetch("/create-session", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(sessionData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    showAlert(data.error);
-                } else {
-                    showAlert("Session created successfully!");
-                    console.log("Session Created:", data);
+        // Fetch and display assigned students
+        fetch(`/assigned-students?tutorId=${tutorDetails.Tutor_ID}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch students");
                 }
+                return response.json();
+            })
+            .then(data => {
+                const studentList = document.getElementById("studentList");
+                studentList.innerHTML = "";
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    studentList.innerHTML = `
+                        <div class="student-card">
+                            <div class="student-info">
+                                <div>No assigned students found.</div>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                data.forEach(student => {
+                    const studentCard = document.createElement("div");
+                    studentCard.className = "student-card";
+                    studentCard.innerHTML = `
+                        <input type="checkbox" class="student-checkbox" value="${student.Student_ID}" id="student-${student.Student_ID}">
+                        <div class="student-info">
+                            <div class="student-name">${student.Student_Name}</div>
+                            <div class="student-roll">${student.Student_roll_No}</div>
+                        </div>
+                    `;
+                    studentList.appendChild(studentCard);
+                });
             })
             .catch(error => {
-                console.error("Error creating session:", error);
-                showAlert("An error occurred while creating the session.");
+                console.error("Error fetching assigned students:", error);
+                document.getElementById("studentList").innerHTML = `
+                    <div class="student-card">
+                        <div class="student-info">
+                            <div>Error fetching students.</div>
+                        </div>
+                    </div>
+                `;
             });
+
+        sessionStorage.removeItem("sessionId");
+    });
+
+    // Create Session
+    document.getElementById("startSession").addEventListener("click", function() {
+        const tutorDetails = JSON.parse(sessionStorage.getItem("tutorDetails"));
+        const tutorId = tutorDetails.Tutor_ID;
+        const sessionId = sessionStorage.getItem("sessionId");
+        const startTime = document.getElementById("startTime").value;
+        const endTime = document.getElementById("endTime").value;
+        const selectedStudents = [...document.querySelectorAll(".student-checkbox:checked")].map(cb => cb.value);
+
+        if (!sessionId || !startTime || !endTime || selectedStudents.length === 0) {
+            showAlert("Please fill all fields and select at least one student.");
+            return;
+        }
+
+        const sessionData = { tutorId, sessionId, startTime, endTime, selectedStudents };
+
+        fetch("/create-session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(sessionData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                showAlert(data.error);
+            } else {
+                showAlert("Session created successfully!");
+                console.log("Session Created:", data);
+            }
+        })
+        .catch(error => {
+            console.error("Error creating session:", error);
+            showAlert("An error occurred while creating the session.");
         });
+    });
     </script>
 </body>
 </html>
