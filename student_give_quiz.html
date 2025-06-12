@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Quiz</title>
+    <style>
+        .student-info-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #f5f5f5;
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-family: Arial, sans-serif;
+        }
+        .student-name {
+            font-weight: bold;
+            color: #2C98F0;
+            font-size: 16px;
+        }
+        .student-roll {
+            color: #555;
+            font-size: 14px;
+        }
+        .quiz-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .options {
+            margin-top: 10px;
+        }
+        .option {
+            margin: 5px 0;
+        }
+        .submit-btn, .next-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .submit-btn:hover, .next-btn:hover {
+            background-color: #45a049;
+        }
+        .result-container {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            display: none;
+        }
+        .timer {
+            text-align: right;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .progress {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Student Info Display -->
+    <div class="student-info-display">
+        <div class="student-name" id="displayStudentName">Student Name</div>
+        <div class="student-roll" id="displayStudentRoll">Roll Number</div>
+    </div>
+
+    <div class="quiz-container">
+        <h1 id="quizTopic" style="text-align: center;"></h1>
+        <div class="timer" id="timer">Time remaining: 01:00</div>
+        <div class="progress" id="progress">Question 1 of 1</div>
+        <div id="questionsContainer"></div>
+        <button class="next-btn" id="nextQuestion" style="display: none;">Next Question</button>
+        <button class="submit-btn" id="submitQuiz" style="display: none;">Submit Quiz</button>
+        <div class="result-container" id="resultContainer">
+            <h2>Quiz Results</h2>
+            <p id="scoreDisplay"></p>
+            <button class="submit-btn" id="okButton">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const scheduleId = urlParams.get('scheduleId');
+
+        // Global variables
+        let questions = [];
+        let studentAnswers = {};
+        let currentQuestionIndex = 0;
+        let questionTimer;
+        let quizDetails = {};
+
+        // Function to display student info
+        function displayStudentInfo() {
+            const studentData = JSON.parse(sessionStorage.getItem('studentData')) || 
+                              JSON.parse(localStorage.getItem('studentDetailsForSession'));
+            
+            if (studentData) {
+                document.getElementById('displayStudentName').textContent = studentData.Student_Name;
+                document.getElementById('displayStudentRoll').textContent = studentData.Student_roll_No;
+            }
+        }
+
+        // Function to fetch quiz questions based on Tutor_ID and Quiz_Topic
+        function fetchQuizQuestions() {
+            const studentData = JSON.parse(sessionStorage.getItem('studentData')) || 
+                              JSON.parse(localStorage.getItem('studentDetailsForSession'));
+            
+            if (!studentData || !studentData.Student_ID) {
+                alert('Student information not found. Please login again.');
+                window.location.href = 'student_login.html';
+                return;
+            }
+
+            // First get the quiz details from schedule table
+            fetch(`/get-quiz-details?scheduleId=${scheduleId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.quizDetails) {
+                        quizDetails = data.quizDetails;
+                        document.getElementById('quizTopic').textContent = quizDetails.Quiz_Topic;
+                        
+                        // Now fetch questions based on Tutor_ID and Quiz_Topic
+                        return fetch(`/get-quiz-questions-by-topic?tutorId=${quizDetails.Tutor_ID}&topic=${encodeURIComponent(quizDetails.Quiz_Topic)}`);
+                    } else {
+                        throw new Error('Quiz details not found');
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.questions && data.questions.length > 0) {
+                        questions = data.questions;
+                        displayCurrentQuestion();
+                    } else {
+                        alert('No questions found for this quiz topic.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading quiz. Please try again.');
+                });
+        }
+
+        // Function to display current question
+        function displayCurrentQuestion() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+            
+            // Update progress
+            document.getElementById('progress').textContent = 
+                `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            
+            // Show submit button if last question
+            if (currentQuestionIndex === questions.length - 1) {
+                document.getElementById('submitQuiz').style.display = 'block';
+                document.getElementById('nextQuestion').style.display = 'none';
+            } else {
+                document.getElementById('submitQuiz').style.display = 'none';
+                document.getElementById('nextQuestion').style.display = 'block';
+            }
+            
+            const question = questions[currentQuestionIndex];
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question';
+            questionDiv.innerHTML = `
+                <h3>Question ${currentQuestionIndex + 1}: ${question.Quiz_Question}</h3>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q${question.Quiz_ID}" id="q${question.Quiz_ID}_1" value="1">
+                        <label for="q${question.Quiz_ID}_1">${question.Quiz_Option1}</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q${question.Quiz_ID}" id="q${question.Quiz_ID}_2" value="2">
+                        <label for="q${question.Quiz_ID}_2">${question.Quiz_Option2}</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q${question.Quiz_ID}" id="q${question.Quiz_ID}_3" value="3">
+                        <label for="q${question.Quiz_ID}_3">${question.Quiz_Option3}</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q${question.Quiz_ID}" id="q${question.Quiz_ID}_4" value="4">
+                        <label for="q${question.Quiz_ID}_4">${question.Quiz_Option4}</label>
+                    </div>
+                </div>
+            `;
+            container.appendChild(questionDiv);
+
+            // Add event listeners to radio buttons
+            const radioButtons = questionDiv.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    studentAnswers[question.Quiz_ID] = e.target.value;
+                });
+            });
+            
+            // Start timer for this question (1 minute)
+            startQuestionTimer();
+        }
+
+        // Function to start question timer (1 minute)
+        function startQuestionTimer() {
+            let timeLeft = 60;
+            updateTimerDisplay(timeLeft);
+            
+            // Clear any existing timer
+            if (questionTimer) clearInterval(questionTimer);
+            
+            questionTimer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay(timeLeft);
+                
+                if (timeLeft <= 0) {
+                    clearInterval(questionTimer);
+                    // Auto move to next question or submit if last question
+                    if (currentQuestionIndex < questions.length - 1) {
+                        moveToNextQuestion();
+                    } else {
+                        submitQuiz();
+                    }
+                }
+            }, 1000);
+        }
+
+        // Function to update timer display
+        function updateTimerDisplay(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            document.getElementById('timer').textContent = 
+                `Time remaining: ${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+        }
+
+        // Function to move to next question
+        function moveToNextQuestion() {
+            clearInterval(questionTimer);
+            currentQuestionIndex++;
+            displayCurrentQuestion();
+        }
+
+        // Function to calculate score
+        function calculateScore() {
+            let score = 0;
+            questions.forEach(question => {
+                if (studentAnswers[question.Quiz_ID] == question.Quiz_Correct_Option) {
+                    score++;
+                }
+            });
+            return score;
+        }
+
+        // Function to submit quiz
+        function submitQuiz() {
+            clearInterval(questionTimer);
+            
+            const score = calculateScore();
+            const percentage = Math.round((score / questions.length) * 100);
+            
+            // Display results
+            document.getElementById('resultContainer').style.display = 'block';
+            document.getElementById('scoreDisplay').textContent = 
+                `You scored ${score} out of ${questions.length} (${percentage}%)`;
+            document.getElementById('submitQuiz').style.display = 'none';
+            document.getElementById('nextQuestion').style.display = 'none';
+            document.getElementById('questionsContainer').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
+            document.getElementById('progress').style.display = 'none';
+            
+            // Save results to database
+            fetch('/save-quiz-result', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    scheduleId, 
+                    score: percentage,
+                    studentId: JSON.parse(sessionStorage.getItem('studentData')).Student_ID
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    console.error('Error saving quiz result');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            displayStudentInfo();
+            
+            if (!scheduleId) {
+                alert('Invalid quiz access. Redirecting...');
+                window.location.href = 'student_start_quiz.html';
+                return;
+            }
+            
+            // Mark quiz as started (update status to 'done')
+            fetch('/update-quiz-status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ scheduleId }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    fetchQuizQuestions();
+                } else {
+                    alert('Error starting quiz. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error starting quiz. Please try again.');
+            });
+
+            // Add event listeners
+            document.getElementById('nextQuestion').addEventListener('click', moveToNextQuestion);
+            document.getElementById('submitQuiz').addEventListener('click', submitQuiz);
+            document.getElementById('okButton').addEventListener('click', () => {
+                window.location.href = 'student_dashboard.html';
+            });
+        });
+    </script>
+</body>
+</html>

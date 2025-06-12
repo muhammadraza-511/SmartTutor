@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Online Session</title>
+    <style>
+        .return-btn {
+            margin-top: 20px;
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .return-btn:hover {
+            background-color: #45a049;
+        }
+        .quiz-form {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-width: 600px;
+        }
+        .question-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px 0;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Start Your Online Session</h2>
+
+    <div class="tutor-info">
+        <h3 id="tutorName"></h3>
+    </div>
+
+    <div id="quizSetup">
+        <h3>Create MCQ Quiz</h3>
+        <div class="quiz-form">
+            <label for="quizTopic">Quiz Topic:</label>
+            <input type="text" id="quizTopic" required>
+            
+            <label for="questionCount">Number of Questions:</label>
+            <input type="number" id="questionCount" min="1" required>
+            
+            <button onclick="setupQuestions()">Create Questions</button>
+        </div>
+    </div>
+
+    <div id="questionsContainer" style="display: none;">
+        <h3>Enter Questions for: <span id="displayTopic"></span></h3>
+        <form id="quizForm" class="quiz-form"></form>
+        <button onclick="submitQuiz()">Submit Quiz</button>
+    </div>
+
+    <button class="return-btn" onclick="window.location.href='tutor_dashboard.html'">Return to Dashboard</button>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const userDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
+
+            if (userDetails) {
+                document.getElementById('tutorName').textContent = userDetails.Tutor_Name;
+            } else {
+                alert("User details not found! Please log in again.");
+                window.location.href = "tutor_dashboard.html";
+            }
+        });
+
+        function setupQuestions() {
+            const quizTopic = document.getElementById('quizTopic').value;
+            const questionCount = parseInt(document.getElementById('questionCount').value);
+            
+            if (!quizTopic || !questionCount || questionCount < 1) {
+                alert("Please enter valid quiz topic and number of questions (at least 1).");
+                return;
+            }
+            
+            document.getElementById('displayTopic').textContent = quizTopic;
+            document.getElementById('quizSetup').style.display = 'none';
+            document.getElementById('questionsContainer').style.display = 'block';
+            
+            const quizForm = document.getElementById('quizForm');
+            quizForm.innerHTML = '';
+            
+            for (let i = 0; i < questionCount; i++) {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                questionDiv.innerHTML = `
+                    <h4>Question ${i + 1}</h4>
+                    <label for="question${i}">Question:</label>
+                    <textarea id="question${i}" rows="3" required></textarea>
+                    
+                    <label>Options:</label>
+                    <input type="text" id="option${i}_1" placeholder="Option 1" required>
+                    <input type="text" id="option${i}_2" placeholder="Option 2" required>
+                    <input type="text" id="option${i}_3" placeholder="Option 3" required>
+                    <input type="text" id="option${i}_4" placeholder="Option 4" required>
+                    
+                    <label for="correct${i}">Correct Option (1-4):</label>
+                    <input type="number" id="correct${i}" min="1" max="4" required>
+                `;
+                quizForm.appendChild(questionDiv);
+            }
+        }
+
+function submitQuiz() {
+    const tutorDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
+    if (!tutorDetails) {
+        alert("Session expired. Please log in again.");
+        window.location.href = "tutor_dashboard.html";
+        return;
+    }
+
+    const quizTopic = document.getElementById('quizTopic').value;
+    const questionCount = parseInt(document.getElementById('questionCount').value);
+    const questions = [];
+    
+    let isValid = true;
+    
+    for (let i = 0; i < questionCount; i++) {
+        const question = document.getElementById(`question${i}`).value;
+        const options = [
+            document.getElementById(`option${i}_1`).value,
+            document.getElementById(`option${i}_2`).value,
+            document.getElementById(`option${i}_3`).value,
+            document.getElementById(`option${i}_4`).value
+        ];
+        const correctAnswer = parseInt(document.getElementById(`correct${i}`).value);
+        
+        if (!question || options.some(opt => !opt) || !correctAnswer || correctAnswer < 1 || correctAnswer > 4) {
+            alert(`Please fill all fields for Question ${i + 1} and ensure correct answer is between 1-4.`);
+            isValid = false;
+            break;
+        }
+        
+        questions.push({
+            question: question,
+            options: options,
+            correctAnswer: correctAnswer
+        });
+    }
+    
+    if (isValid) {
+        // Prepare data to send to server
+        const quizData = {
+            tutorId: tutorDetails.Tutor_ID,
+            quizTopic: quizTopic,
+            questions: questions,
+            overwrite: false // Initially false, will be set to true if user confirms
+        };
+
+        // First check if quiz exists
+        fetch('/submit-quiz', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(quizData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.exists) {
+                // Quiz exists - ask if they want to overwrite
+                const overwrite = confirm(data.message);
+                if (overwrite) {
+                    // Send request again with overwrite flag
+                    quizData.overwrite = true;
+                    return fetch('/submit-quiz', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(quizData)
+                    }).then(response => response.json());
+                } else {
+                    return { cancelled: true };
+                }
+            }
+            return data;
+        })
+        .then(data => {
+            if (data.cancelled) {
+                return; // User chose not to overwrite
+            }
+            
+            if (data.success) {
+                const confirmation = confirm(`Quiz "${quizTopic}" with ${questionCount} questions created successfully! Click OK to schedule this quiz.`);
+                if (confirmation) {
+                    // Store the quiz topic in sessionStorage to use on the next page
+                    sessionStorage.setItem('currentQuizTopic', quizTopic);
+                    // Redirect to schedule page
+                    window.location.href = "tutor_schedule_quiz.html";
+                }
+                
+                // Reset form
+                document.getElementById('quizSetup').style.display = 'block';
+                document.getElementById('questionsContainer').style.display = 'none';
+                document.getElementById('quizTopic').value = '';
+                document.getElementById('questionCount').value = '';
+            } else {
+                alert("Failed to save quiz: " + (data.error || "Unknown error"));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred while saving the quiz.");
+        });
+    }
+}
+    </script>
+</body>
+</html>

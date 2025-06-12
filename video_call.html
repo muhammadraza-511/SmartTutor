@@ -4,7 +4,6 @@
 <head>
     <title>SmartTutor Video Call</title>
     <link rel= "stylesheet" href= "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css" >
-    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
@@ -327,6 +326,44 @@
             background-color: #4285f4;
             color: white;
         }
+
+        /* Suggestions styling */
+        .suggestion-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            border-left: 3px solid #2C98F0;
+        }
+
+        .suggestion-item.urgent {
+            border-left-color: #e74c3c;
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+
+        .suggestion-item.warning {
+            border-left-color: #f1c40f;
+            background-color: rgba(241, 196, 15, 0.1);
+        }
+
+        .suggestion-item.success {
+            border-left-color: #2ecc71;
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+
+        .suggestion-item i {
+            margin-right: 8px;
+        }
+
+        .suggestion-item ul {
+            margin: 8px 0 0 0;
+            padding-left: 20px;
+        }
+
+        .suggestion-item li {
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 </head>
@@ -360,6 +397,13 @@
                     <canvas id="satisfactionChart"></canvas>
                 </div>
                 <div id="satisfactionStats"></div>
+            </div>
+
+            <div id="suggestionsSection" class="sidebar-section">
+                <h3>Teaching Suggestions</h3>
+                <div id="teachingSuggestions">
+                    <p>Suggestions will appear here based on student engagement.</p>
+                </div>
             </div>
         </div>
 
@@ -414,6 +458,23 @@
         const userType = userDetails?.Tutor_ID ? 'tutor' : 'student';
         const isTutor = userType === 'tutor';
 
+        // Add this before your main script
+        if (!navigator.mediaDevices) {
+            navigator.mediaDevices = {};
+        }
+        
+        if (!navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia = function(constraints) {
+                return new Promise((resolve, reject) => {
+                    const getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+                    if (!getUserMedia) {
+                        return reject(new Error('getUserMedia is not implemented in this browser'));
+                    }
+                    getUserMedia.call(navigator, constraints, resolve, reject);
+                });
+            };
+        }
+
         const emotionCategories = {
             'happy': { category: 'Satisfied', emoji: '😃', class: 'satisfied' },
             'surprise': { category: 'Satisfied', emoji: '😲', class: 'satisfied' },
@@ -454,6 +515,7 @@
             if (!userDetails || userDetails.Student_ID) {
                 document.getElementById('emotionSection').style.display = 'none';
                 document.getElementById('satisfactionSection').style.display = 'none';
+                document.getElementById('suggestionsSection').style.display = 'none';
             }
 
             if (!sessionId) {
@@ -546,10 +608,147 @@
         
                     document.getElementById('recentEmotion').innerHTML = emotionHTML;
                     updateCategorizedEmotionChart(categorizedCounts);
+                    
+                    // Analyze engagement and provide suggestions
+                    analyzeEngagementAndProvideSuggestions();
                 })
                 .catch(error => console.error("Error fetching recent emotions:", error));
         }
 
+        function analyzeEngagementAndProvideSuggestions() {
+            if (!isTutor) return;
+            
+            const suggestionsContainer = document.getElementById('teachingSuggestions');
+            
+            // Get current emotion data
+            const satisfiedCount = Object.values(studentEmotions).filter(
+                e => e.category === 'Satisfied'
+            ).length;
+            const neutralCount = Object.values(studentEmotions).filter(
+                e => e.category === 'Neutral'
+            ).length;
+            const notSatisfiedCount = Object.values(studentEmotions).filter(
+                e => e.category === 'Not Satisfied'
+            ).length;
+            
+            const totalStudents = satisfiedCount + neutralCount + notSatisfiedCount;
+            if (totalStudents === 0) {
+                suggestionsContainer.innerHTML = '<p>No student engagement data available yet.</p>';
+                return;
+            }
+            
+            const satisfiedPercentage = (satisfiedCount / totalStudents) * 100;
+            const notSatisfiedPercentage = (notSatisfiedCount / totalStudents) * 100;
+            
+            let suggestionsHTML = '';
+            let urgencyClass = 'success';
+            
+            // Scenario 1: Many students not satisfied
+            if (notSatisfiedPercentage > 40) {
+                urgencyClass = 'urgent';
+                suggestionsHTML += `
+                    <div class="suggestion-item ${urgencyClass}">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>High disengagement detected (${notSatisfiedPercentage.toFixed(0)}% of students)</strong>
+                        <ul>
+                            <li>Pause and check for understanding</li>
+                            <li>Ask open-ended questions to identify confusion</li>
+                            <li>Consider changing your teaching approach</li>
+                            <li>Provide a real-world example</li>
+                            <li>Try a quick interactive activity</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // Scenario 2: Moderate disengagement
+            else if (notSatisfiedPercentage > 20) {
+                urgencyClass = 'warning';
+                suggestionsHTML += `
+                    <div class="suggestion-item ${urgencyClass}">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <strong>Moderate disengagement (${notSatisfiedPercentage.toFixed(0)}% of students)</strong>
+                        <ul>
+                            <li>Ask targeted questions to less engaged students</li>
+                            <li>Incorporate more visuals or examples</li>
+                            <li>Try think-pair-share activity</li>
+                            <li>Check if pace is appropriate</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // Scenario 3: Mostly neutral students
+            if (neutralCount > satisfiedCount && neutralCount > notSatisfiedCount) {
+                urgencyClass = 'warning';
+                suggestionsHTML += `
+                    <div class="suggestion-item ${urgencyClass}">
+                        <i class="fas fa-meh"></i>
+                        <strong>Many neutral students (${neutralCount} students)</strong>
+                        <ul>
+                            <li>Increase energy and enthusiasm</li>
+                            <li>Add an interactive element</li>
+                            <li>Use more varied vocal tones</li>
+                            <li>Incorporate a quick poll or quiz</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // Scenario 4: Mostly engaged
+            if (satisfiedPercentage > 70) {
+                urgencyClass = 'success';
+                suggestionsHTML += `
+                    <div class="suggestion-item ${urgencyClass}">
+                        <i class="fas fa-smile"></i>
+                        <strong>Great engagement! (${satisfiedPercentage.toFixed(0)}% satisfied)</strong>
+                        <ul>
+                            <li>Maintain your current approach</li>
+                            <li>Challenge students with deeper questions</li>
+                            <li>Consider accelerating pace slightly</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // Default suggestion if no specific scenarios match
+            if (suggestionsHTML === '') {
+                suggestionsHTML = `
+                    <div class="suggestion-item">
+                        <i class="fas fa-lightbulb"></i>
+                        <strong>General Teaching Tips</strong>
+                        <ul>
+                            <li>Vary your teaching methods</li>
+                            <li>Check in with students periodically</li>
+                            <li>Use names to personalize interactions</li>
+                            <li>Maintain eye contact with the camera</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // Add specific student alerts for not satisfied students
+            const notSatisfiedStudents = Object.entries(studentEmotions)
+                .filter(([_, data]) => data.category === 'Not Satisfied')
+                .map(([id, data]) => data.studentName || `Student ${id}`);
+            
+            if (notSatisfiedStudents.length > 0) {
+                suggestionsHTML += `
+                    <div class="suggestion-item ${notSatisfiedCount > 2 ? 'urgent' : 'warning'}">
+                        <i class="fas fa-user-graduate"></i>
+                        <strong>Students needing attention:</strong>
+                        <p>${notSatisfiedStudents.join(', ')}</p>
+                        <ul>
+                            <li>Direct questions to these students</li>
+                            <li>Check their understanding individually</li>
+                            <li>Offer additional examples</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            suggestionsContainer.innerHTML = suggestionsHTML;
+        }
         
         function updateEmotionDisplayForStudent(studentId) {
             if (!isTutor) return;
@@ -664,6 +863,12 @@
                     nicknames[userId] = nickname;
                     updateParticipantName(userId, nickname);
                 });
+                socket.on('connect', () => {
+                    console.log('Connected to Socket.IO server');
+                  });
+                  socket.on('connect_error', (err) => {
+                    console.error('Socket.IO connection error:', err);
+                  });
             })
             .catch((error) => {
                 console.error("Error accessing media devices:", error);
@@ -757,48 +962,48 @@
         }
 
         function setMainVideo(participantId, stream, name = '') {
-    const mainContainer = document.getElementById('main-video-container');
-    
-    // Clear existing main video
-    mainContainer.innerHTML = '';
+            const mainContainer = document.getElementById('main-video-container');
+            
+            // Clear existing main video
+            mainContainer.innerHTML = '';
 
-    // Reveal all participants first (except for screen share)
-    document.querySelectorAll('.participant').forEach(p => {
-        if (p.id !== 'participant-screen-share') {
-            p.classList.remove('hidden');
+            // Reveal all participants first (except for screen share)
+            document.querySelectorAll('.participant').forEach(p => {
+                if (p.id !== 'participant-screen-share') {
+                    p.classList.remove('hidden');
+                }
+            });
+
+            // Create new video element
+            const mainVideo = document.createElement('video');
+            mainVideo.className = 'main-video';
+            mainVideo.srcObject = stream;
+            mainVideo.autoplay = true;
+            mainVideo.playsInline = true;
+
+            // Info name
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'main-video-info';
+            infoDiv.textContent = name;
+            mainContainer.appendChild(mainVideo);
+            mainContainer.appendChild(infoDiv);
+
+            // Hide from sidebar only if it's not screen share
+            if (participantId !== 'screen-share') {
+                const participant = document.getElementById(`participant-${participantId}`);
+                if (participant) participant.classList.add('hidden');
+            }
+
+            // If we're setting the screen share as main video, ensure the local user is visible in sidebar
+            if (participantId === 'screen-share') {
+                const localParticipant = document.getElementById(`participant-${userId}`);
+                if (localParticipant) {
+                    localParticipant.classList.remove('hidden');
+                }
+            }
+
+            currentMainVideoId = participantId;
         }
-    });
-
-    // Create new video element
-    const mainVideo = document.createElement('video');
-    mainVideo.className = 'main-video';
-    mainVideo.srcObject = stream;
-    mainVideo.autoplay = true;
-    mainVideo.playsInline = true;
-
-    // Info name
-    const infoDiv = document.createElement('div');
-    infoDiv.className = 'main-video-info';
-    infoDiv.textContent = name;
-    mainContainer.appendChild(mainVideo);
-    mainContainer.appendChild(infoDiv);
-
-    // Hide from sidebar only if it's not screen share
-    if (participantId !== 'screen-share') {
-        const participant = document.getElementById(`participant-${participantId}`);
-        if (participant) participant.classList.add('hidden');
-    }
-
-    // If we're setting the screen share as main video, ensure the local user is visible in sidebar
-    if (participantId === 'screen-share') {
-        const localParticipant = document.getElementById(`participant-${userId}`);
-        if (localParticipant) {
-            localParticipant.classList.remove('hidden');
-        }
-    }
-
-    currentMainVideoId = participantId;
-}
 
         function updateParticipantName(participantId, name) {
             const participant = document.querySelector(`#participant-${participantId}`);
@@ -853,89 +1058,89 @@
         }
 
         // Update the shareScreen event listener to include focus button for screen share
-document.getElementById('shareScreen').addEventListener('click', async function() {
-    const shareBtn = document.getElementById('shareScreen');
-    
-    try {
-        if (screenStream) {
-            // Stop screen sharing
-            screenStream.getTracks().forEach(track => track.stop());
-            screenStream = null;
-            shareBtn.classList.remove('active');
+        document.getElementById('shareScreen').addEventListener('click', async function() {
+            const shareBtn = document.getElementById('shareScreen');
             
-            // Switch back to camera
-            await switchToCamera();
-            return;
-        }
+            try {
+                if (screenStream) {
+                    // Stop screen sharing
+                    screenStream.getTracks().forEach(track => track.stop());
+                    screenStream = null;
+                    shareBtn.classList.remove('active');
+                    
+                    // Switch back to camera
+                    await switchToCamera();
+                    return;
+                }
 
-        // Start screen sharing
-        shareBtn.disabled = true;
-        shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-        
-        screenStream = await navigator.mediaDevices.getDisplayMedia({
-            video: true,
-            audio: false
-        });
+                // Start screen sharing
+                shareBtn.disabled = true;
+                shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                
+                screenStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: true,
+                    audio: false
+                });
 
-        // Update UI
-        shareBtn.innerHTML = '<i class="fa-solid fa-desktop" style="color: #2C98F0;"></i>';
-        shareBtn.classList.add('active');
-        shareBtn.disabled = false;
+                // Update UI
+                shareBtn.innerHTML = '<i class="fa-solid fa-desktop" style="color: #2C98F0;"></i>';
+                shareBtn.classList.add('active');
+                shareBtn.disabled = false;
 
-        // Create a new participant element for the screen share
-        const screenShareParticipant = document.createElement('div');
-        screenShareParticipant.className = 'participant';
-        screenShareParticipant.id = 'participant-screen-share';
-        
-        const screenVideo = document.createElement('video');
-        screenVideo.srcObject = screenStream;
-        screenVideo.autoplay = true;
-        screenVideo.playsInline = true;
-        
-        const screenInfo = document.createElement('div');
-        screenInfo.className = 'participant-info';
-        screenInfo.innerHTML = '<span class="participant-name">Screen Share</span>';
-        
-        // Add focus button to screen share
-        const focusBtn = document.createElement('button');
-        focusBtn.className = 'focus-btn';
-        focusBtn.title = 'Focus';
-        focusBtn.innerHTML = '<i class="fas fa-expand"></i>';
-        focusBtn.onclick = (e) => {
-            e.stopPropagation();
-            setMainVideo('screen-share', screenStream, 'Screen Share');
-        };
-        screenShareParticipant.appendChild(focusBtn);
-        
-        screenShareParticipant.appendChild(screenVideo);
-        screenShareParticipant.appendChild(screenInfo);
-        
-        // Add screen share to participants sidebar
-        document.getElementById('participants-sidebar').prepend(screenShareParticipant);
+                // Create a new participant element for the screen share
+                const screenShareParticipant = document.createElement('div');
+                screenShareParticipant.className = 'participant';
+                screenShareParticipant.id = 'participant-screen-share';
+                
+                const screenVideo = document.createElement('video');
+                screenVideo.srcObject = screenStream;
+                screenVideo.autoplay = true;
+                screenVideo.playsInline = true;
+                
+                const screenInfo = document.createElement('div');
+                screenInfo.className = 'participant-info';
+                screenInfo.innerHTML = '<span class="participant-name">Screen Share</span>';
+                
+                // Add focus button to screen share
+                const focusBtn = document.createElement('button');
+                focusBtn.className = 'focus-btn';
+                focusBtn.title = 'Focus';
+                focusBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                focusBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    setMainVideo('screen-share', screenStream, 'Screen Share');
+                };
+                screenShareParticipant.appendChild(focusBtn);
+                
+                screenShareParticipant.appendChild(screenVideo);
+                screenShareParticipant.appendChild(screenInfo);
+                
+                // Add screen share to participants sidebar
+                document.getElementById('participants-sidebar').prepend(screenShareParticipant);
 
-        // Set screen share as main video
-        setMainVideo('screen-share', screenStream, 'Screen Share');
+                // Set screen share as main video
+                setMainVideo('screen-share', screenStream, 'Screen Share');
 
-        // Replace video track in all peer connections
-        Object.values(peers).forEach(peer => {
-            const sender = peer._pc.getSenders().find(s => s.track.kind === 'video');
-            if (sender && screenStream.getVideoTracks()[0]) {
-                sender.replaceTrack(screenStream.getVideoTracks()[0]);
+                // Replace video track in all peer connections
+                Object.values(peers).forEach(peer => {
+                    const sender = peer._pc.getSenders().find(s => s.track.kind === 'video');
+                    if (sender && screenStream.getVideoTracks()[0]) {
+                        sender.replaceTrack(screenStream.getVideoTracks()[0]);
+                    }
+                });
+
+                // Handle when screen share is stopped
+                screenStream.getVideoTracks()[0].onended = async () => {
+                    await switchToCamera();
+                    shareBtn.classList.remove('active');
+                };
+
+            } catch (err) {
+                console.error("Error sharing screen:", err);
+                shareBtn.innerHTML = '<i class="fa-solid fa-desktop" style="color: #2C98F0;"></i>';
+                shareBtn.disabled = false;
             }
         });
-
-        // Handle when screen share is stopped
-        screenStream.getVideoTracks()[0].onended = async () => {
-            await switchToCamera();
-            shareBtn.classList.remove('active');
-        };
-
-    } catch (err) {
-        console.error("Error sharing screen:", err);
-        shareBtn.innerHTML = '<i class="fa-solid fa-desktop" style="color: #2C98F0;"></i>';
-        shareBtn.disabled = false;
-    }
-});
 
         async function switchToCamera() {
             try {

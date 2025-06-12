@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Quizzes</title>
+    <style>
+        /* Basic styling for the student info display */
+        .student-info-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #f5f5f5;
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-family: Arial, sans-serif;
+        }
+        .student-name {
+            font-weight: bold;
+            color: #2C98F0;
+            font-size: 16px;
+        }
+        .student-roll {
+            color: #555;
+            font-size: 14px;
+        }
+        
+        /* Quiz table styling */
+        .quiz-table {
+            width: 80%;
+            margin: 50px auto;
+            border-collapse: collapse;
+        }
+        .quiz-table th, .quiz-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .quiz-table th {
+            background-color: #f2f2f2;
+        }
+        .quiz-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        .start-quiz-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .start-quiz-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <!-- Student Info Display -->
+    <div class="student-info-display">
+        <div class="student-name" id="displayStudentName">Student Name</div>
+        <div class="student-roll" id="displayStudentRoll">Roll Number</div>
+    </div>
+
+    <!-- Quiz Table -->
+    <div class="quiz-container">
+        <h1 style="text-align: center; margin-top: 20px;">Pending Quizzes</h1>
+        <table class="quiz-table" id="pendingQuizzesTable">
+            <thead>
+                <tr>
+                    <th>Quiz Topic</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="quizzesTableBody">
+                <!-- Quizzes will be inserted here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Function to display student info
+        function displayStudentInfo() {
+            // Try to get from sessionStorage first
+            const studentData = JSON.parse(sessionStorage.getItem('studentData'));
+            
+            // If not in sessionStorage, try localStorage
+            if (!studentData) {
+                const localData = JSON.parse(localStorage.getItem('studentDetailsForSession'));
+                if (localData) {
+                    // Update display
+                    document.getElementById('displayStudentName').textContent = localData.Student_Name;
+                    document.getElementById('displayStudentRoll').textContent = localData.Student_roll_No;
+                    // Store in sessionStorage for future use
+                    sessionStorage.setItem('studentData', JSON.stringify(localData));
+                    return localData.Student_ID; // Return student ID
+                }
+            } else {
+                // Update display from sessionStorage
+                document.getElementById('displayStudentName').textContent = studentData.Student_Name;
+                document.getElementById('displayStudentRoll').textContent = studentData.Student_roll_No;
+                return studentData.Student_ID; // Return student ID
+            }
+
+            // If no data found in storage, try to fetch from server
+            return fetch('/student-details')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.student) {
+                        document.getElementById('displayStudentName').textContent = data.student.Student_Name;
+                        document.getElementById('displayStudentRoll').textContent = data.student.Student_roll_No;
+                        sessionStorage.setItem('studentData', JSON.stringify(data.student));
+                        return data.student.Student_ID;
+                    }
+                    return null;
+                })
+                .catch(error => {
+                    console.error("Error fetching student data:", error);
+                    return null;
+                });
+        }
+
+        // Function to fetch and display pending quizzes
+        function fetchPendingQuizzes(studentId) {
+            fetch(`/student-pending-quizzes?studentId=${studentId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('quizzesTableBody');
+                    tableBody.innerHTML = ''; // Clear existing rows
+
+                    if (data.quizzes && data.quizzes.length > 0) {
+                        data.quizzes.forEach(quiz => {
+                            const row = document.createElement('tr');
+                            
+                            const topicCell = document.createElement('td');
+                            topicCell.textContent = quiz.Quiz_Topic;
+                            row.appendChild(topicCell);
+                            
+                            const startTimeCell = document.createElement('td');
+                            startTimeCell.textContent = new Date(quiz.Start_Time).toLocaleString();
+                            row.appendChild(startTimeCell);
+                            
+                            const endTimeCell = document.createElement('td');
+                            endTimeCell.textContent = new Date(quiz.End_Time).toLocaleString();
+                            row.appendChild(endTimeCell);
+                            
+                            const actionCell = document.createElement('td');
+                            const startButton = document.createElement('button');
+                            startButton.textContent = 'Start Quiz';
+                            startButton.className = 'start-quiz-btn';
+                            startButton.onclick = () => startQuiz(quiz.Schedule_ID, quiz.Quiz_ID);
+                            actionCell.appendChild(startButton);
+                            row.appendChild(actionCell);
+                            
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        const row = document.createElement('tr');
+                        const cell = document.createElement('td');
+                        cell.colSpan = 4;
+                        cell.textContent = 'No pending quizzes found.';
+                        cell.style.textAlign = 'center';
+                        row.appendChild(cell);
+                        tableBody.appendChild(row);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching pending quizzes:", error);
+                    const tableBody = document.getElementById('quizzesTableBody');
+                    tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Error loading quizzes. Please try again.</td></tr>';
+                });
+        }
+
+        // Function to handle starting a quiz
+        function startQuiz(scheduleId, quizId) {
+            // Here you would redirect to the quiz page or open it in a new tab
+            console.log(`Starting quiz with Schedule ID: ${scheduleId}, Quiz ID: ${quizId}`);
+            // Example: window.open(`/take-quiz.html?scheduleId=${scheduleId}&quizId=${quizId}`, '_blank');
+            alert(`Quiz with ID ${quizId} is about to start! Implement the quiz taking functionality here.`);
+                window.location.href = `student_give_quiz.html?scheduleId=${scheduleId}&quizId=${quizId}`;
+
+        }
+
+        // Call the functions when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const studentId = displayStudentInfo();
+            if (studentId) {
+                fetchPendingQuizzes(studentId);
+            } else if (typeof studentId === 'object' && studentId.then) {
+                // Handle the promise case
+                studentId.then(id => {
+                    if (id) {
+                        fetchPendingQuizzes(id);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

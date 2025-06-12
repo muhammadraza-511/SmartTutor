@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .results-container {
+            margin-top: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .no-results {
+            margin-top: 20px;
+            color: #666;
+            font-style: italic;
+        }
+        .notify-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .notify-btn:hover {
+            background-color: #45a049;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            border-radius: 5px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 100px;
+        }
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>Quiz Results Dashboard</h2>
+    <div class="tutor-info">
+        <h3>Welcome, <span id="tutorName"></span></h3>
+    </div>
+
+    <div class="results-container">
+        <h3>Completed Quizzes</h3>
+        <div id="quizResults">
+            <!-- Results will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Modal for feedback input -->
+    <div id="feedbackModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Notify Parent</h3>
+            <form id="feedbackForm">
+                <input type="hidden" id="studentIdInput">
+                <input type="hidden" id="quizIdInput">
+                <input type="hidden" id="quizScoreInput">
+                <input type="hidden" id="quizTopicInput">
+                <div class="form-group">
+                    <label for="feedbackText">Feedback/Message:</label>
+                    <textarea id="feedbackText" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Send Notification</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const userDetails = JSON.parse(sessionStorage.getItem('tutorDetails'));
+
+            if (userDetails) {
+                document.getElementById('tutorName').textContent = userDetails.Tutor_Name;
+                fetchQuizResults(userDetails.Tutor_ID);
+            } else {
+                alert("User details not found! Please log in again.");
+                window.location.href = "tutor_dashboard.html";
+            }
+
+            // Modal handling
+            const modal = document.getElementById("feedbackModal");
+            const span = document.getElementsByClassName("close")[0];
+            const feedbackForm = document.getElementById("feedbackForm");
+
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            feedbackForm.onsubmit = function(e) {
+                e.preventDefault();
+                const feedback = document.getElementById("feedbackText").value;
+                const studentId = document.getElementById("studentIdInput").value;
+                const quizId = document.getElementById("quizIdInput").value;
+                const quizScore = document.getElementById("quizScoreInput").value;
+                const quizTopic = document.getElementById("quizTopicInput").value;
+                
+                sendParentNotification(studentId, quizId, quizTopic, quizScore, feedback);
+            }
+        });
+
+        function fetchQuizResults(tutorId) {
+            fetch(`/tutor-quiz-results?tutorId=${tutorId}`)
+                .then(response => response.json())
+                .then(data => {
+                    displayQuizResults(data.results);
+                })
+                .catch(error => {
+                    console.error('Error fetching quiz results:', error);
+                    document.getElementById('quizResults').innerHTML = 
+                        '<p class="no-results">Error loading quiz results. Please try again.</p>';
+                });
+        }
+
+        function displayQuizResults(results) {
+            const container = document.getElementById('quizResults');
+            
+            if (!results || results.length === 0) {
+                container.innerHTML = '<p class="no-results">No completed quizzes found.</p>';
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Quiz Topic</th>
+                            <th>Score</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            results.forEach(result => {
+                html += `
+                    <tr>
+                        <td>${result.Student_Name}</td>
+                        <td>${result.Quiz_Topic}</td>
+                        <td>${result.Quiz_score}</td>
+                        <td>${formatDateTime(result.Start_Time)}</td>
+                        <td>${formatDateTime(result.End_Time)}</td>
+                        <td><button class="notify-btn" onclick="openFeedbackModal('${result.Student_ID}', '${result.Quiz_ID}', '${result.Quiz_score}', '${result.Quiz_Topic.replace(/'/g, "\\'")}')">Notify Parent</button></td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function formatDateTime(dateTime) {
+            if (!dateTime) return 'N/A';
+            const date = new Date(dateTime);
+            return date.toLocaleString();
+        }
+
+        function openFeedbackModal(studentId, quizId, quizScore, quizTopic) {
+            document.getElementById("studentIdInput").value = studentId;
+            document.getElementById("quizIdInput").value = quizId;
+            document.getElementById("quizScoreInput").value = quizScore;
+            document.getElementById("quizTopicInput").value = quizTopic;
+            document.getElementById("feedbackText").value = "";
+            
+            const modal = document.getElementById("feedbackModal");
+            modal.style.display = "block";
+        }
+
+        function sendParentNotification(studentId, quizId, quizTopic, quizScore, feedback) {
+            fetch('/notify-parent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    studentId: studentId,
+                    quizId: quizId,
+                    quizTopic: quizTopic,
+                    quizScore: quizScore,
+                    feedback: feedback
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Notification sent to parent successfully!");
+                    document.getElementById("feedbackModal").style.display = "none";
+                } else {
+                    alert("Error sending notification: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred while sending the notification.");
+            });
+        }
+    </script>
+</body>
+</html>

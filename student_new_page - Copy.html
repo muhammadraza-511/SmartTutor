@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Online Session</title>
+</head>
+<body>
+    <h2>Welcome to the Online Session</h2>
+    <div id="userDetails"></div>
+    <button onclick="moveToDashboard()">Move to Dashboard</button>
+
+    <script>
+        function loadUserData() {
+            const storedData = localStorage.getItem('studentData');
+            if (storedData) {
+                const user = JSON.parse(storedData);
+                document.getElementById('userDetails').innerHTML = `
+                    <p><strong>Full Name:</strong> ${user.Student_Name || 'N/A'}</p>
+                    <p><strong>Roll Number:</strong> ${user.Student_roll_No || 'N/A'}</p>
+                    <p><strong>Email:</strong> ${user.Student_Email || 'N/A'}</p>
+                    <p><strong>Contact Number:</strong> ${user.Student_number || 'N/A'}</p>
+                `;
+            } else {
+                document.getElementById('userDetails').innerHTML = "<p>No user data available.</p>";
+            }
+        }
+
+        function moveToDashboard() {
+            window.location.href = "student_dashboard.html";
+        }
+
+        // Load user details on page load
+        document.addEventListener('DOMContentLoaded', loadUserData);
+    </script>
+</body>
+</html>
