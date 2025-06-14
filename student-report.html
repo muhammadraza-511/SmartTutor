@@ -163,7 +163,7 @@
               "Encourage group learning with peers to deepen understanding.",
               "Stay updated with session goals and follow up at home.",
               "Make learning fun by connecting lessons to real-life examples.",
-              "Help your child plan ahead for upcoming sessions.",
+              "Help your child plan ahead for upcoming sessions."
             ],
             notSatisfied: [
               "Consider speaking with the tutor to understand and address challenges.",
@@ -180,7 +180,7 @@
               "Let the tutor know if your child prefers slower pacing.",
               "Be present during a session occasionally for better insight.",
               "Help your child set small, achievable learning goals.",
-              "Involve your child in choosing how to review concepts.",
+              "Involve your child in choosing how to review concepts."
             ]
           };
 
@@ -193,9 +193,24 @@
 
           const suggestionHTML = `
             <h3 style="margin-top:30px;">Suggestions for Parents</h3>
-            <ul>
-              ${selectedSuggestions.map((s) => `<li>${s}</li>`).join("")}
-            </ul>
+            <form id="suggestionForm" style="margin-top: 10px;">
+              ${selectedSuggestions
+                .map(
+                  (s) => `
+                  <div style="margin-bottom: 5px;">
+                    <label>
+                      <input type="checkbox" name="suggestion" value="${s}">
+                      ${s}
+                    </label>
+                  </div>
+                `
+                )
+                .join("")}
+              <div style="margin-top: 20px;">
+                <label for="customSuggestion"><strong>Custom Suggestion:</strong></label><br>
+                <textarea id="customSuggestion" name="customSuggestion" rows="3" style="width: 100%; margin-top: 5px;"></textarea>
+              </div>
+            </form>
           `;
 
           const suggestionContainer = document.createElement("div");
@@ -211,14 +226,30 @@
       function sendReport() {
         const student = JSON.parse(sessionStorage.getItem("selectedStudent"));
         const table = document.querySelector("#reportContent table");
+        const form = document.getElementById("suggestionForm");
         const suggestionDiv = document.querySelector(".parent-suggestions");
 
-        if (!table) {
+        if (!table || !form) {
           alert("No report data to send.");
           return;
         }
 
-        const reportHTML = table.outerHTML + (suggestionDiv ? suggestionDiv.innerHTML : "");
+        // Get checked suggestions
+        const checked = Array.from(form.querySelectorAll("input[name='suggestion']:checked")).map(
+          (checkbox) => `<li>${checkbox.value}</li>`
+        );
+
+        // Include custom suggestion
+        const customText = document.getElementById("customSuggestion")?.value.trim();
+        if (customText) {
+          checked.push(`<li>${customText}</li>`);
+        }
+
+        const suggestionsHTML = checked.length
+          ? `<h3 style="margin-top:30px;">Suggestions for Parents</h3><ul>${checked.join("")}</ul>`
+          : "";
+
+        const reportHTML = table.outerHTML + suggestionsHTML;
 
         fetch("/send_student_report", {
           method: "POST",
