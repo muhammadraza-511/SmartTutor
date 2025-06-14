@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Student Report</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 30px;
+      }
+      .report-container {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      h2 {
+        margin-bottom: 10px;
+      }
+      .student-info {
+        margin-bottom: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+      }
+      table, th, td {
+        border: 1px solid #ccc;
+      }
+      th, td {
+        padding: 10px;
+        text-align: center;
+      }
+      button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="report-container">
+      <h2>Student Report</h2>
+      <div class="student-info" id="studentInfo">Loading...</div>
+      <div class="report-content" id="reportContent">Loading sessions...</div>
+      <button onclick="sendReport()">Send Report</button>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const student = JSON.parse(sessionStorage.getItem("selectedStudent"));
+
+        if (!student || !student.studentId) {
+          document.getElementById("studentInfo").textContent = "No student selected.";
+          return;
+        }
+
+        document.getElementById("studentInfo").innerHTML = `
+          <strong>Name:</strong> ${student.studentName}<br>
+          <strong>ID:</strong> ${student.studentId}
+        `;
+
+        try {
+          const res = await fetch(`/api/student-emotions?studentId=${student.studentId}`);
+          const data = await res.json();
+
+          if (!Array.isArray(data) || data.length === 0) {
+            document.getElementById("reportContent").textContent = "No session or emotion data found.";
+            return;
+          }
+
+          const emotionGroup = {
+            satisfied: ["happy", "surprise"],
+            notSatisfied: ["angry", "fear", "sad", "disgust"],
+            neutral: ["neutral"]
+          };
+
+          let countMap = { "Satisfied": 0, "Not Satisfied": 0, "Neutral": 0 };
+
+          const tableRows = data.map((row) => {
+            const emotionCounts = {
+              happy: row.happy || 0,
+              surprise: row.surprise || 0,
+              angry: row.angry || 0,
+              fear: row.fear || 0,
+              sad: row.sad || 0,
+              disgust: row.disgust || 0,
+              neutral: row.neutral || 0
+            };
+
+            const satisfiedTotal = emotionGroup.satisfied.reduce((acc, key) => acc + emotionCounts[key], 0);
+            const notSatisfiedTotal = emotionGroup.notSatisfied.reduce((acc, key) => acc + emotionCounts[key], 0);
+            const neutralTotal = emotionCounts.neutral;
+            const totalEmotions = satisfiedTotal + notSatisfiedTotal + neutralTotal;
+
+            let finalEmotion = "Neutral";
+            if (satisfiedTotal >= Math.max(notSatisfiedTotal, neutralTotal)) finalEmotion = "Satisfied";
+            else if (notSatisfiedTotal >= Math.max(satisfiedTotal, neutralTotal)) finalEmotion = "Not Satisfied";
+
+            countMap[finalEmotion]++;
+
+            let percentage = 0;
+            if (finalEmotion === "Satisfied") {
+              percentage = ((satisfiedTotal / totalEmotions) * 100).toFixed(1);
+            } else if (finalEmotion === "Not Satisfied") {
+              percentage = ((notSatisfiedTotal / totalEmotions) * 100).toFixed(1);
+            } else {
+              percentage = ((neutralTotal / totalEmotions) * 100).toFixed(1);
+            }
+
+            return `
+              <tr>
+                <td>${row.Student_ID}</td>
+                <td>${row.Session_ID}</td>
+                <td>${finalEmotion} (${percentage}%)</td>
+              </tr>
+            `;
+          });
+
+          const table = document.createElement("table");
+          table.innerHTML = `
+            <thead>
+              <tr>
+                <th>Student ID</th>
+                <th>Session ID</th>
+                <th>Session Outcome (with %)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableRows.join("")}
+            </tbody>
+          `;
+
+          const content = document.getElementById("reportContent");
+          content.innerHTML = "";
+          content.appendChild(table);
+
+          const totalSessions = data.length;
+          const satisfiedPercent = ((countMap["Satisfied"] / totalSessions) * 100).toFixed(1);
+          const notSatisfiedPercent = ((countMap["Not Satisfied"] / totalSessions) * 100).toFixed(1);
+
+          const suggestionPool = {
+            satisfied: [
+              "Continue motivating your child to maintain this positive learning attitude.",
+              "Excellent engagement! Encourage your child to share what they’ve learned daily.",
+              "Reinforce this success by setting up a learning routine at home.",
+              "Reward your child’s consistency to build long-term learning habits.",
+              "Great progress! Keep communicating with the tutor to align efforts.",
+              "Help your child explore topics they enjoy even further.",
+              "Discuss each session casually to boost retention and reflection.",
+              "Your involvement is paying off — keep supporting with positivity.",
+              "Maintain your child’s curiosity by letting them teach you a concept.",
+              "Promote reading or watching videos on related subjects together.",
+              "Keep praising effort over results to fuel confidence.",
+              "Encourage group learning with peers to deepen understanding.",
+              "Stay updated with session goals and follow up at home.",
+              "Make learning fun by connecting lessons to real-life examples.",
+              "Help your child plan ahead for upcoming sessions.",
+            ],
+            notSatisfied: [
+              "Consider speaking with the tutor to understand and address challenges.",
+              "Encourage your child to express any confusion they’re facing.",
+              "Create a calm study environment with fewer distractions.",
+              "Try establishing a consistent study time before sessions.",
+              "Stay positive and remind your child that learning takes time.",
+              "Monitor for signs of fatigue or disinterest before sessions.",
+              "Ask your child what parts they struggle with the most.",
+              "Review topics together after each session to reinforce learning.",
+              "Use encouragement and rewards to rebuild motivation.",
+              "Check if your child’s learning style matches the tutor's methods.",
+              "Explore visual aids or hands-on learning tools.",
+              "Let the tutor know if your child prefers slower pacing.",
+              "Be present during a session occasionally for better insight.",
+              "Help your child set small, achievable learning goals.",
+              "Involve your child in choosing how to review concepts.",
+            ]
+          };
+
+          const selectedSuggestions =
+            satisfiedPercent >= 70
+              ? suggestionPool.satisfied
+              : notSatisfiedPercent >= 50
+              ? suggestionPool.notSatisfied
+              : suggestionPool.satisfied.slice(0, 7).concat(suggestionPool.notSatisfied.slice(0, 8));
+
+          const suggestionHTML = `
+            <h3 style="margin-top:30px;">Suggestions for Parents</h3>
+            <ul>
+              ${selectedSuggestions.map((s) => `<li>${s}</li>`).join("")}
+            </ul>
+          `;
+
+          const suggestionContainer = document.createElement("div");
+          suggestionContainer.classList.add("parent-suggestions");
+          suggestionContainer.innerHTML = suggestionHTML;
+          content.appendChild(suggestionContainer);
+        } catch (err) {
+          console.error("Error fetching student emotions:", err);
+          document.getElementById("reportContent").textContent = "Failed to load report.";
+        }
+      });
+
+      function sendReport() {
+        const student = JSON.parse(sessionStorage.getItem("selectedStudent"));
+        const table = document.querySelector("#reportContent table");
+        const suggestionDiv = document.querySelector(".parent-suggestions");
+
+        if (!table) {
+          alert("No report data to send.");
+          return;
+        }
+
+        const reportHTML = table.outerHTML + (suggestionDiv ? suggestionDiv.innerHTML : "");
+
+        fetch("/send_student_report", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            studentId: student.studentId,
+            studentName: student.studentName,
+            reportHTML: reportHTML,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            alert(data.message);
+          })
+          .catch((err) => {
+            console.error("Error sending report:", err);
+            alert("Failed to send report.");
+          });
+      }
+    </script>
+  </body>
+</html>

@@ -99,7 +99,7 @@ require('./tutor_generate_quiz')(app, db);
 require('./tutor_schedule_quiz')(app, db);
 // Add this with your other routes in server.js
 require('./student_get_pending_quizzes')(app, db);
-
+require('./studentreport')(app, db);
 
 
 const FormData = require('form-data');
